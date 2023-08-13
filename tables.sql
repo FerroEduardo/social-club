@@ -1,3 +1,5 @@
+SET TIMEZONE TO 'UTC';
+
 DROP SCHEMA IF EXISTS social CASCADE;
 CREATE SCHEMA IF NOT EXISTS social;
 
@@ -51,11 +53,13 @@ DROP TABLE IF EXISTS social.post CASCADE;
 CREATE TABLE IF NOT EXISTS social.post
 (
     id          SERIAL PRIMARY KEY,
-    author_id   INTEGER           NOT NULL REFERENCES social.user (id) ON DELETE CASCADE,
-    game_id     INTEGER           NOT NULL REFERENCES social.game (id) ON DELETE CASCADE,
-    description VARCHAR(200)      NULL,
-    reputation  INTEGER DEFAULT 0 NOT NULL,
-    image_id    INTEGER           NOT NULL REFERENCES social.image (id) ON DELETE CASCADE
+    author_id   INTEGER      NOT NULL REFERENCES social.user (id) ON DELETE CASCADE,
+    game_id     INTEGER      NOT NULL REFERENCES social.game (id) ON DELETE CASCADE,
+    description VARCHAR(200) NULL,
+    reputation  INTEGER      NOT NULL DEFAULT 0,
+    image_id    INTEGER      NOT NULL REFERENCES social.image (id) ON DELETE CASCADE,
+    created_at  TIMESTAMPTZ  NOT NULL DEFAULT (current_timestamp AT TIME ZONE 'UTC'),
+    modified_at TIMESTAMPTZ  NOT NULL DEFAULT (current_timestamp AT TIME ZONE 'UTC')
 );
 
 DROP TABLE IF EXISTS social.post_mention CASCADE;

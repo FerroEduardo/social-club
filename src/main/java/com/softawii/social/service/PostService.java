@@ -8,6 +8,7 @@ import com.softawii.social.repository.PostRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -29,7 +30,7 @@ public class PostService {
     }
 
     public Page<Post> findAll(int page, int size) {
-        return repository.findAll(PageRequest.of(page, size));
+        return repository.findAll(PageRequest.of(page, size, Sort.by("")));
     }
 
     public Post create(User user, Game game, Image image, String description) {

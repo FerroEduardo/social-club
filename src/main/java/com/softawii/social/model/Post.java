@@ -3,6 +3,8 @@ package com.softawii.social.model;
 import jakarta.persistence.*;
 import org.hibernate.annotations.DynamicInsert;
 
+import java.time.ZonedDateTime;
+
 @Entity
 @Table(name = "post")
 @DynamicInsert
@@ -29,6 +31,12 @@ public class Post {
 
     @Column
     private String description;
+
+    @Column(name = "created_at")
+    private ZonedDateTime createdAt;
+
+    @Column(name = "modified_at")
+    private ZonedDateTime modifiedAt;
 
     public Post() {
     }
@@ -79,5 +87,21 @@ public class Post {
 
     public void setImage(Image image) {
         this.image = image;
+    }
+
+    public ZonedDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(ZonedDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public ZonedDateTime getModifiedAt() {
+        return modifiedAt;
+    }
+
+    public void setModifiedAt(ZonedDateTime modifiedAt) {
+        this.modifiedAt = modifiedAt;
     }
 }

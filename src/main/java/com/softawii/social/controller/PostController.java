@@ -21,6 +21,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @RestController
@@ -49,6 +50,17 @@ public class PostController {
         }
 
         return this.postService.findAll();
+    }
+
+    @GetMapping("{id}")
+    public ResponseEntity<?> show(@PathVariable Long id) {
+        try {
+            Post post = this.postService.findById(id).orElseThrow();
+
+            return ResponseEntity.ok(post);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
