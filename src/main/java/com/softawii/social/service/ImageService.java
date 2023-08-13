@@ -20,10 +20,12 @@ public class ImageService {
 
     private final AppConfig       appConfig;
     private final ImageRepository repository;
+    private final FileUploadUtil fileUploadUtil;
 
-    public ImageService(AppConfig appConfig, ImageRepository repository) {
+    public ImageService(AppConfig appConfig, ImageRepository repository, FileUploadUtil fileUploadUtil) {
         this.appConfig = appConfig;
         this.repository = repository;
+        this.fileUploadUtil = fileUploadUtil;
     }
 
     public Optional<Image> findById(Long id) {
@@ -47,7 +49,7 @@ public class ImageService {
 //            image.setS3(s3);
         } else if (appConfig.getUploadStorageType().equals(UploadStorageType.LOCAL)) {
             String filename = UUID.randomUUID().toString();
-            FileUploadUtil.saveFile(appConfig.getUploadFolder(), filename, blob);
+            fileUploadUtil.saveFile(filename, blob);
             image.setLocal(filename);
         }
 
@@ -60,6 +62,6 @@ public class ImageService {
             throw new RuntimeException();
         }
 
-        return FileUploadUtil.readFile(appConfig.getUploadFolder(), image.getLocal());
+        return fileUploadUtil.readFile(image.getLocal());
     }
 }
