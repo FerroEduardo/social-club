@@ -28,11 +28,11 @@ import java.util.Optional;
 @Validated
 public class PostController {
 
-    private final UserService userService;
-    private final GameService gameService;
+    private final UserService  userService;
+    private final GameService  gameService;
     private final PostService  postService;
     private final ImageService imageService;
-    private final AppConfig appConfig;
+    private final AppConfig    appConfig;
 
     public PostController(UserService userService, GameService gameService, PostService postService, ImageService imageService, AppConfig appConfig) {
         this.userService = userService;
@@ -63,7 +63,7 @@ public class PostController {
         if (gameOptional.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Game not found");
         }
-        Game game = gameOptional.get();
+        Game  game = gameOptional.get();
         Image image;
         try {
             byte[] imageBytes = dto.getImage().getBytes(); // throws IOException

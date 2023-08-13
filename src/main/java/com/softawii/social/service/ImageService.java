@@ -18,7 +18,7 @@ import java.util.UUID;
 @Component
 public class ImageService {
 
-    private final AppConfig appConfig;
+    private final AppConfig       appConfig;
     private final ImageRepository repository;
 
     public ImageService(AppConfig appConfig, ImageRepository repository) {

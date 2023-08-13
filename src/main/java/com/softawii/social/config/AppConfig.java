@@ -21,15 +21,6 @@ public class AppConfig {
         return uploadFolder;
     }
 
-    public UploadStorageType getUploadStorageType() {
-        return uploadStorageType;
-    }
-
-    @Autowired
-    public void setUploadStorageType(@Value("${softawii.upload.storage}") String uploadStorageType) {
-        this.uploadStorageType = UploadStorageType.valueOf(uploadStorageType);
-    }
-
     @Autowired
     public void setUploadFolder(@Value("${softawii.upload.folder}") String uploadFolder) {
         if (uploadFolder == null) {
@@ -37,5 +28,14 @@ public class AppConfig {
         } else {
             this.uploadFolder = uploadFolder;
         }
+    }
+
+    public UploadStorageType getUploadStorageType() {
+        return uploadStorageType;
+    }
+
+    @Autowired
+    public void setUploadStorageType(@Value("${softawii.upload.storage}") String uploadStorageType) {
+        this.uploadStorageType = UploadStorageType.valueOf(uploadStorageType);
     }
 }
