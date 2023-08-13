@@ -1,0 +1,57 @@
+softawii:
+  production: ${SOFTAWII_PRODUCTION:false}
+  upload:
+    storage: ${SOFTAWII_UPLOAD_STORAGE:LOCAL}
+    folder: ${SOFTAWII_UPLOAD_FOLDER}
+
+logging:
+  level:
+    root: info
+
+server:
+  port: ${SERVER_PORT:8099}
+  servlet:
+    session:
+      timeout: ${SESSION_TIMEOUT:1h}
+
+spring:
+  datasource:
+    url: ${SOFTAWII_DATABASE_URL:jdbc:postgresql://localhost/default}
+    username: ${SOFTAWII_DATABASE_USERNAME:default}
+    password: ${SOFTAWII_DATABASE_PASSWORD:}
+    driverClassName: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: ${SOFTAWII_DATABASE_POOL_SIZE:1}
+      schema: ${SOFTAWII_DATABASE_SCHEMA:social}
+
+  jpa:
+    show-sql: ${SOFTAWII_JPA_SHOW_SQL:false}
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        default_schema: ${SOFTAWII_DATABASE_SCHEMA:social}
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${SOFTAWII_OAUTH_GOOGLE_CLIENT_ID}
+            client-secret: ${SOFTAWII_OAUTH_GOOGLE_CLIENT_SECRET}
+            redirect-uri: "{baseUrl}/login/oauth2/{registrationId}"
+            scope:
+              - email
+              - profile
+          github:
+            client-id: ${SOFTAWII_OAUTH_GITHUB_CLIENT_ID}
+            client-secret: ${SOFTAWII_OAUTH_GITHUB_CLIENT_SECRET}
+            redirect-uri: "{baseUrl}/login/oauth2/{registrationId}"
+            scope:
+              - user:email
+              - read:user
+  data:
+    redis:
+      host: ${SOFTAWII_REDIS_HOST:localhost}
+      port: ${SOFTAWII_REDIS_PORT:6379}
+      database: ${SOFTAWII_REDIS_DATABASE:0}
+      password: ${SOFTAWII_REDIS_PASSWORD:}
