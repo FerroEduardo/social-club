@@ -80,9 +80,10 @@ CREATE TABLE IF NOT EXISTS social.post_like
 DROP TABLE IF EXISTS social.post_comment CASCADE;
 CREATE TABLE IF NOT EXISTS social.post_comment
 (
-    id             SERIAL PRIMARY KEY,
-    author_id      INTEGER NOT NULL REFERENCES social.user (id) ON DELETE CASCADE,
-    post_id        INTEGER NOT NULL REFERENCES social.post (id) ON DELETE CASCADE,
-    post_parent_id INTEGER NULL REFERENCES social.post_comment (id) ON DELETE CASCADE,
-    value          BOOL    NOT NULL
+    id                SERIAL PRIMARY KEY,
+    author_id         INTEGER      NOT NULL REFERENCES social.user (id) ON DELETE CASCADE,
+    post_id           INTEGER      NOT NULL REFERENCES social.post (id) ON DELETE CASCADE,
+    value             VARCHAR(200) NOT NULL,
+    created_at        TIMESTAMPTZ  NOT NULL DEFAULT (current_timestamp AT TIME ZONE 'UTC'),
+    modified_at       TIMESTAMPTZ  NOT NULL DEFAULT (current_timestamp AT TIME ZONE 'UTC')
 );
