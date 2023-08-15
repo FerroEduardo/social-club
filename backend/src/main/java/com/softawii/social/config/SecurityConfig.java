@@ -7,6 +7,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -21,15 +26,10 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(configurer -> configurer
-                        .disable()
-                )
-                .cors(configurer -> configurer
-                        .disable()
-                )
                 .httpBasic(configurer -> configurer
                         .disable()
                 )
+                .cors(configurer -> configurer.configurationSource(corsConfigurationSource()))
                 .formLogin(configurer -> configurer
                         .loginPage("/")
                 )
@@ -47,7 +47,7 @@ public class SecurityConfig {
                         .userInfoEndpoint(endpoint -> endpoint
                                 .userService(oAuth2UserService)
                         )
-                        .defaultSuccessUrl("/user/me", true)
+                        .defaultSuccessUrl("/login/success", true)
                 )
                 .logout(configurer -> configurer
                         .logoutUrl("/logout")
@@ -59,11 +59,32 @@ public class SecurityConfig {
                             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, authException.getMessage());
                         })
                 )
+                .headers(configurer -> configurer
+                        .frameOptions(frameOptionsConfig -> frameOptionsConfig
+                                .sameOrigin()
+                        )
+                )
         ;
 
 //        DefaultLoginPageConfigurer defaultLoginPageConfigurer = http.removeConfigurer(DefaultLoginPageConfigurer.class);
 
         return http.build();
+    }
+
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("http://localhost:3000", "http://localhost:5173"));
+        configuration.setAllowCredentials(true);
+        configuration.addAllowedMethod("*");
+        configuration.addExposedHeader("*");
+        configuration.addAllowedHeader("*");
+        configuration.validateAllowCredentials();
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+
+        return source;
     }
 
 }
