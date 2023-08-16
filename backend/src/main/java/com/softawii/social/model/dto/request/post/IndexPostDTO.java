@@ -1,10 +1,10 @@
-package com.softawii.social.model.dto.image;
+package com.softawii.social.model.dto.request.post;
 
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 
-public class IndexImageDTO {
+public class IndexPostDTO {
 
     @PositiveOrZero(message = "\"page\" must be at least 0")
     private Long page;
@@ -12,7 +12,7 @@ public class IndexImageDTO {
     @Positive(message = "\"size\" must be at least 1")
     private Long size;
 
-    public IndexImageDTO() {
+    public IndexPostDTO() {
     }
 
     @AssertTrue(message = "Fields must be null or totally filled")

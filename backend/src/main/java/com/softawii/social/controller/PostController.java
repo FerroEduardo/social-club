@@ -1,12 +1,12 @@
 package com.softawii.social.controller;
 
-import com.softawii.social.config.AppConfig;
 import com.softawii.social.model.Game;
 import com.softawii.social.model.Image;
 import com.softawii.social.model.Post;
 import com.softawii.social.model.User;
-import com.softawii.social.model.dto.post.CreatePostDTO;
-import com.softawii.social.model.dto.post.IndexPostDTO;
+import com.softawii.social.model.dto.PostDTO;
+import com.softawii.social.model.dto.request.post.CreatePostDTO;
+import com.softawii.social.model.dto.request.post.IndexPostDTO;
 import com.softawii.social.security.UserPrincipal;
 import com.softawii.social.service.GameService;
 import com.softawii.social.service.ImageService;
@@ -33,14 +33,12 @@ public class PostController {
     private final GameService  gameService;
     private final PostService  postService;
     private final ImageService imageService;
-    private final AppConfig    appConfig;
 
-    public PostController(UserService userService, GameService gameService, PostService postService, ImageService imageService, AppConfig appConfig) {
+    public PostController(UserService userService, GameService gameService, PostService postService, ImageService imageService) {
         this.userService = userService;
         this.gameService = gameService;
         this.postService = postService;
         this.imageService = imageService;
-        this.appConfig = appConfig;
     }
 
     @GetMapping
@@ -55,7 +53,7 @@ public class PostController {
     @GetMapping("{id}")
     public ResponseEntity<?> show(@PathVariable Long id) {
         try {
-            Post post = this.postService.findById(id).orElseThrow();
+            PostDTO post = this.postService.findById(id).orElseThrow();
 
             return ResponseEntity.ok(post);
         } catch (NoSuchElementException e) {

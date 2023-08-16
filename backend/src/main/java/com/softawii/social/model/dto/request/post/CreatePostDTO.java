@@ -1,4 +1,4 @@
-package com.softawii.social.model.dto.post;
+package com.softawii.social.model.dto.request.post;
 
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotNull;

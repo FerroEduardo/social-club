@@ -1,7 +1,7 @@
 package com.softawii.social.controller;
 
 import com.softawii.social.model.Image;
-import com.softawii.social.model.dto.image.IndexImageDTO;
+import com.softawii.social.model.dto.request.image.IndexImageDTO;
 import com.softawii.social.service.ImageService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;

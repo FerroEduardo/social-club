@@ -1,10 +1,10 @@
-package com.softawii.social.model.dto.game;
+package com.softawii.social.model.dto.request.image;
 
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 
-public class IndexGameDTO {
+public class IndexImageDTO {
 
     @PositiveOrZero(message = "\"page\" must be at least 0")
     private Long page;
@@ -12,14 +12,13 @@ public class IndexGameDTO {
     @Positive(message = "\"size\" must be at least 1")
     private Long size;
 
-    public IndexGameDTO() {
+    public IndexImageDTO() {
     }
 
     @AssertTrue(message = "Fields must be null or totally filled")
     private boolean isValid() {
         return !(page != null ^ size != null);
     }
-
 
     public Long getPage() {
         return page;

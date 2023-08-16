@@ -1,9 +1,9 @@
 package com.softawii.social.controller;
 
 import com.softawii.social.model.Game;
-import com.softawii.social.model.dto.game.IndexGameDTO;
-import com.softawii.social.model.dto.game.SaveGameDTO;
-import com.softawii.social.model.dto.game.UpdateGameDTO;
+import com.softawii.social.model.dto.request.game.IndexGameDTO;
+import com.softawii.social.model.dto.request.game.SaveGameDTO;
+import com.softawii.social.model.dto.request.game.UpdateGameDTO;
 import com.softawii.social.service.GameService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
