@@ -3,6 +3,8 @@ softawii:
   upload:
     storage: ${SOFTAWII_UPLOAD_STORAGE:LOCAL}
     folder: ${SOFTAWII_UPLOAD_FOLDER}
+  steam:
+    token: ${SOFTAWII_STEAM_TOKEN}
 
 logging:
   level:

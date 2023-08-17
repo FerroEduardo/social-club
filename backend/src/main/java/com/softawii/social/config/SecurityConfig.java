@@ -34,7 +34,7 @@ public class SecurityConfig {
                         .loginPage("/")
                 )
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/", "/favicon.ico").permitAll()
+                        .requestMatchers("/", "/favicon.ico", "steam/login", "steam/login/redirect").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(login -> login
