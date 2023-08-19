@@ -1,6 +1,6 @@
 <template>
   <div class="bg-white">
-    <Header :isMenuOpen="isMenuOpen" :menus="menus" @openMenu="openMenu" @closeMenu="closeMenu" />
+    <Header />
 
     <div class="relative isolate px-6 pt-14 lg:px-8">
       <div class="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80" aria-hidden="true">
@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import Header from '../components/homepage/Header.vue';
+import Header from '../components/Header.vue';
 
 export default {
   components: {
@@ -37,38 +37,13 @@ export default {
   },
   setup() {
     return {
-      menus: [
-        {
-          label: 'Product',
-          link: '#'
-        },
-        {
-          label: 'Features',
-          link: '#'
-        },
-        {
-          label: 'Marketplace',
-          link: '#'
-        },
-        {
-          label: 'Company',
-          link: '#'
-        },
-      ]
     }
   },
   data() {
     return {
-      isMenuOpen: false
     };
   },
   methods: {
-    openMenu() {
-      this.isMenuOpen = true
-    },
-    closeMenu() {
-      this.isMenuOpen = false
-    }
   },
   mounted() {}
 }

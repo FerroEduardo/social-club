@@ -61,20 +61,41 @@
 <script>
 export default {
   props: {
-    menus: Array,
-    isMenuOpen: Boolean,
   },
   setup() {
     return {
-      companyImageUrl: 'https://avatars.githubusercontent.com/u/92893192?s=200&v=4'
+      companyImageUrl: 'https://avatars.githubusercontent.com/u/92893192?s=200&v=4',
+      menus: [
+        {
+          label: 'Product',
+          link: '#'
+        },
+        {
+          label: 'Features',
+          link: '#'
+        },
+        {
+          label: 'Marketplace',
+          link: '#'
+        },
+        {
+          label: 'Company',
+          link: '#'
+        },
+      ]
     };
+  },
+  data() {
+    return {
+      isMenuOpen: false,
+    }
   },
   methods: {
     openMenu() {
-      this.$emit('openMenu')
+      this.isMenuOpen = true
     },
     closeMenu() {
-      this.$emit('closeMenu')
+      this.isMenuOpen = false
     }
   }
 }
