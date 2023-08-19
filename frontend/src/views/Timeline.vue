@@ -23,8 +23,6 @@ import axios from 'axios';
 import PageHeader from '../components/PageHeader.vue';
 import Post from '../components/timeline/Post.vue';
 
-const API_URL = import.meta.env.VITE_API_URL;
-
 export default {
   components: {
     PageHeader,
@@ -47,7 +45,7 @@ export default {
       const size = this.pageSize;
       this.isLoadingData = true;
 
-      axios.get(`${API_URL}/post?page=${page}&size=${size}`, {
+      axios.get(`/post?page=${page}&size=${size}`, {
         withCredentials: true,
       })
         .then((request) => {
@@ -60,21 +58,24 @@ export default {
           this.isLoadingData = false;
         });
     },
+    setupInfiniteScroll() {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            this.getPostPage();
+          }
+        });
+      }, {
+        root: null,
+        rootMargin: '20px',
+        threshold: 0,
+      });
+      observer.observe(this.$refs.postContainer);
+    },
   },
   mounted() {
     this.getPostPage();
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          this.getPostPage();
-        }
-      });
-    }, {
-      root: null,
-      rootMargin: '20px',
-      threshold: 0,
-    });
-    observer.observe(this.$refs.postContainer);
+    this.setupInfiniteScroll();
   },
 };
 </script>
