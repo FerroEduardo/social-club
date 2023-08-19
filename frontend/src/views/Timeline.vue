@@ -1,5 +1,5 @@
 <template>
-  <Header :isMenuOpen="isMenuOpen" :menus="menus" @openMenu="openMenu" @closeMenu="closeMenu" />
+  <PageHeader :isMenuOpen="isMenuOpen" :menus="menus" @openMenu="openMenu" @closeMenu="closeMenu" />
   <div class="bg-white py-24 sm:py-32">
     <div class="mx-auto max-w-7xl px-6 lg:px-8">
       <div class="mx-auto max-w-2xl lg:mx-0">
@@ -18,39 +18,39 @@
 </template>
 
 <script>
-import Header from '../components/Header.vue';
+import axios from 'axios';
+import PageHeader from '../components/PageHeader.vue';
 import Post from '../components/timeline/Post.vue';
 
-import axios from 'axios'
-const API_URL = import.meta.env.VITE_API_URL
+const API_URL = import.meta.env.VITE_API_URL;
 
 export default {
   components: {
-    Header,
-    Post
+    PageHeader,
+    Post,
   },
   data() {
     return {
-      posts: []
-    }
+      posts: [],
+    };
   },
   methods: {
     getPosts() {
       axios.get(`${API_URL}/post`, {
-        withCredentials: true
+        withCredentials: true,
       })
-        .then(request => {
-          this.posts = request.data.content
+        .then((request) => {
+          this.posts = request.data.content;
         })
-        .catch(reason => {
-          this.$router.push('/')
-        })
-    }
+        .catch((reason) => {
+          this.$router.push('/');
+        });
+    },
   },
   mounted() {
-    this.getPosts()
-  }
-}
+    this.getPosts();
+  },
+};
 </script>
 
 <style>

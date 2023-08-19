@@ -30,7 +30,7 @@
     </div>
   </div>
 </template>
-  
+
 <script>
 export default {
   props: {
@@ -39,9 +39,9 @@ export default {
     authorName: String,
     gameImageUrl: String,
     gameName: String,
-    gameStudio: String
+    gameStudio: String,
   },
-}
+};
 </script>
 
 <style scoped>

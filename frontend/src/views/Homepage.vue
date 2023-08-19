@@ -1,6 +1,6 @@
 <template>
   <div class="bg-white">
-    <Header />
+    <PageHeader />
 
     <div class="relative isolate px-6 pt-14 lg:px-8">
       <div class="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80" aria-hidden="true">
@@ -12,7 +12,8 @@
             Lorem ipsum dolor sit amet
           </h1>
           <p class="mt-6 text-lg leading-8 text-gray-600">
-            Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure qui lorem cupidatat commodo. Elit sunt amet fugiat veniam occaecat fugiat aliqua.
+            Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure qui lorem cupidatat commodo.
+            Elit sunt amet fugiat veniam occaecat fugiat aliqua.
           </p>
           <div class="mt-10 flex items-center justify-center gap-x-6">
             <router-link to="/login" class="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
@@ -29,15 +30,15 @@
 </template>
 
 <script>
-import Header from '../components/Header.vue';
+import PageHeader from '../components/PageHeader.vue';
 
 export default {
   components: {
-    Header
+    PageHeader,
   },
   setup() {
     return {
-    }
+    };
   },
   data() {
     return {
@@ -45,8 +46,8 @@ export default {
   },
   methods: {
   },
-  mounted() {}
-}
+  mounted() {},
+};
 </script>
 
 <style scoped>

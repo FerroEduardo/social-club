@@ -26,15 +26,15 @@
 </template>
 
 <script>
-const API_URL = import.meta.env.VITE_API_URL
+const API_URL = import.meta.env.VITE_API_URL;
 
 export default {
   methods: {
     loginOauth(platform) {
-      location.href = `${API_URL}/oauth2/authorize/${platform}`
-    }
-  }
-}
+      window.location.href = `${API_URL}/oauth2/authorize/${platform}`;
+    },
+  },
+};
 </script>
 
 <style>
