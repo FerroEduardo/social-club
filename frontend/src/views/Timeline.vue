@@ -1,6 +1,6 @@
 <template>
-  <PageHeader :isMenuOpen="isMenuOpen" :menus="menus" @openMenu="openMenu" @closeMenu="closeMenu" />
-  <div class="bg-white py-24 sm:py-32">
+  <PageHeader />
+  <div class="bg-white py-24 sm:py-32" @scroll="onScroll">
     <div class="mx-auto max-w-7xl px-6 lg:px-8">
       <div class="mx-auto max-w-2xl lg:mx-0">
         <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
@@ -12,6 +12,7 @@
       </div>
       <div class="mx-auto max-w-2xl gap-x-8 pt-10 lg:max-w-none">
         <Post v-for="post in posts" v-bind="post" :key="post.id" />
+        <div ref="postContainer"></div>
       </div>
     </div>
   </div>
@@ -32,23 +33,48 @@ export default {
   data() {
     return {
       posts: [],
+      page: 0,
+      pageSize: 5,
+      isLoadingData: false,
+      isLast: false,
     };
   },
   methods: {
-    getPosts() {
-      axios.get(`${API_URL}/post`, {
+    getPostPage() {
+      if (this.isLoadingData || this.isLast) return;
+      // eslint-disable-next-line no-plusplus
+      const page = this.page++;
+      const size = this.pageSize;
+      this.isLoadingData = true;
+
+      axios.get(`${API_URL}/post?page=${page}&size=${size}`, {
         withCredentials: true,
       })
         .then((request) => {
-          this.posts = request.data.content;
+          this.isLast = request.data.last;
+          this.posts.push(...request.data.content);
         })
         .catch((reason) => {
           this.$router.push('/');
+        }).finally(() => {
+          this.isLoadingData = false;
         });
     },
   },
   mounted() {
-    this.getPosts();
+    this.getPostPage();
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          this.getPostPage();
+        }
+      });
+    }, {
+      root: null,
+      rootMargin: '20px',
+      threshold: 0,
+    });
+    observer.observe(this.$refs.postContainer);
   },
 };
 </script>

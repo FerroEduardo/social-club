@@ -37,5 +37,6 @@ module.exports = {
     'vue/multi-word-component-names': ['warn', {
       ignores: [],
     }],
+    indent: ['error', 2],
   },
 };
