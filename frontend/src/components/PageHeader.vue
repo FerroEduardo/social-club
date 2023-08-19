@@ -24,7 +24,10 @@
         </a>
       </div>
       <div class="hidden lg:flex lg:flex-1 lg:justify-end">
-        <a href="#" class="text-sm font-semibold leading-6 text-gray-900">Fazer login</a>
+        <router-link to="/login" href="#" class="text-sm font-semibold leading-6 text-gray-900">Fazer login</router-link>
+      </div>
+      <div class="hidden lg:flex lg:flex-1 lg:justify-end">
+        <a href="#" class="text-sm font-semibold leading-6 text-gray-900" @click="logout">Log out</a>
       </div>
     </nav>
     <!-- Mobile menu, show/hide based on menu open state. -->
@@ -55,9 +58,16 @@
               </a>
             </div>
             <div class="py-6">
-              <a href="#"
+              <router-link to="/login"
                 class="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
                 Log in
+              </router-link>
+              <a
+                href="#"
+                class="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                @click="logout"
+              >
+                Log out
               </a>
             </div>
           </div>
@@ -68,6 +78,8 @@
 </template>
 
 <script>
+const API_URL = import.meta.env.VITE_API_URL;
+
 export default {
   props: {
   },
@@ -105,6 +117,9 @@ export default {
     },
     closeMenu() {
       this.isMenuOpen = false;
+    },
+    logout() {
+      window.location.href = `${API_URL}/logout`;
     },
   },
 };

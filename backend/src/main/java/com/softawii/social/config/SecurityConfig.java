@@ -26,6 +26,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .csrf(configurer -> {
+                    configurer.disable();
+                })
                 .httpBasic(configurer -> configurer
                         .disable()
                 )
@@ -34,7 +37,7 @@ public class SecurityConfig {
                         .loginPage("/")
                 )
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/", "/favicon.ico").permitAll()
+                        .requestMatchers("/", "/favicon.ico", "/logout/success").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(login -> login
@@ -51,7 +54,7 @@ public class SecurityConfig {
                 )
                 .logout(configurer -> configurer
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("/?logout=success")
+                        .logoutSuccessUrl("/logout/success")
                 )
                 .exceptionHandling(configurer -> configurer
                         .authenticationEntryPoint((request, response, authException) -> {

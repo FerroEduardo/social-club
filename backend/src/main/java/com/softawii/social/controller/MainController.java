@@ -15,7 +15,15 @@ public class MainController {
     @GetMapping("/login/success")
     public RedirectView loginSuccess() {
         RedirectView redirectView = new RedirectView();
-        redirectView.setUrl("http://localhost:5173/");
+        redirectView.setUrl("http://localhost:5173/?login=success");
+
+        return redirectView;
+    }
+
+    @GetMapping("/logout/success")
+    public RedirectView logoutSuccess() {
+        RedirectView redirectView = new RedirectView();
+        redirectView.setUrl("http://localhost:5173/?logout=success");
 
         return redirectView;
     }
