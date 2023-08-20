@@ -1,8 +1,7 @@
 package com.softawii.social.controller;
 
-import com.softawii.social.model.User;
-import com.softawii.social.repository.UserRepository;
 import com.softawii.social.security.UserPrincipal;
+import com.softawii.social.service.UserService;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,17 +11,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("user")
 public class UserController {
 
-    private UserRepository userRepository;
+    private UserService service;
 
-    public UserController(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserController(UserService service) {
+        this.service = service;
     }
 
     @GetMapping("me")
     public Object user(OAuth2AuthenticationToken authentication) throws Exception {
-        UserPrincipal user   = (UserPrincipal) authentication.getPrincipal();
-        User          userDb = userRepository.findByEmail(user.getEmail()).get();
+        UserPrincipal user = (UserPrincipal) authentication.getPrincipal();
 
-        return userDb;
+        return service.findByEmail(user.getEmail()).get();
     }
 }

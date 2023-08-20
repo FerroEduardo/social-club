@@ -3,18 +3,18 @@ package com.softawii.social.model.dto;
 import java.time.ZonedDateTime;
 
 public class PostDTO {
-    private Long id;
-    private String description;
-    private Long reputation;
+    private Long          id;
+    private String        description;
+    private Long          reputation;
     private ZonedDateTime createdAt;
     private ZonedDateTime modifiedAt;
-    private Long authorId;
-    private String authorName;
-    private String authorImageUrl;
-    private Long gameId;
-    private String gameName;
-    private String gameStudio;
-    private String imageUrl;
+    private Long          authorId;
+    private String        authorName;
+    private String        authorImageUrl;
+    private Long          gameId;
+    private String        gameName;
+    private String        gameStudio;
+    private String        imageUrl;
 
     public PostDTO() {
     }

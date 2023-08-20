@@ -3,6 +3,8 @@ softawii:
   upload:
     storage: ${SOFTAWII_UPLOAD_STORAGE:LOCAL}
     folder: ${SOFTAWII_UPLOAD_FOLDER}
+  front:
+    url: ${SOFTAWII_FRONT_URL:http://localhost:5173}
 
 logging:
   level:

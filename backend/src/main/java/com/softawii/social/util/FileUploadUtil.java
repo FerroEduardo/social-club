@@ -7,11 +7,14 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 
 @Component
 public class FileUploadUtil {
-    
+
     private final Path uploadFolder;
 
     public FileUploadUtil(AppConfig appConfig) {
@@ -19,7 +22,7 @@ public class FileUploadUtil {
     }
 
     public void saveFile(String fileName, byte[] blob) throws IOException {
-        try (InputStream inputStream =new BufferedInputStream(new ByteArrayInputStream(blob))) {
+        try (InputStream inputStream = new BufferedInputStream(new ByteArrayInputStream(blob))) {
             Path filePath = this.uploadFolder.resolve(fileName);
             Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException ioe) {

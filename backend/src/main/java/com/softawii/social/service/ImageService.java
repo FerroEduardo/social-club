@@ -20,7 +20,7 @@ public class ImageService {
 
     private final AppConfig       appConfig;
     private final ImageRepository repository;
-    private final FileUploadUtil fileUploadUtil;
+    private final FileUploadUtil  fileUploadUtil;
 
     public ImageService(AppConfig appConfig, ImageRepository repository, FileUploadUtil fileUploadUtil) {
         this.appConfig = appConfig;
