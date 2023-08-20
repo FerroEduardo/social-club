@@ -6,6 +6,8 @@ import sharp from 'sharp';
 import multer from 'multer';
 import fs from 'fs';
 
+import ErrorCodes from './errorCodes';
+
 dotenv.config();
 
 const isMemoryStorage = process.env.UPLOAD_STORAGE_TYPE === 'MEMORY';
@@ -40,9 +42,10 @@ app.post('/', upload.single('image'), (async (req: Request, res: Response) => {
     const { file } = req;
 
     if (!file) {
-      res.send({
+      res.status(400).send({
         message: 'Missing image',
-      }).status(400);
+        code: ErrorCodes.MissingImage,
+      });
       return;
     }
 
@@ -64,14 +67,29 @@ app.post('/', upload.single('image'), (async (req: Request, res: Response) => {
         force: true,
       });
       res.set('Content-Type', 'image/webp');
-      res.send(await imageSharp.toBuffer()).status(200);
+      res.status(200).send(await imageSharp.toBuffer());
       return;
     }
-    res.send({
-      message: `Incompatible image format, send any of these: ${availableFormats.toString()}`,
-    }).status(400);
+    res.status(500)
+      .send({
+        message: `Incompatible image format, send any of these: ${availableFormats.toString()}`,
+        code: ErrorCodes.IncompatibleImageFormat,
+      });
   } catch (error) {
     console.error({ error });
+
+    if (error instanceof Error) {
+      const msg = String(error);
+
+      if (msg === 'Error: Input buffer contains unsupported image format') {
+        res.status(400).send({
+          message: 'Invalid filetype',
+          code: ErrorCodes.InvalidFileType,
+        });
+        return;
+      }
+    }
+
     res.sendStatus(500);
   }
 }) as RequestHandler);
