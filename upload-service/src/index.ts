@@ -58,18 +58,20 @@ app.post('/', upload.single('image'), (async (req: Request, res: Response) => {
     } else {
       buffer = fs.readFileSync(file.path);
     }
-    let imageSharp = sharp(buffer);
+    const imageSharp = sharp(buffer);
     const metadata = await imageSharp.metadata();
 
     if (availableFormats.includes(metadata.format?.toUpperCase() ?? '')) {
-      imageSharp = imageSharp.webp({
-        lossless: false,
-        quality: 80,
-        alphaQuality: 100,
-        preset: 'default',
-        force: true,
-      });
-      const imageBuffer = await imageSharp.toBuffer();
+      const imageBuffer = await imageSharp
+        .webp({
+          lossless: false,
+          quality: 80,
+          alphaQuality: 100,
+          preset: 'default',
+          force: true,
+        })
+        .toBuffer();
+
       try {
         const imageId = await ImageService.saveImage(imageBuffer);
         res
