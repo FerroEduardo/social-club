@@ -37,8 +37,7 @@ app.post('/', upload.single('image'), (async (req: Request, res: Response) => {
     } else {
       rawImageBuffer = fs.readFileSync(file.path);
     }
-    const processedImageBuffer = await ImageService.processImage(rawImageBuffer);
-    const imageId = await ImageService.saveImage(processedImageBuffer);
+    const imageId = await ImageService.save(rawImageBuffer);
 
     res
       .status(201)

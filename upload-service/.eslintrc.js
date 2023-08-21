@@ -25,7 +25,8 @@ module.exports = {
       },
       "rules": {
         "indent": ["error", 2, { "SwitchCase": 1 }],
-        "no-case-declarations": ["warn"]
+        "no-case-declarations": ["warn"],
+        "class-methods-use-this": "off"
       }
     }
   ],
