@@ -3,13 +3,6 @@ module.exports = {
     "browser": true,
     "es2021": true
   },
-  "extends": [
-    'eslint:recommended',
-    'plugin:@typescript-eslint/recommended-type-checked',
-    'plugin:@typescript-eslint/stylistic-type-checked',
-    'airbnb-base',
-    'airbnb-typescript/base'
-  ],
   "parser": '@typescript-eslint/parser',
   "plugins": ['@typescript-eslint'],
   "root": true,
@@ -18,20 +11,26 @@ module.exports = {
       "env": {
         "node": true
       },
-      "files": [
-        ".eslintrc.{js,cjs}"
+      "files": ['*.ts', '*.tsx'],
+      "extends": [
+        'eslint:recommended',
+        'plugin:@typescript-eslint/recommended-type-checked',
+        'plugin:@typescript-eslint/stylistic-type-checked',
+        'airbnb-base',
+        'airbnb-typescript/base'
       ],
       "parserOptions": {
-        "sourceType": "script"
+        "sourceType": "script",
+        "project": ['./tsconfig.json'],
       }
     }
   ],
   "parserOptions": {
     "ecmaVersion": "latest",
     "sourceType": "module",
-    "project": './tsconfig.json'
   },
   "rules": {
-    "indent": ["error", 2]
+    "indent": ["error", 2, { "SwitchCase": 1 }],
+    "no-case-declarations": ["warn"]
   }
 }
