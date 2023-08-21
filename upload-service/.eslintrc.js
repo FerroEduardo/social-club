@@ -22,6 +22,10 @@ module.exports = {
       "parserOptions": {
         "sourceType": "script",
         "project": ['./tsconfig.json'],
+      },
+      "rules": {
+        "indent": ["error", 2, { "SwitchCase": 1 }],
+        "no-case-declarations": ["warn"]
       }
     }
   ],
@@ -29,8 +33,4 @@ module.exports = {
     "ecmaVersion": "latest",
     "sourceType": "module",
   },
-  "rules": {
-    "indent": ["error", 2, { "SwitchCase": 1 }],
-    "no-case-declarations": ["warn"]
-  }
 }

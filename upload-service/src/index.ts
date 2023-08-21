@@ -2,38 +2,13 @@ import express, {
   Express, Request, Response, RequestHandler,
 } from 'express';
 import dotenv from 'dotenv';
-import sharp from 'sharp';
-import multer from 'multer';
 import fs from 'fs';
 
-import ErrorCodes from './errorCodes';
+import ErrorCode from './enum/errorCode';
 import ImageService from './service/imageService';
+import { upload, isMemoryStorage } from './config/multerConfig';
 
 dotenv.config();
-
-const isMemoryStorage = process.env.MULTER_UPLOAD_STORAGE_TYPE === 'MEMORY';
-let multerStorage: multer.StorageEngine;
-if (isMemoryStorage) {
-  multerStorage = multer.memoryStorage();
-} else {
-  multerStorage = multer.diskStorage({
-    filename(req, file, cb) {
-      const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1E9)}`;
-      cb(null, `multer-${file.fieldname}-${uniqueSuffix}`);
-    },
-    destination: process.env.MULTER_UPLOAD_FOLDER ?? '/tmp',
-  });
-}
-
-const upload = multer({
-  storage: multerStorage,
-  limits: {
-    fileSize: 10_000_000, // bytes
-    files: 1,
-  },
-});
-
-const availableFormats = (process.env.SHARP_ALLOWED_EXTENSIONS ?? '').split(',');
 
 const app: Express = express();
 const port: string = process.env.SERVER_PORT ?? '8000';
@@ -51,56 +26,24 @@ app.post('/', upload.single('image'), (async (req: Request, res: Response) => {
         .status(400)
         .send({
           message: 'Missing image',
-          code: ErrorCodes.MissingImage,
+          code: ErrorCode.MissingImage,
         });
       return;
     }
 
-    let buffer;
+    let rawImageBuffer;
     if (isMemoryStorage) {
-      buffer = file.buffer;
+      rawImageBuffer = file.buffer;
     } else {
-      buffer = fs.readFileSync(file.path);
+      rawImageBuffer = fs.readFileSync(file.path);
     }
-    const imageSharp = sharp(buffer);
-    const metadata = await imageSharp.metadata();
+    const processedImageBuffer = await ImageService.processImage(rawImageBuffer);
+    const imageId = await ImageService.saveImage(processedImageBuffer);
 
-    if (availableFormats.includes(metadata.format?.toUpperCase() ?? '')) {
-      const imageBuffer = await imageSharp
-        .webp({
-          lossless: false,
-          quality: 80,
-          alphaQuality: 100,
-          preset: 'default',
-          force: true,
-        })
-        .toBuffer();
-
-      try {
-        const imageId = await ImageService.saveImage(imageBuffer);
-        res
-          .status(201)
-          .send({
-            id: imageId,
-          });
-
-        return;
-      } catch (error) {
-        res
-          .status(500)
-          .send({
-            message: 'Failed to save image in database',
-            code: ErrorCodes.DatabaseFailedStore,
-          });
-
-        return;
-      }
-    }
     res
-      .status(500)
+      .status(201)
       .send({
-        message: `Incompatible image format, send any of these: ${availableFormats.toString()}`,
-        code: ErrorCodes.IncompatibleImageFormat,
+        id: imageId,
       });
   } catch (error) {
     console.error({ error });
@@ -113,7 +56,16 @@ app.post('/', upload.single('image'), (async (req: Request, res: Response) => {
           .status(400)
           .send({
             message: 'Invalid filetype',
-            code: ErrorCodes.InvalidFileType,
+            code: ErrorCode.InvalidFileType,
+          });
+        return;
+      }
+      if (msg.startsWith('Incompatible image format')) {
+        res
+          .status(400)
+          .send({
+            message: msg,
+            code: ErrorCode.IncompatibleImageFormat,
           });
         return;
       }
