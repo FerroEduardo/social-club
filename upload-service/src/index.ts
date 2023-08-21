@@ -7,6 +7,7 @@ import multer from 'multer';
 import fs from 'fs';
 
 import ErrorCodes from './errorCodes';
+import ImageService from './service/imageService';
 
 dotenv.config();
 
@@ -42,10 +43,12 @@ app.post('/', upload.single('image'), (async (req: Request, res: Response) => {
     const { file } = req;
 
     if (!file) {
-      res.status(400).send({
-        message: 'Missing image',
-        code: ErrorCodes.MissingImage,
-      });
+      res
+        .status(400)
+        .send({
+          message: 'Missing image',
+          code: ErrorCodes.MissingImage,
+        });
       return;
     }
 
@@ -66,11 +69,29 @@ app.post('/', upload.single('image'), (async (req: Request, res: Response) => {
         preset: 'default',
         force: true,
       });
-      res.set('Content-Type', 'image/webp');
-      res.status(200).send(await imageSharp.toBuffer());
-      return;
+      const imageBuffer = await imageSharp.toBuffer();
+      try {
+        const imageId = await ImageService.saveImage(imageBuffer);
+        res
+          .status(201)
+          .send({
+            id: imageId,
+          });
+
+        return;
+      } catch (error) {
+        res
+          .status(500)
+          .send({
+            message: 'Failed to save image in database',
+            code: ErrorCodes.DatabaseFailedStore,
+          });
+
+        return;
+      }
     }
-    res.status(500)
+    res
+      .status(500)
       .send({
         message: `Incompatible image format, send any of these: ${availableFormats.toString()}`,
         code: ErrorCodes.IncompatibleImageFormat,
@@ -82,10 +103,12 @@ app.post('/', upload.single('image'), (async (req: Request, res: Response) => {
       const msg = String(error);
 
       if (msg === 'Error: Input buffer contains unsupported image format') {
-        res.status(400).send({
-          message: 'Invalid filetype',
-          code: ErrorCodes.InvalidFileType,
-        });
+        res
+          .status(400)
+          .send({
+            message: 'Invalid filetype',
+            code: ErrorCodes.InvalidFileType,
+          });
         return;
       }
     }
