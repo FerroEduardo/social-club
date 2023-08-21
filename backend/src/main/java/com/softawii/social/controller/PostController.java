@@ -1,5 +1,6 @@
 package com.softawii.social.controller;
 
+import com.softawii.social.exception.FailedToCreateImageException;
 import com.softawii.social.model.Game;
 import com.softawii.social.model.Image;
 import com.softawii.social.model.Post;
@@ -65,7 +66,7 @@ public class PostController {
     public ResponseEntity<?> create(
             OAuth2AuthenticationToken authentication,
             @Valid @ModelAttribute CreatePostDTO dto
-    ) throws IOException {
+    ) {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         User          user          = userService.findByEmail(userPrincipal.getEmail()).get();
 
@@ -76,9 +77,10 @@ public class PostController {
         Game  game = gameOptional.get();
         Image image;
         try {
-            byte[] imageBytes = dto.getImage().getBytes(); // throws IOException
+            byte[] imageBytes = dto.getImage().getBytes();
             image = imageService.create(imageBytes);
-        } catch (IOException e) {
+        } catch (IOException | FailedToCreateImageException e) {
+            e.printStackTrace();
             return ResponseEntity.internalServerError().body("Unable to save image");
         }
         Post post = postService.create(user, game, image, dto.getDescription());

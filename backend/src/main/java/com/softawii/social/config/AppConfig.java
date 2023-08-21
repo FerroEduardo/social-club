@@ -4,6 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.InvalidParameterException;
@@ -16,6 +20,8 @@ public class AppConfig {
     private Path uploadFolder;
 
     private UploadStorageType uploadStorageType;
+
+    private URI uploadServiceUrl;
 
     public boolean isProduction() {
         return isProduction;
@@ -46,5 +52,18 @@ public class AppConfig {
     @Autowired
     public void setUploadStorageType(@Value("${softawii.upload.storage}") String uploadStorageType) {
         this.uploadStorageType = UploadStorageType.valueOf(uploadStorageType);
+    }
+
+    public URI getUploadServiceUrl() {
+        return uploadServiceUrl;
+    }
+
+    @Autowired
+    public void setUploadServiceUrl(@Value("${softawii.upload-service.url}") String uploadServiceUrl) {
+        try {
+            this.uploadServiceUrl = new URL(uploadServiceUrl).toURI();
+        } catch (IllegalArgumentException | MalformedURLException | URISyntaxException e) {
+            throw new IllegalStateException("Invalid upload service url: '%s'".formatted(uploadServiceUrl), e);
+        }
     }
 }

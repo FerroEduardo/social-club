@@ -5,6 +5,8 @@ softawii:
     folder: ${SOFTAWII_UPLOAD_FOLDER}
   front:
     url: ${SOFTAWII_FRONT_URL:http://localhost:5173}
+  upload-service:
+    url: ${SOFTAWII_UPLOAD_SERVICE_URL:http://localhost:8031}
 
 logging:
   level:

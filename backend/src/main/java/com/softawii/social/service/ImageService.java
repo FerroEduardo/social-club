@@ -1,19 +1,29 @@
 package com.softawii.social.service;
 
 import com.softawii.social.config.AppConfig;
-import com.softawii.social.config.UploadStorageType;
+import com.softawii.social.exception.FailedToCreateImageException;
 import com.softawii.social.model.Image;
 import com.softawii.social.repository.ImageRepository;
 import com.softawii.social.util.FileUploadUtil;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.ResourceAccessException;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.nio.file.NoSuchFileException;
+import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 
 @Component
 public class ImageService {
@@ -40,20 +50,40 @@ public class ImageService {
         return repository.findAll(PageRequest.of(page, size));
     }
 
-    // TODO: COMPRESS IMAGE WITH ImageMagick
-    public Image create(byte[] blob) throws IOException {
-        Image image = new Image();
-        if (appConfig.getUploadStorageType().equals(UploadStorageType.DATABASE)) {
-            image.setBlob(blob);
-        } else if (appConfig.getUploadStorageType().equals(UploadStorageType.S3)) {
-//            image.setS3(s3);
-        } else if (appConfig.getUploadStorageType().equals(UploadStorageType.LOCAL)) {
-            String filename = UUID.randomUUID().toString();
-            fileUploadUtil.saveFile(filename, blob);
-            image.setLocal(filename);
-        }
+    public Image create(byte[] blob) throws FailedToCreateImageException {
+        RestTemplate restTemplate = new RestTemplate();
 
-        return repository.save(image);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+        MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
+
+        HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(map, headers);
+        ByteArrayResource contentsAsResource = new ByteArrayResource(blob) {
+            @Override
+            public String getFilename() {
+                return "image";
+            }
+        };
+        map.add("image", contentsAsResource);
+
+        try {
+            ResponseEntity<Map> responseEntity = restTemplate.postForEntity(appConfig.getUploadServiceUrl(), request, Map.class);
+            Map<String, Object> body           = responseEntity.getBody();
+
+            if (!body.containsKey("id")) {
+                throw new FailedToCreateImageException("Response does not have he image id");
+            }
+
+            Image image = new Image();
+            image.setId(Long.parseLong(body.get("id").toString()));
+            return image;
+        } catch (ResourceAccessException e) {
+            // critical/fatal
+            throw new FailedToCreateImageException(e);
+        } catch (RestClientException e) {
+            throw new FailedToCreateImageException(e);
+        }
     }
 
     public byte[] readImageFile(Image image) throws NoSuchFileException, IOException {
