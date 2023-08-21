@@ -17,6 +17,10 @@ if (isMemoryStorage) {
   multerStorage = multer.memoryStorage();
 } else {
   multerStorage = multer.diskStorage({
+    filename(req, file, cb) {
+      const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1E9)}`;
+      cb(null, `multer-${file.fieldname}-${uniqueSuffix}`);
+    },
     destination: process.env.MULTER_UPLOAD_FOLDER ?? '/tmp',
   });
 }
