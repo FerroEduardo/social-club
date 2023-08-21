@@ -11,13 +11,13 @@ import ImageService from './service/imageService';
 
 dotenv.config();
 
-const isMemoryStorage = process.env.UPLOAD_STORAGE_TYPE === 'MEMORY';
+const isMemoryStorage = process.env.MULTER_UPLOAD_STORAGE_TYPE === 'MEMORY';
 let multerStorage: multer.StorageEngine;
 if (isMemoryStorage) {
   multerStorage = multer.memoryStorage();
 } else {
   multerStorage = multer.diskStorage({
-    destination: process.env.UPLOAD_FOLDER ?? '/tmp',
+    destination: process.env.MULTER_UPLOAD_FOLDER ?? '/tmp',
   });
 }
 
@@ -29,10 +29,10 @@ const upload = multer({
   },
 });
 
-const availableFormats = (process.env.ALLOWED_EXTENSIONS ?? '').split(',');
+const availableFormats = (process.env.SHARP_ALLOWED_EXTENSIONS ?? '').split(',');
 
 const app: Express = express();
-const port: string = process.env.PORT ?? '8000';
+const port: string = process.env.SERVER_PORT ?? '8000';
 
 app.get('/', (req: Request, res: Response) => {
   res.send('Express + TypeScript Server');
