@@ -48,7 +48,7 @@ export default {
         });
     },
   },
-  mounted() {
+  beforeMount() {
     this.handleFirstLoad(this.checkIsAuthenticated);
   },
 };

@@ -18,10 +18,10 @@
         </button>
       </div>
       <div class="hidden lg:flex lg:gap-x-12">
-        <a v-for="menu in menus" :href="menu.link" :key="menu.label"
+        <router-link v-for="menu in menus" :to="menu.link" :key="menu.label"
           class="text-sm font-semibold leading-6 text-gray-900">
           {{ menu.label }}
-        </a>
+        </router-link>
       </div>
       <div class="hidden lg:flex lg:flex-1 lg:justify-end">
         <router-link v-if="!userStore.isAuthenticated" to="/login" href="#"
@@ -53,21 +53,21 @@
         <div class="mt-6 flow-root">
           <div class="-my-6 divide-y divide-gray-500/10">
             <div class="space-y-2 py-6">
-              <a v-for="menu in menus" :href="menu.link" :key="menu.label"
+              <router-link v-for="menu in menus" :to="menu.link" :key="menu.label"
                 class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
                 {{ menu.label }}
-              </a>
+              </router-link>
             </div>
             <div class="py-6">
               <router-link v-if="!userStore.isAuthenticated" to="/login"
                 class="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
                 Log in
               </router-link>
-              <a v-else href="#"
+              <div v-else href="#"
                 class="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                 @click="logout">
                 Log out
-              </a>
+              </div>
             </div>
           </div>
         </div>
@@ -90,20 +90,8 @@ export default {
       companyImageUrl: 'https://avatars.githubusercontent.com/u/92893192?s=200&v=4',
       menus: [
         {
-          label: 'Product',
-          link: '#',
-        },
-        {
-          label: 'Features',
-          link: '#',
-        },
-        {
-          label: 'Marketplace',
-          link: '#',
-        },
-        {
-          label: 'Company',
-          link: '#',
+          label: 'Timeline',
+          link: '/timeline',
         },
       ],
     };
