@@ -1,28 +1,25 @@
-import { createRouter, createWebHashHistory } from 'vue-router';
-import Homepage from '../views/Homepage.vue';
-import Login from '../views/Login.vue';
-import Timeline from '../views/Timeline.vue';
+import { createRouter, createWebHistory } from 'vue-router';
 
 const routes = [
   {
     name: 'homepage',
     path: '/',
-    component: Homepage,
+    component: () => import('../views/Homepage.vue'),
   },
   {
     name: 'login',
     path: '/login',
-    component: Login,
+    component: () => import('../views/Login.vue'),
   },
   {
     name: 'timeline',
     path: '/timeline',
-    component: Timeline,
+    component: () => import('../views/Timeline.vue'),
   },
 ];
 
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHistory(),
   routes,
 });
 
