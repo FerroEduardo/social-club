@@ -16,6 +16,11 @@ const routes = [
     path: '/timeline',
     component: () => import('../views/Timeline.vue'),
   },
+  {
+    name: 'create-post',
+    path: '/post',
+    component: () => import('../views/CreatePost.vue'),
+  },
 ];
 
 const router = createRouter({

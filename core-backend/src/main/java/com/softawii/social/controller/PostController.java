@@ -22,6 +22,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -72,7 +73,7 @@ public class PostController {
 
         Optional<Game> gameOptional = gameService.findById(dto.getGameId());
         if (gameOptional.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Game not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", "Game not found"));
         }
         Game  game = gameOptional.get();
         Image image;
@@ -81,10 +82,10 @@ public class PostController {
             image = imageService.create(imageBytes);
         } catch (IOException | FailedToCreateImageException e) {
             e.printStackTrace();
-            return ResponseEntity.internalServerError().body("Unable to save image");
+            return ResponseEntity.internalServerError().body(Map.of("message", "Unable to save image"));
         }
         Post post = postService.create(user, game, image, dto.getDescription());
 
-        return ResponseEntity.ok(post);
+        return ResponseEntity.ok(Map.of("id", post.getId()));
     }
 }

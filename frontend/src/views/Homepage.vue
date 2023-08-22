@@ -1,7 +1,5 @@
 <template>
   <div class="bg-white">
-    <PageHeader />
-
     <div class="relative isolate px-6 pt-14 lg:px-8">
       <div class="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80" aria-hidden="true">
         <div
@@ -25,6 +23,10 @@
             </router-link>
             <router-link to="/timeline" class="text-sm font-semibold leading-6 text-gray-900">
               Explorar imagens
+            </router-link>
+            <router-link v-if="userStore.isAuthenticated" to="/post"
+              class="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+              Fazer postagem
             </router-link>
           </div>
         </div>

@@ -1,13 +1,18 @@
 <template>
+  <PageHeader />
   <router-view></router-view>
 </template>
 
 <script>
 import axios from 'axios';
 
+import PageHeader from './components/PageHeader.vue';
 import { useUserStore } from './store/userStore';
 
 export default {
+  components: {
+    PageHeader,
+  },
   setup() {
     return {
       userStore: useUserStore(),

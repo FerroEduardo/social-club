@@ -1,5 +1,4 @@
 <template>
-  <PageHeader />
   <div class="bg-white py-24 sm:py-32" @scroll="onScroll">
     <div class="mx-auto max-w-7xl px-6 lg:px-8">
       <div class="mx-auto max-w-2xl lg:mx-0">
@@ -20,12 +19,10 @@
 
 <script>
 import axios from 'axios';
-import PageHeader from '../components/PageHeader.vue';
 import Post from '../components/timeline/Post.vue';
 
 export default {
   components: {
-    PageHeader,
     Post,
   },
   data() {
