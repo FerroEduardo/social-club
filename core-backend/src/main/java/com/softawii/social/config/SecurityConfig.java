@@ -1,5 +1,6 @@
 package com.softawii.social.config;
 
+import com.softawii.social.exception.GithubOAuth2MissingEmailException;
 import com.softawii.social.service.OAuth2UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,7 +43,7 @@ public class SecurityConfig {
                         .loginPage("/")
                 )
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/", "/favicon.ico", "/logout/success").permitAll()
+                        .requestMatchers("/", "/favicon.ico", "/logout/success", "/login/failed").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(login -> login
@@ -56,6 +57,13 @@ public class SecurityConfig {
                                 .userService(oAuth2UserService)
                         )
                         .defaultSuccessUrl("/login/success", true)
+                        .failureHandler((request, response, exception) -> {
+                            if (exception instanceof GithubOAuth2MissingEmailException) {
+                                response.sendRedirect("/login/failed?reason=github-public-email-disabled");
+                                return;
+                            }
+                            response.sendError(HttpServletResponse.SC_FORBIDDEN);
+                        })
                 )
                 .logout(configurer -> configurer
                         .logoutUrl("/logout")

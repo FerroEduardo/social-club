@@ -5,14 +5,17 @@ import Timeline from '../views/Timeline.vue';
 
 const routes = [
   {
+    name: 'homepage',
     path: '/',
     component: Homepage,
   },
   {
+    name: 'login',
     path: '/login',
     component: Login,
   },
   {
+    name: 'timeline',
     path: '/timeline',
     component: Timeline,
   },

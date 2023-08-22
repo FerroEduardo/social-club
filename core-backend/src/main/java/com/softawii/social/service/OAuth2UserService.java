@@ -1,5 +1,6 @@
 package com.softawii.social.service;
 
+import com.softawii.social.exception.GithubOAuth2MissingEmailException;
 import com.softawii.social.exception.OAuth2AuthenticationProcessingException;
 import com.softawii.social.model.User;
 import com.softawii.social.repository.UserRepository;
@@ -44,6 +45,9 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         String         platform       = oAuth2UserRequest.getClientRegistration().getRegistrationId();
         OAuth2UserInfo oAuth2UserInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(platform, oAuth2User.getAttributes());
         if (!StringUtils.hasLength(oAuth2UserInfo.getEmail())) {
+            if (platform.equals("github")) {
+                throw new GithubOAuth2MissingEmailException("Public email is not enabled");
+            }
             throw new OAuth2AuthenticationProcessingException("Email not found from OAuth2 provider");
         }
 
