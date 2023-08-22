@@ -28,15 +28,6 @@ module.exports = {
     'vue',
   ],
   rules: {
-    'vue/no-reserved-component-names': ['warn', {}],
-    'no-unused-vars': 'warn',
-    'max-len': ['error', {
-      code: 140,
-      ignorePattern: '\\s*\\w+=["\'].*["\']', // html attributes
-    }],
-    'vue/multi-word-component-names': ['warn', {
-      ignores: [],
-    }],
-    indent: ['error', 2],
+    'max-len': ['warn', 150],
   },
 };

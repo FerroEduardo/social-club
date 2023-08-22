@@ -24,10 +24,11 @@
         </a>
       </div>
       <div class="hidden lg:flex lg:flex-1 lg:justify-end">
-        <router-link to="/login" href="#" class="text-sm font-semibold leading-6 text-gray-900">Fazer login</router-link>
-      </div>
-      <div class="hidden lg:flex lg:flex-1 lg:justify-end">
-        <a href="#" class="text-sm font-semibold leading-6 text-gray-900" @click="logout">Log out</a>
+        <router-link v-if="!userStore.isAuthenticated" to="/login" href="#"
+          class="text-sm font-semibold leading-6 text-gray-900">
+          Fazer login
+        </router-link>
+        <a v-else href="#" class="text-sm font-semibold leading-6 text-gray-900" @click="logout">Log out</a>
       </div>
     </nav>
     <!-- Mobile menu, show/hide based on menu open state. -->
@@ -58,15 +59,13 @@
               </a>
             </div>
             <div class="py-6">
-              <router-link to="/login"
+              <router-link v-if="!userStore.isAuthenticated" to="/login"
                 class="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
                 Log in
               </router-link>
-              <a
-                href="#"
+              <a v-else href="#"
                 class="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                @click="logout"
-              >
+                @click="logout">
                 Log out
               </a>
             </div>
@@ -78,6 +77,8 @@
 </template>
 
 <script>
+import { useUserStore } from '../store/userStore';
+
 const API_URL = import.meta.env.VITE_API_URL;
 
 export default {
@@ -85,6 +86,7 @@ export default {
   },
   setup() {
     return {
+      userStore: useUserStore(),
       companyImageUrl: 'https://avatars.githubusercontent.com/u/92893192?s=200&v=4',
       menus: [
         {
