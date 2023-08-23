@@ -12,11 +12,11 @@
 </template>
 
 <script lang="ts">
-import { darkTheme, NConfigProvider, NLayout, NLayoutHeader, NLayoutContent } from 'naive-ui'
-import axios from 'axios'
+import { darkTheme, NConfigProvider, NLayout, NLayoutHeader, NLayoutContent } from 'naive-ui';
+import axios from 'axios';
 
-import Header from '@/components/Header.vue'
-import { useUserStore } from '@/stores/userStore'
+import Header from '@/components/Header.vue';
+import { useUserStore } from '@/stores/userStore';
 
 export default {
   components: {
@@ -27,54 +27,54 @@ export default {
     NLayoutContent
   },
   setup() {
-    const theme = darkTheme
-    document.querySelector('body').style.backgroundColor = theme.common.bodyColor
+    const theme = darkTheme;
+    document.querySelector('body').style.backgroundColor = theme.common.bodyColor;
 
     return {
       theme,
       userStore: useUserStore()
-    }
+    };
   },
   methods: {
     handleFirstLoad(callback: Function) {
-      const isFirstLoad = this.$route.name === undefined
+      const isFirstLoad = this.$route.name === undefined;
       if (isFirstLoad) {
-        const urlParams = new URLSearchParams(window.location.search)
-        const login = urlParams.get('login')
-        const reason = urlParams.get('reason')
+        const urlParams = new URLSearchParams(window.location.search);
+        const login = urlParams.get('login');
+        const reason = urlParams.get('reason');
 
         if (login === 'failed') {
-          this.$router.replace(`/login?reason=${reason}`)
-          return
+          this.$router.replace(`/login?reason=${reason}`);
+          return;
         }
       }
-      callback()
+      callback();
     },
     checkIsAuthenticated() {
       axios
         .get('/ping')
         .then((response) => {
           if (response.status === 200) {
-            this.userStore.setAuthenticated(true)
-            console.log('authenticated')
+            this.userStore.setAuthenticated(true);
+            console.log('authenticated');
           } else {
-            console.error('failed to check if user is authenticated', { response })
+            console.error('failed to check if user is authenticated', { response });
           }
         })
         .catch((reason) => {
           if (reason?.response?.status === 401) {
-            this.userStore.setAuthenticated(false)
-            console.log('unauthenticated')
+            this.userStore.setAuthenticated(false);
+            console.log('unauthenticated');
           } else {
-            console.error('failed to check if user is authenticated', { reason })
+            console.error('failed to check if user is authenticated', { reason });
           }
-        })
+        });
     }
   },
   beforeMount() {
-    this.handleFirstLoad(this.checkIsAuthenticated)
+    this.handleFirstLoad(this.checkIsAuthenticated);
   }
-}
+};
 </script>
 
 <style scoped></style>

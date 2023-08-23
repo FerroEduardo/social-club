@@ -49,8 +49,8 @@
 </template>
 
 <script lang="ts">
-import { NCard, NButton, NIcon } from 'naive-ui'
-const API_URL = import.meta.env.VITE_API_URL
+import { NCard, NButton, NIcon } from 'naive-ui';
+const API_URL = import.meta.env.VITE_API_URL;
 
 export default {
   components: {
@@ -60,10 +60,10 @@ export default {
   },
   methods: {
     loginOauth(platform: string) {
-      window.location.href = `${API_URL}/oauth2/authorize/${platform}`
+      window.location.href = `${API_URL}/oauth2/authorize/${platform}`;
     }
   }
-}
+};
 </script>
 
 <style lang=""></style>

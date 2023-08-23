@@ -25,10 +25,10 @@
   </header>
 </template>
 <script lang="ts">
-import { NButton, NA } from 'naive-ui'
+import { NButton, NA } from 'naive-ui';
 
-import { useUserStore } from '@/stores/userStore'
-const API_URL = import.meta.env.VITE_API_URL
+import { useUserStore } from '@/stores/userStore';
+const API_URL = import.meta.env.VITE_API_URL;
 
 export default {
   components: {
@@ -52,14 +52,14 @@ export default {
           to: '/post'
         }
       ]
-    }
+    };
   },
   methods: {
     logout() {
-      window.location.href = `${API_URL}/logout`
+      window.location.href = `${API_URL}/logout`;
     }
   }
-}
+};
 </script>
 <style scoped>
 #header-container {

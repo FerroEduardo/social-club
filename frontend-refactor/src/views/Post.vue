@@ -61,8 +61,8 @@ import {
   NUploadDragger,
   NInput,
   NText
-} from 'naive-ui'
-import { ref, computed } from 'vue'
+} from 'naive-ui';
+import { ref, computed } from 'vue';
 
 export default {
   components: {
@@ -78,11 +78,11 @@ export default {
     NText
   },
   setup() {
-    const gameInputRef = ref('')
+    const gameInputRef = ref('');
     return {
       gameInput: gameInputRef,
       gameOptions: computed(() => {
-        return [gameInputRef.value, gameInputRef.value + '1', gameInputRef.value + '2']
+        return [gameInputRef.value, gameInputRef.value + '1', gameInputRef.value + '2'];
       }),
       model: ref({
         title: null,
@@ -103,8 +103,8 @@ export default {
         sliderValue: 0,
         transferValue: null
       })
-    }
+    };
   }
-}
+};
 </script>
 <style lang=""></style>

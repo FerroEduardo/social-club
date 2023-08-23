@@ -41,11 +41,11 @@
 </template>
 
 <script lang="ts">
-import { NList, NListItem, NThing, NCard, NButton, NButtonGroup, NPopover } from 'naive-ui'
-import axios from 'axios'
+import { NList, NListItem, NThing, NCard, NButton, NButtonGroup, NPopover } from 'naive-ui';
+import axios from 'axios';
 
-import type Post from '@/interface/post'
-import type FetchPosts from '@/interface/fetchPosts'
+import type Post from '@/interface/post';
+import type FetchPosts from '@/interface/fetchPosts';
 
 export default {
   components: {
@@ -64,22 +64,22 @@ export default {
       pageSize: 5,
       isLoadingData: false,
       isLast: false
-    }
+    };
   },
   methods: {
     getPostPage() {
-      if (this.isLoadingData || this.isLast) return
+      if (this.isLoadingData || this.isLast) return;
       // eslint-disable-next-line no-plusplus
-      const page = this.page++
-      const size = this.pageSize
-      this.isLoadingData = true
+      const page = this.page++;
+      const size = this.pageSize;
+      this.isLoadingData = true;
 
       axios
         .get<FetchPosts>(`/post?page=${page}&size=${size}`, {
           withCredentials: true
         })
         .then((request) => {
-          this.isLast = request.data.last
+          this.isLast = request.data.last;
           this.posts.push(
             ...request.data.content.map((post) => {
               return {
@@ -100,40 +100,40 @@ export default {
                   imageUrl:
                     'https://avatars.cloudflare.steamstatic.com/b69c069ae57724cc0bdbcf4eff87d4bb4feb3def_full.jpg' // post.authorImageUrl
                 }
-              }
+              };
             })
-          )
+          );
         })
         .catch((reason) => {
-          this.$router.push('/')
+          this.$router.push('/');
         })
         .finally(() => {
-          this.isLoadingData = false
-        })
+          this.isLoadingData = false;
+        });
     },
     setupInfiniteScroll() {
       const observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
-              this.getPostPage()
+              this.getPostPage();
             }
-          })
+          });
         },
         {
           root: null,
           rootMargin: '20px',
           threshold: 0
         }
-      )
-      observer.observe(this.$refs.postContainer)
+      );
+      observer.observe(this.$refs.postContainer);
     }
   },
   mounted() {
-    this.getPostPage()
-    this.setupInfiniteScroll()
+    this.getPostPage();
+    this.setupInfiniteScroll();
   }
-}
+};
 </script>
 
 <style scoped>
