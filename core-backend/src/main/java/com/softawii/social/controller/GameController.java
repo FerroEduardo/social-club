@@ -28,7 +28,8 @@ public class GameController {
     @GetMapping
     public Iterable<Game> index(@Valid IndexGameDTO dto) {
         if (dto.isPaginated()) {
-            return this.service.findAll(dto.getPage().intValue(), dto.getSize().intValue());
+            if (dto.getName() == null) return this.service.findAll(dto.getPage().intValue(), dto.getSize().intValue());
+            else return this.service.findAll(dto.getPage().intValue(), dto.getSize().intValue(), dto.getName());
         }
 
         return this.service.findAll();

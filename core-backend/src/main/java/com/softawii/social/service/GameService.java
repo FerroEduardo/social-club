@@ -31,6 +31,10 @@ public class GameService {
         return repository.findAll(PageRequest.of(page, size));
     }
 
+    public Page<Game> findAll(int page, int size, String name) {
+        return repository.findByNameContainingIgnoreCase(name, PageRequest.of(page, size));
+    }
+
     public Game save(String name, String studio) {
         return repository.save(new Game(name, studio));
     }

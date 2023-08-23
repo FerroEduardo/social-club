@@ -45,7 +45,7 @@ import { NList, NListItem, NThing, NCard, NButton, NButtonGroup, NPopover } from
 import axios from 'axios';
 
 import type Post from '@/interface/post';
-import type FetchPosts from '@/interface/fetchPosts';
+import type IndexPostsRequest from '@/interface/indexPostsRequest';
 
 export default {
   components: {
@@ -75,7 +75,7 @@ export default {
       this.isLoadingData = true;
 
       axios
-        .get<FetchPosts>(`/post?page=${page}&size=${size}`, {
+        .get<IndexPostsRequest>(`/post?page=${page}&size=${size}`, {
           withCredentials: true
         })
         .then((request) => {
@@ -148,3 +148,4 @@ export default {
   max-width: 800px;
 }
 </style>
+@/interface/indexPostsRequest

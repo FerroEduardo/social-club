@@ -1,6 +1,7 @@
 package com.softawii.social.model.dto.request.game;
 
 import jakarta.validation.constraints.AssertTrue;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 
@@ -12,14 +13,15 @@ public class IndexGameDTO {
     @Positive(message = "\"size\" must be at least 1")
     private Long size;
 
+    private String name;
+
     public IndexGameDTO() {
     }
 
     @AssertTrue(message = "Fields must be null or totally filled")
     private boolean isValid() {
-        return !(page != null ^ size != null);
+        return !(page != null ^ size != null) && (name == null || !name.isBlank());
     }
-
 
     public Long getPage() {
         return page;
@@ -39,5 +41,13 @@ public class IndexGameDTO {
 
     public boolean isPaginated() {
         return page != null && size != null;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }
