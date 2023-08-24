@@ -84,7 +84,8 @@ import {
 import { ref, computed, type Ref } from 'vue';
 import axios from 'axios';
 
-import type { FetchGame, GamesRequest } from '@/interface/indexGamesRequest';
+import type IndexGameResponse from '@/interface/response/indexGameResponse';
+import type Game from '@/interface/game';
 
 export default {
   components: {
@@ -166,9 +167,9 @@ export default {
         this.imageFileUrl = URL.createObjectURL(this.model.image);
       }
     },
-    async fetchGames(name: string): Promise<FetchGame[]> {
+    async fetchGames(name: string): Promise<Game[]> {
       try {
-        const response = await axios.get<GamesRequest>(`/game?page=0&size=10&name=${name}`);
+        const response = await axios.get<IndexGameResponse>(`/game?page=0&size=10&name=${name}`);
         return response.data.content;
       } catch (error) {
         console.error({ error });

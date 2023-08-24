@@ -1,6 +1,6 @@
-import type Page from './page';
+import type Page from '../page';
 
-interface FetchPost {
+interface Post {
   id: number;
   description: string;
   reputation: number;
@@ -15,4 +15,4 @@ interface FetchPost {
   imageUrl: string;
 }
 
-export default interface PostsRequest extends Page<FetchPost> {}
+export default interface IndexPostRequest extends Page<Post> {}

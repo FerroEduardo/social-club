@@ -45,7 +45,7 @@ import { NList, NListItem, NThing, NCard, NButton, NButtonGroup, NPopover } from
 import axios from 'axios';
 
 import type Post from '@/interface/post';
-import type IndexPostsRequest from '@/interface/indexPostsRequest';
+import type IndexPostRequest from '@/interface/response/indexPostRequest';
 
 export default {
   components: {
@@ -75,7 +75,7 @@ export default {
       this.isLoadingData = true;
 
       axios
-        .get<IndexPostsRequest>(`/post?page=${page}&size=${size}`, {
+        .get<IndexPostRequest>(`/post?page=${page}&size=${size}`, {
           withCredentials: true
         })
         .then((request) => {
@@ -126,7 +126,7 @@ export default {
           threshold: 0
         }
       );
-      observer.observe(this.$refs.postContainer);
+      observer.observe(this.$refs.postContainer as Element);
     }
   },
   mounted() {

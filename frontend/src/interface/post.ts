@@ -1,15 +1,12 @@
+import type Game from './game';
+
 export default interface Post {
   id: number;
   title: string;
   description: string;
   reputation: number;
   imageUrl: string;
-  game: {
-    id: number;
-    name: string;
-    studio: string;
-    imageUrl: string;
-  };
+  game: Game;
   author: {
     id: number;
     name: string;
