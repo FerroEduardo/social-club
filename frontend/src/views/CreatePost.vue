@@ -54,7 +54,15 @@
           </n-form-item-gi>
           <n-grid-item :span="24">
             <div style="display: flex; justify-content: flex-end">
-              <n-button round type="primary" @click.prevent="submit"> Enviar </n-button>
+              <n-button
+                round
+                type="primary"
+                @click.prevent="submit"
+                :disabled="isRequestRunning"
+                :loading="isRequestRunning"
+              >
+                Enviar
+              </n-button>
             </div>
           </n-grid-item>
         </n-grid>
@@ -85,6 +93,7 @@ import { ref, computed, type Ref } from 'vue';
 import axios from 'axios';
 
 import type IndexGameResponse from '@/interface/response/indexGameResponse';
+import type CreatePostResponse from '@/interface/response/createPostResponse';
 import type Game from '@/interface/game';
 
 export default {
@@ -106,14 +115,15 @@ export default {
     const formRef = ref<FormInst | null>(null);
     const gameInputRef = ref(null) as Ref<string | null>;
     const imageInputRef = ref(null) as Ref<File | null>;
-    const gameList = ref([]) as Ref<AutoCompleteOption[]>;
+    const gameListRef = ref([]) as Ref<AutoCompleteOption[]>;
     const selectedGameIdRef = ref(null) as Ref<string | null>;
 
     return {
       formRef,
+      imageInput: imageInputRef,
       selectedGameId: selectedGameIdRef,
       gameOptions: computed(() => {
-        return gameList.value;
+        return gameListRef.value;
       }),
       model: ref({
         title: null,
@@ -123,7 +133,7 @@ export default {
       }),
       fileList: ref<UploadFileInfo[]>([]),
       imageFileUrl: ref(),
-      gameList,
+      gameListRef,
       rules: {
         title: {
           required: true,
@@ -150,21 +160,24 @@ export default {
           validator(rule: FormItemRule, value: string) {
             const id = selectedGameIdRef.value ?? null;
 
-            const game = gameList.value.filter((game) => {
+            const game = gameListRef.value.filter((game) => {
               return game?.label === value;
             })[0];
 
             return Boolean(id != null && game);
           }
         }
-      }
+      },
+      isRequestRunning: ref(false)
     };
   },
   methods: {
     handleChange(data: { fileList: UploadFileInfo[] }) {
       if (data.fileList[0]?.file && data.fileList[0].file.type.startsWith('image')) {
-        this.model.image = data.fileList[0].file;
-        this.imageFileUrl = URL.createObjectURL(this.model.image);
+        const image = data.fileList[0].file;
+
+        this.imageInput = image;
+        this.imageFileUrl = URL.createObjectURL(image);
       }
     },
     async fetchGames(name: string): Promise<Game[]> {
@@ -179,11 +192,11 @@ export default {
     },
     async handleGameInput(text: string) {
       if (text.trim().length !== 0) {
-        this.gameList = [];
+        this.gameListRef = [];
 
         const games = await this.fetchGames(text.trim());
 
-        this.gameList = games.map((game) => {
+        this.gameListRef = games.map((game) => {
           return {
             label: `${game.name}`,
             value: game.id.toString()
@@ -196,38 +209,45 @@ export default {
     },
     async validateForm() {
       if (this.formRef) {
-        this.formRef.validate((errors) => {
-          if (!errors) {
-            console.log('Valid');
-          } else {
-            console.log('Invalid', errors);
+        await this.formRef.validate((errors) => {
+          if (errors) {
+            Promise.reject();
           }
         });
       }
     },
     async submit() {
-      await this.validateForm();
-      console.log({ model: this.model });
+      try {
+        await this.validateForm();
+      } catch (error) {
+        return;
+      }
+
+      this.isRequestRunning = true;
 
       const form = new FormData();
       form.append('image', this.model.image!);
       form.append('gameId', this.selectedGameId!);
+      form.append('title', this.model.title!);
       form.append('description', this.model.description!);
-      console.log({ form });
 
       axios
-        .post('/post', form)
+        .post<CreatePostResponse>('/post', form)
         .then((response) => {
           if (response.status === 200) {
             // redirect to post
           }
-          console.log({ response });
+          // failed to create post ?
         })
         .catch((reason) => {
+          // failed to create post
           console.log({ reason });
+        })
+        .finally(() => {
+          this.isRequestRunning = false;
         });
     }
   }
 };
 </script>
-<style lang=""></style>
+<style></style>
