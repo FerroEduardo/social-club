@@ -1,7 +1,7 @@
 package com.softawii.social.repository;
 
 import com.softawii.social.model.Post;
-import com.softawii.social.model.dto.PostDTO;
+import com.softawii.social.model.dto.request.post.PostDTO;
 import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -5,9 +5,9 @@ import com.softawii.social.model.Game;
 import com.softawii.social.model.Image;
 import com.softawii.social.model.Post;
 import com.softawii.social.model.User;
-import com.softawii.social.model.dto.PostDTO;
 import com.softawii.social.model.dto.request.post.CreatePostDTO;
 import com.softawii.social.model.dto.request.post.IndexPostDTO;
+import com.softawii.social.model.dto.request.post.PostDTO;
 import com.softawii.social.security.UserPrincipal;
 import com.softawii.social.service.GameService;
 import com.softawii.social.service.ImageService;
@@ -87,5 +87,16 @@ public class PostController {
         Post post = postService.create(user, game, image, dto.getDescription());
 
         return ResponseEntity.ok(Map.of("id", post.getId()));
+    }
+
+    @PostMapping("{id}/like")
+    public ResponseEntity<?> vote(@PathVariable Long id) {
+        try {
+            PostDTO post = this.postService.findById(id).orElseThrow();
+
+            return ResponseEntity.ok(post);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 }

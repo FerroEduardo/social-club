@@ -4,7 +4,7 @@ import com.softawii.social.model.Game;
 import com.softawii.social.model.Image;
 import com.softawii.social.model.Post;
 import com.softawii.social.model.User;
-import com.softawii.social.model.dto.PostDTO;
+import com.softawii.social.model.dto.request.post.PostDTO;
 import com.softawii.social.repository.PostRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
