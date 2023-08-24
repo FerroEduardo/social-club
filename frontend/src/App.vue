@@ -1,25 +1,42 @@
 <template>
-  <PageHeader />
-  <router-view></router-view>
+  <n-config-provider :theme="theme">
+    <n-layout>
+      <n-layout-header bordered>
+        <Header />
+      </n-layout-header>
+      <n-layout-content bordered>
+        <router-view />
+      </n-layout-content>
+    </n-layout>
+  </n-config-provider>
 </template>
 
-<script>
+<script lang="ts">
+import { darkTheme, NConfigProvider, NLayout, NLayoutHeader, NLayoutContent } from 'naive-ui';
 import axios from 'axios';
 
-import PageHeader from './components/PageHeader.vue';
-import { useUserStore } from './store/userStore';
+import Header from '@/components/Header.vue';
+import { useUserStore } from '@/stores/userStore';
 
 export default {
   components: {
-    PageHeader,
+    NConfigProvider,
+    Header,
+    NLayout,
+    NLayoutHeader,
+    NLayoutContent
   },
   setup() {
+    const theme = darkTheme;
+    document.querySelector('body').style.backgroundColor = theme.common.bodyColor;
+
     return {
-      userStore: useUserStore(),
+      theme,
+      userStore: useUserStore()
     };
   },
   methods: {
-    handleFirstLoad(callback) {
+    handleFirstLoad(callback: Function) {
       const isFirstLoad = this.$route.name === undefined;
       if (isFirstLoad) {
         const urlParams = new URLSearchParams(window.location.search);
@@ -34,7 +51,8 @@ export default {
       callback();
     },
     checkIsAuthenticated() {
-      axios.get('/ping')
+      axios
+        .get('/ping')
         .then((response) => {
           if (response.status === 200) {
             this.userStore.setAuthenticated(true);
@@ -51,13 +69,12 @@ export default {
             console.error('failed to check if user is authenticated', { reason });
           }
         });
-    },
+    }
   },
   beforeMount() {
     this.handleFirstLoad(this.checkIsAuthenticated);
-  },
+  }
 };
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

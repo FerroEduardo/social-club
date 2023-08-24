@@ -1,37 +1,69 @@
 <template>
-  <div class="bg-white py-24 sm:py-32" @scroll="onScroll">
-    <div class="mx-auto max-w-7xl px-6 lg:px-8">
-      <div class="mx-auto max-w-2xl lg:mx-0">
-        <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-          Lorem ipsum dolor
-        </h2>
-        <p class="mt-2 text-lg leading-8 text-gray-600">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit
-        </p>
-      </div>
-      <div class="mx-auto max-w-2xl gap-x-8 pt-10 lg:max-w-none">
-        <Post v-for="post in posts" v-bind="post" :key="post.id" />
-        <div ref="postContainer"></div>
-      </div>
-    </div>
-  </div>
+  <n-card id="container">
+    <n-list>
+      <n-list-item v-for="post in posts" :key="post.id">
+        <n-thing :title="post.title" :description="post.description">
+          <template #header-extra>
+            <n-button-group>
+              <n-button size="small" type="success"> ⬆️ </n-button>
+              <n-button size="small" type="info">
+                {{ post.reputation }}
+              </n-button>
+              <n-button size="small" type="error"> ⬇️ </n-button>
+            </n-button-group>
+          </template>
+          <img loading="lazy" :src="post.imageUrl" class="post-image" />
+          <div style="display: flex; flex-direction: row">
+            <n-popover trigger="hover" raw :show-arrow="false">
+              <template #trigger>
+                <div style="margin-right: auto">
+                  {{ post.author.name }}
+                </div>
+              </template>
+              <div>
+                <img loading="lazy" :src="post.author.imageUrl" />
+              </div>
+            </n-popover>
+            <n-popover trigger="hover" raw :show-arrow="false">
+              <template #trigger>
+                <div style="margin-left: auto">{{ post.game.name }} - {{ post.game.studio }}</div>
+              </template>
+              <div>
+                <img loading="lazy" :src="post.game.imageUrl" />
+              </div>
+            </n-popover>
+          </div>
+        </n-thing>
+      </n-list-item>
+      <div ref="postContainer"></div>
+    </n-list>
+  </n-card>
 </template>
 
-<script>
+<script lang="ts">
+import { NList, NListItem, NThing, NCard, NButton, NButtonGroup, NPopover } from 'naive-ui';
 import axios from 'axios';
-import Post from '../components/timeline/Post.vue';
+
+import type Post from '@/interface/post';
+import type IndexPostsRequest from '@/interface/indexPostsRequest';
 
 export default {
   components: {
-    Post,
+    NList,
+    NListItem,
+    NThing,
+    NCard,
+    NButton,
+    NButtonGroup,
+    NPopover
   },
   data() {
     return {
-      posts: [],
+      posts: [] as Post[],
       page: 0,
       pageSize: 5,
       isLoadingData: false,
-      isLast: false,
+      isLast: false
     };
   },
   methods: {
@@ -42,41 +74,78 @@ export default {
       const size = this.pageSize;
       this.isLoadingData = true;
 
-      axios.get(`/post?page=${page}&size=${size}`, {
-        withCredentials: true,
-      })
+      axios
+        .get<IndexPostsRequest>(`/post?page=${page}&size=${size}`, {
+          withCredentials: true
+        })
         .then((request) => {
           this.isLast = request.data.last;
-          this.posts.push(...request.data.content);
+          this.posts.push(
+            ...request.data.content.map((post) => {
+              return {
+                id: post.id,
+                title: 'Lorem ipsum dolor sit amet',
+                description: post.description,
+                reputation: post.reputation,
+                imageUrl: post.imageUrl,
+                game: {
+                  id: post.gameId,
+                  name: post.gameName,
+                  studio: post.gameStudio,
+                  imageUrl: 'https://cdn.cloudflare.steamstatic.com/steam/apps/730/header.jpg'
+                },
+                author: {
+                  id: post.authorId,
+                  name: post.authorName,
+                  imageUrl:
+                    'https://avatars.cloudflare.steamstatic.com/b69c069ae57724cc0bdbcf4eff87d4bb4feb3def_full.jpg' // post.authorImageUrl
+                }
+              };
+            })
+          );
         })
         .catch((reason) => {
           this.$router.push('/');
-        }).finally(() => {
+        })
+        .finally(() => {
           this.isLoadingData = false;
         });
     },
     setupInfiniteScroll() {
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            this.getPostPage();
-          }
-        });
-      }, {
-        root: null,
-        rootMargin: '20px',
-        threshold: 0,
-      });
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              this.getPostPage();
+            }
+          });
+        },
+        {
+          root: null,
+          rootMargin: '20px',
+          threshold: 0
+        }
+      );
       observer.observe(this.$refs.postContainer);
-    },
+    }
   },
   mounted() {
     this.getPostPage();
     this.setupInfiniteScroll();
-  },
+  }
 };
 </script>
 
-<style>
+<style scoped>
+#container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
+.post-image {
+  width: 100%;
+  max-width: 800px;
+}
 </style>
+@/interface/indexPostsRequest
