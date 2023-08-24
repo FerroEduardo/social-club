@@ -22,6 +22,12 @@ const router = createRouter({
       path: '/post',
       name: 'post',
       component: () => import('../views/CreatePost.vue')
+    },
+    {
+      path: '/post/:postId',
+      name: 'show-post',
+      component: () => import('../views/ShowPost.vue'),
+      props: true
     }
   ]
 });

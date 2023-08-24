@@ -2,38 +2,7 @@
   <n-card id="container">
     <n-list>
       <n-list-item v-for="post in posts" :key="post.id">
-        <n-thing :title="post.title" :description="post.description">
-          <template #header-extra>
-            <n-button-group>
-              <n-button size="small" type="success"> ⬆️ </n-button>
-              <n-button size="small" type="info">
-                {{ post.reputation }}
-              </n-button>
-              <n-button size="small" type="error"> ⬇️ </n-button>
-            </n-button-group>
-          </template>
-          <img loading="lazy" :src="post.imageUrl" class="post-image" />
-          <div style="display: flex; flex-direction: row">
-            <n-popover trigger="hover" raw :show-arrow="false">
-              <template #trigger>
-                <div style="margin-right: auto">
-                  {{ post.author.name }}
-                </div>
-              </template>
-              <div>
-                <img loading="lazy" :src="post.author.imageUrl" />
-              </div>
-            </n-popover>
-            <n-popover trigger="hover" raw :show-arrow="false">
-              <template #trigger>
-                <div style="margin-left: auto">{{ post.game.name }} - {{ post.game.studio }}</div>
-              </template>
-              <div>
-                <img loading="lazy" :src="post.game.imageUrl" />
-              </div>
-            </n-popover>
-          </div>
-        </n-thing>
+        <PostComponent :post="post" />
       </n-list-item>
       <div ref="postContainer"></div>
     </n-list>
@@ -41,21 +10,19 @@
 </template>
 
 <script lang="ts">
-import { NList, NListItem, NThing, NCard, NButton, NButtonGroup, NPopover } from 'naive-ui';
+import { NList, NListItem, NCard } from 'naive-ui';
 import axios from 'axios';
 
 import type Post from '@/interface/post';
 import type IndexPostRequest from '@/interface/response/indexPostRequest';
+import PostComponent from '@/components/Post.vue';
 
 export default {
   components: {
     NList,
     NListItem,
-    NThing,
     NCard,
-    NButton,
-    NButtonGroup,
-    NPopover
+    PostComponent
   },
   data() {
     return {
@@ -142,10 +109,4 @@ export default {
   align-items: center;
   justify-content: center;
 }
-
-.post-image {
-  width: 100%;
-  max-width: 800px;
-}
 </style>
-@/interface/indexPostsRequest

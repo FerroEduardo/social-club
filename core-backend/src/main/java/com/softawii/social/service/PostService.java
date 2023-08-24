@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -31,7 +32,7 @@ public class PostService {
     }
 
     public Page<PostDTO> findAll(int page, int size) {
-        return repository.findPosts("http://localhost:8099/image/", null, PageRequest.of(page, size, Sort.by("createdAt")));
+        return repository.findPosts("http://localhost:8099/image/", null, PageRequest.of(page, size, Sort.by(Direction.DESC, "createdAt")));
     }
 
     public Post create(User user, Game game, Image image, String description) {
