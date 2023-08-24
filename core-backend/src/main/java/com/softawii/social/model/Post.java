@@ -28,9 +28,6 @@ public class Post {
     @JoinColumn(name = "image_id", referencedColumnName = "id")
     private Image image;
 
-    @Column()
-    private Long reputation;
-
     @Column
     private String description;
 
@@ -70,14 +67,6 @@ public class Post {
 
     public void setGame(Game game) {
         this.game = game;
-    }
-
-    public Long getReputation() {
-        return reputation;
-    }
-
-    public void setReputation(Long reputation) {
-        this.reputation = reputation;
     }
 
     public String getDescription() {

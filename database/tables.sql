@@ -18,20 +18,8 @@ CREATE TABLE IF NOT EXISTS social.game
     id     SERIAL PRIMARY KEY,
     name   VARCHAR(100) NOT NULL,
     studio VARCHAR(100) NOT NULL
+    --- image_id INTEGER NOT NULL REFERENCES social.image (id) ON DELETE CASCADE
 );
-
-DROP TABLE IF EXISTS social.image_type CASCADE;
-CREATE TABLE IF NOT EXISTS social.image_type
-(
-    id   SERIAL PRIMARY KEY,
-    name VARCHAR(10) NOT NULL
-);
-
-INSERT INTO social.image_type (name)
-VALUES ('BLOB'),
-       ('S3'),
-       ('LOCAL');
-
 DROP TABLE IF EXISTS social.image CASCADE;
 CREATE TABLE IF NOT EXISTS social.image
 (
@@ -55,35 +43,33 @@ CREATE TABLE IF NOT EXISTS social.post
     id          SERIAL PRIMARY KEY,
     author_id   INTEGER      NOT NULL REFERENCES social.user (id) ON DELETE CASCADE,
     game_id     INTEGER      NOT NULL REFERENCES social.game (id) ON DELETE CASCADE,
+    --- title VARCHAR(100) NULL,
     description VARCHAR(200) NULL,
-    reputation  INTEGER      NOT NULL DEFAULT 0,
     image_id    INTEGER      NOT NULL REFERENCES social.image (id) ON DELETE CASCADE,
-    created_at  TIMESTAMPTZ  NOT NULL DEFAULT (current_timestamp AT TIME ZONE 'UTC'),
-    modified_at TIMESTAMPTZ  NOT NULL DEFAULT (current_timestamp AT TIME ZONE 'UTC')
+    created_at  TIMESTAMPTZ  NOT NULL DEFAULT (CURRENT_TIMESTAMP AT TIME ZONE 'UTC'),
+    modified_at TIMESTAMPTZ  NOT NULL DEFAULT (CURRENT_TIMESTAMP AT TIME ZONE 'UTC')
 );
 
-DROP TABLE IF EXISTS social.post_mention CASCADE;
-CREATE TABLE IF NOT EXISTS social.post_mention
+DROP TABLE IF EXISTS social.post_vote CASCADE;
+CREATE TABLE IF NOT EXISTS social.post_vote
 (
-    mentioned_user_id INTEGER NOT NULL REFERENCES social.user (id) ON DELETE CASCADE,
-    post_id           INTEGER NOT NULL REFERENCES social.post (id) ON DELETE CASCADE
+    user_id     INTEGER     NOT NULL REFERENCES social.user (id) ON DELETE CASCADE,
+    post_id     INTEGER     NOT NULL REFERENCES social.post (id) ON DELETE CASCADE,
+    value       SMALLINT    NOT NULL,
+    created_at  TIMESTAMPTZ NOT NULL DEFAULT (CURRENT_TIMESTAMP AT TIME ZONE 'UTC'),
+    modified_at TIMESTAMPTZ NOT NULL DEFAULT (CURRENT_TIMESTAMP AT TIME ZONE 'UTC'),
+    PRIMARY KEY (user_id, post_id)
 );
-
-DROP TABLE IF EXISTS social.post_like CASCADE;
-CREATE TABLE IF NOT EXISTS social.post_like
-(
-    user_id INTEGER NOT NULL REFERENCES social.user (id) ON DELETE CASCADE,
-    post_id INTEGER NOT NULL REFERENCES social.post (id) ON DELETE CASCADE,
-    value   BOOL    NOT NULL
-);
+DROP INDEX IF EXISTS idx_post_id;
+CREATE INDEX IF NOT EXISTS idx_post_id ON social.post_vote (post_id);
 
 DROP TABLE IF EXISTS social.post_comment CASCADE;
 CREATE TABLE IF NOT EXISTS social.post_comment
 (
-    id                SERIAL PRIMARY KEY,
-    author_id         INTEGER      NOT NULL REFERENCES social.user (id) ON DELETE CASCADE,
-    post_id           INTEGER      NOT NULL REFERENCES social.post (id) ON DELETE CASCADE,
-    value             VARCHAR(200) NOT NULL,
-    created_at        TIMESTAMPTZ  NOT NULL DEFAULT (current_timestamp AT TIME ZONE 'UTC'),
-    modified_at       TIMESTAMPTZ  NOT NULL DEFAULT (current_timestamp AT TIME ZONE 'UTC')
+    id          SERIAL PRIMARY KEY,
+    author_id   INTEGER      NOT NULL REFERENCES social.user (id) ON DELETE CASCADE,
+    post_id     INTEGER      NOT NULL REFERENCES social.post (id) ON DELETE CASCADE,
+    value       VARCHAR(200) NOT NULL,
+    created_at  TIMESTAMPTZ  NOT NULL DEFAULT (CURRENT_TIMESTAMP AT TIME ZONE 'UTC'),
+    modified_at TIMESTAMPTZ  NOT NULL DEFAULT (CURRENT_TIMESTAMP AT TIME ZONE 'UTC')
 );

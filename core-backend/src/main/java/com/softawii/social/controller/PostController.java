@@ -9,10 +9,7 @@ import com.softawii.social.model.dto.request.post.CreatePostDTO;
 import com.softawii.social.model.dto.request.post.IndexPostDTO;
 import com.softawii.social.model.dto.request.post.PostDTO;
 import com.softawii.social.security.UserPrincipal;
-import com.softawii.social.service.GameService;
-import com.softawii.social.service.ImageService;
-import com.softawii.social.service.PostService;
-import com.softawii.social.service.UserService;
+import com.softawii.social.service.*;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -31,16 +28,18 @@ import java.util.Optional;
 @Validated
 public class PostController {
 
-    private final UserService  userService;
-    private final GameService  gameService;
-    private final PostService  postService;
-    private final ImageService imageService;
+    private final UserService     userService;
+    private final GameService     gameService;
+    private final PostService     postService;
+    private final ImageService    imageService;
+    private final PostVoteService postVoteService;
 
-    public PostController(UserService userService, GameService gameService, PostService postService, ImageService imageService) {
+    public PostController(UserService userService, GameService gameService, PostService postService, ImageService imageService, PostVoteService postVoteService) {
         this.userService = userService;
         this.gameService = gameService;
         this.postService = postService;
         this.imageService = imageService;
+        this.postVoteService = postVoteService;
     }
 
     @GetMapping
@@ -89,14 +88,25 @@ public class PostController {
         return ResponseEntity.ok(Map.of("id", post.getId()));
     }
 
-    @PostMapping("{id}/like")
-    public ResponseEntity<?> vote(@PathVariable Long id) {
+    @PostMapping("{postId}/vote/{voteValue}")
+    public ResponseEntity<?> vote(
+            @PathVariable Long postId,
+            @PathVariable Long voteValue,
+            OAuth2AuthenticationToken authentication
+    ) {
         try {
-            PostDTO post = this.postService.findById(id).orElseThrow();
+            UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+            if (voteValue == 1 || voteValue == -1 || voteValue == 0) {
+                this.postService.findById(postId).orElseThrow();
+                long userId = userPrincipal.getId();
 
-            return ResponseEntity.ok(post);
+                this.postVoteService.vote(postId, userId, voteValue);
+
+                return ResponseEntity.ok().build();
+            }
+            return ResponseEntity.badRequest().body(Map.of("message", "Invalid 'value' field"));
         } catch (NoSuchElementException e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(Map.of("message", "Post does not exists"));
         }
     }
 }
