@@ -5,6 +5,7 @@ export default interface Post {
   title: string;
   description: string;
   reputation: number;
+  userVote?: number;
   imageUrl: string;
   game: Game;
   author: {

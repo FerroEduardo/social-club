@@ -15,6 +15,10 @@ public class PostVoteService {
         this.repository = repository;
     }
 
+    public Long getPostReputation(Long postId) {
+        return repository.getReputationByPostId(postId);
+    }
+
     public void vote(Long postId, Long userId, Long value) {
         PostVoteId         postVoteId       = new PostVoteId(postId, userId);
         Optional<PostVote> optionalPostVote = repository.findById(postVoteId);

@@ -24,7 +24,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
                 g.name AS "gameName",
                 g.studio AS "gameStudio",
                 CONCAT(:image_url, p.image_id) AS "imageUrl",
-                pv.value AS userVote
+                pv.value AS "userVote"
             FROM social.post p
                      INNER JOIN social.user u ON u.id = p.author_id
                      INNER JOIN social.game g ON g.id = p.game_id

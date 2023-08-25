@@ -235,7 +235,7 @@ export default {
         .post<CreatePostResponse>('/post', form)
         .then((response) => {
           if (response.status === 200) {
-            this.$router.push(`/post/${response.data.id}`)
+            this.$router.push(`/post/${response.data.id}`);
           }
           // failed to create post ?
         })

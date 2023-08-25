@@ -66,7 +66,8 @@ export default {
                   name: post.authorName,
                   imageUrl:
                     'https://avatars.cloudflare.steamstatic.com/b69c069ae57724cc0bdbcf4eff87d4bb4feb3def_full.jpg' // post.authorImageUrl
-                }
+                },
+                userVote: post.userVote
               };
             })
           );

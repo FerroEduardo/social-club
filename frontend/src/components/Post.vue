@@ -2,11 +2,11 @@
   <n-thing :title="post.title" :description="post.description">
     <template #header-extra>
       <n-button-group>
-        <n-button size="small" type="success"> ⬆️ </n-button>
-        <n-button size="small" type="info">
-          {{ post.reputation }}
-        </n-button>
-        <n-button size="small" type="error"> ⬇️ </n-button>
+        <n-button size="small" :ghost="isUpVoteGhosted" type="success" @click="upvote">⬆️</n-button>
+        <n-button size="small" type="info">{{ reputation }}</n-button>
+        <n-button size="small" :ghost="isDownVoteGhosted" type="error" @click="downvote"
+          >⬇️</n-button
+        >
       </n-button-group>
     </template>
     <img
@@ -41,7 +41,9 @@
 <script lang="ts">
 import { NThing, NButton, NButtonGroup, NPopover } from 'naive-ui';
 import { defineComponent, type PropType } from 'vue';
+import axios from 'axios';
 import type Post from '@/interface/post';
+import type PostVoteResponse from '@/interface/response/postVoteResponse';
 
 export default defineComponent({
   components: {
@@ -61,11 +63,46 @@ export default defineComponent({
       default: true
     }
   },
+  computed: {
+    isUpVoteGhosted() {
+      return this.userVote === -1 || !this.userVote;
+    },
+    isDownVoteGhosted() {
+      return this.userVote === 1 || !this.userVote;
+    }
+  },
+  data() {
+    console.log({ userVote: this.post.userVote });
+
+    return {
+      userVote: this.post.userVote,
+      reputation: this.post.reputation
+    };
+  },
   methods: {
     handlePostImageClick() {
       if (this.enableShowPostLink) {
         this.$router.push(`/post/${this.post.id}`);
       }
+    },
+    upvote() {
+      const value = this.userVote === 1 ? 0 : 1;
+      this.vote(value);
+    },
+    downvote() {
+      const value = this.userVote === -1 ? 0 : -1;
+      this.vote(value);
+    },
+    vote(value: number) {
+      axios
+        .post<PostVoteResponse>(`/post/${this.post.id}/vote/${value}`)
+        .then((response) => {
+          this.reputation = response.data.reputation;
+          this.userVote = value;
+        })
+        .catch((error) => {
+          // display vote failed
+        });
     }
   }
 });

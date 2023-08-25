@@ -13,6 +13,7 @@ interface Post {
   gameName: string;
   gameStudio: string;
   imageUrl: string;
+  userVote?: number;
 }
 
 export default interface IndexPostRequest extends Page<Post> {}

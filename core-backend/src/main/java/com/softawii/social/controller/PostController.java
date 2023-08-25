@@ -103,8 +103,9 @@ public class PostController {
                 long userId = userPrincipal.getId();
 
                 this.postVoteService.vote(postId, userId, voteValue);
+                Long reputation = this.postVoteService.getPostReputation(postId);
 
-                return ResponseEntity.ok().build();
+                return ResponseEntity.ok(Map.of("reputation", reputation));
             }
             return ResponseEntity.badRequest().body(Map.of("message", "Invalid 'value' field"));
         } catch (NoSuchElementException e) {
