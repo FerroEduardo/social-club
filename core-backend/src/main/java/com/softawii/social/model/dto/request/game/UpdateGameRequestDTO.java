@@ -3,7 +3,7 @@ package com.softawii.social.model.dto.request.game;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-public class SaveGameDTO {
+public class UpdateGameRequestDTO {
     @NotBlank(message = "Name is required")
     @Size(min = 1, max = 100, message = "The length of \"name\" must be between 1 and 100")
     private String name;
@@ -12,7 +12,7 @@ public class SaveGameDTO {
     @Size(min = 1, max = 100, message = "The length of \"studio\" must be between 1 and 100")
     private String studio;
 
-    public SaveGameDTO() {
+    public UpdateGameRequestDTO() {
     }
 
     public String getName() {
@@ -33,7 +33,7 @@ public class SaveGameDTO {
 
     @Override
     public String toString() {
-        return "SaveGameDTO{" +
+        return "UpdateGameDTO{" +
                 "name='" + name + '\'' +
                 ", studio='" + studio + '\'' +
                 '}';

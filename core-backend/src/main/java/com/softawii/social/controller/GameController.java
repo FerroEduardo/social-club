@@ -1,9 +1,9 @@
 package com.softawii.social.controller;
 
 import com.softawii.social.model.Game;
-import com.softawii.social.model.dto.request.game.IndexGameDTO;
-import com.softawii.social.model.dto.request.game.SaveGameDTO;
-import com.softawii.social.model.dto.request.game.UpdateGameDTO;
+import com.softawii.social.model.dto.request.game.IndexGameRequestDTO;
+import com.softawii.social.model.dto.request.game.SaveGameRequestDTO;
+import com.softawii.social.model.dto.request.game.UpdateGameRequestDTO;
 import com.softawii.social.service.GameService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -26,7 +26,7 @@ public class GameController {
     }
 
     @GetMapping
-    public Iterable<Game> index(@Valid IndexGameDTO dto) {
+    public Iterable<Game> index(@Valid IndexGameRequestDTO dto) {
         if (dto.isPaginated()) {
             if (dto.getName() == null) return this.service.findAll(dto.getPage().intValue(), dto.getSize().intValue());
             else return this.service.findAll(dto.getPage().intValue(), dto.getSize().intValue(), dto.getName());
@@ -36,14 +36,14 @@ public class GameController {
     }
 
     @PostMapping
-    public Game store(@Valid @RequestBody SaveGameDTO game) {
+    public Game store(@Valid @RequestBody SaveGameRequestDTO game) {
         return this.service.save(game.getName(), game.getStudio());
     }
 
     @PutMapping("{id}")
     public ResponseEntity<Game> update(
             @Valid @PathVariable @NotNull @PositiveOrZero Long id,
-            @Valid @RequestBody UpdateGameDTO dto
+            @Valid @RequestBody UpdateGameRequestDTO dto
     ) {
         try {
             Game updatedGame = this.service.update(id, dto.getName(), dto.getStudio());

@@ -5,8 +5,8 @@ import com.softawii.social.model.Game;
 import com.softawii.social.model.Image;
 import com.softawii.social.model.Post;
 import com.softawii.social.model.User;
-import com.softawii.social.model.dto.request.post.CreatePostDTO;
-import com.softawii.social.model.dto.request.post.IndexPostDTO;
+import com.softawii.social.model.dto.request.post.CreatePostRequestDTO;
+import com.softawii.social.model.dto.request.post.IndexPostRequestDTO;
 import com.softawii.social.model.dto.request.post.PostDTO;
 import com.softawii.social.security.UserPrincipal;
 import com.softawii.social.service.*;
@@ -43,7 +43,7 @@ public class PostController {
     }
 
     @GetMapping
-    public Iterable<?> index(@Valid IndexPostDTO dto, OAuth2AuthenticationToken authentication) {
+    public Iterable<?> index(@Valid IndexPostRequestDTO dto, OAuth2AuthenticationToken authentication) {
         UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
         if (dto.isPaginated()) {
             return this.postService.findAll(principal.getId(), dto.getPage().intValue(), dto.getSize().intValue());
@@ -67,7 +67,7 @@ public class PostController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> create(
             OAuth2AuthenticationToken authentication,
-            @Valid @ModelAttribute CreatePostDTO dto
+            @Valid @ModelAttribute CreatePostRequestDTO dto
     ) {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         User          user          = userService.findByEmail(userPrincipal.getEmail()).get();

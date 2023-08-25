@@ -4,7 +4,7 @@ import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 
-public class IndexPostDTO {
+public class IndexPostRequestDTO {
 
     @PositiveOrZero(message = "\"page\" must be at least 0")
     private Long page;
@@ -12,7 +12,7 @@ public class IndexPostDTO {
     @Positive(message = "\"size\" must be at least 1")
     private Long size;
 
-    public IndexPostDTO() {
+    public IndexPostRequestDTO() {
     }
 
     @AssertTrue(message = "Fields must be null or totally filled")

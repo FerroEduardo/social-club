@@ -1,7 +1,7 @@
 package com.softawii.social.controller;
 
 import com.softawii.social.model.Image;
-import com.softawii.social.model.dto.request.image.IndexImageDTO;
+import com.softawii.social.model.dto.request.image.IndexImageRequestDTO;
 import com.softawii.social.service.ImageService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
@@ -28,7 +28,7 @@ public class ImageController {
     }
 
     @GetMapping
-    public Iterable<Image> index(@Valid IndexImageDTO dto) {
+    public Iterable<Image> index(@Valid IndexImageRequestDTO dto) {
         if (dto.isPaginated()) {
             return this.service.findAll(dto.getPage().intValue(), dto.getSize().intValue());
         }

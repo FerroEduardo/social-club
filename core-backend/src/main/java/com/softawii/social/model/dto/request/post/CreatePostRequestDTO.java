@@ -8,7 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.stream.Stream;
 
-public class CreatePostDTO {
+public class CreatePostRequestDTO {
     @Size(min = 1, max = 200, message = "The length of \"description\" must be between 1 and 200")
     private String description;
 
@@ -19,7 +19,7 @@ public class CreatePostDTO {
     @NotNull(message = "\"image\" is required")
     private MultipartFile image;
 
-    public CreatePostDTO() {
+    public CreatePostRequestDTO() {
     }
 
     @AssertTrue(message = "Invalid image content type")
