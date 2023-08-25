@@ -63,6 +63,10 @@ CREATE TABLE IF NOT EXISTS social.post_vote
 DROP INDEX IF EXISTS idx_post_id;
 CREATE INDEX IF NOT EXISTS idx_post_id ON social.post_vote (post_id);
 
+DROP VIEW IF EXISTS social.post_reputation CASCADE;
+CREATE OR REPLACE VIEW social.post_reputation AS
+SELECT pv.post_id, SUM(pv.value) as reputation FROM social.post_vote pv GROUP BY pv.post_id;
+
 DROP TABLE IF EXISTS social.post_comment CASCADE;
 CREATE TABLE IF NOT EXISTS social.post_comment
 (

@@ -43,18 +43,20 @@ public class PostController {
     }
 
     @GetMapping
-    public Iterable<?> index(@Valid IndexPostDTO dto) {
+    public Iterable<?> index(@Valid IndexPostDTO dto, OAuth2AuthenticationToken authentication) {
+        UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
         if (dto.isPaginated()) {
-            return this.postService.findAll(dto.getPage().intValue(), dto.getSize().intValue());
+            return this.postService.findAll(principal.getId(), dto.getPage().intValue(), dto.getSize().intValue());
         }
 
-        return this.postService.findAll();
+        return this.postService.findAll(principal.getId());
     }
 
-    @GetMapping("{id}")
-    public ResponseEntity<?> show(@PathVariable Long id) {
+    @GetMapping("{postId}")
+    public ResponseEntity<?> show(@PathVariable Long postId, OAuth2AuthenticationToken authentication) {
+        UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
         try {
-            PostDTO post = this.postService.findById(id).orElseThrow();
+            PostDTO post = this.postService.findById(postId, principal.getId()).orElseThrow();
 
             return ResponseEntity.ok(post);
         } catch (NoSuchElementException e) {

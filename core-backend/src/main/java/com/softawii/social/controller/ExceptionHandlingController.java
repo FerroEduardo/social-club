@@ -63,6 +63,7 @@ public class ExceptionHandlingController extends ResponseEntityExceptionHandler 
         StringWriter sw = new StringWriter();
         PrintWriter  pw = new PrintWriter(sw);
         e.printStackTrace(pw);
+        e.printStackTrace();
         mav.addObject("trace", sw.toString());
         mav.setViewName("dev-error.html");
 

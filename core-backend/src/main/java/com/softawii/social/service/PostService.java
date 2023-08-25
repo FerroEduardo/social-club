@@ -26,38 +26,49 @@ public class PostService {
         this.repository = repository;
     }
 
-    public Optional<PostDTO> findById(Long id) {
-        Optional<Map<String, Object>> optional = repository.findPostsNew(IMAGE_URL_PREFIX, id, PageRequest.of(0, 1)).stream().findFirst();
+    public Optional<PostDTO> findById(Long id, Long userId) {
+        Optional<Map<String, Object>> optional = repository.findPosts(IMAGE_URL_PREFIX, id, userId, PageRequest.of(0, 1)).stream().findFirst();
         if (optional.isEmpty()) {
             return Optional.empty();
         }
 
-        Map<String, Object> map = optional.get();
+        Map<String, Object> map  = optional.get();
+        PostDTO             post = new PostDTO();
+        post.setId(Long.valueOf(map.get("id").toString()))
+                .setDescription((String) map.get("description"))
+                .setReputation(Long.valueOf(map.get("reputation").toString()))
+                .setCreatedAt(ZonedDateTime.parse(map.get("createdAt").toString()))
+                .setModifiedAt(ZonedDateTime.parse(map.get("modifiedAt").toString()))
+                .setAuthorId(Long.valueOf(map.get("authorId").toString()))
+                .setAuthorName((String) map.get("authorName"))
+                .setAuthorImageUrl((String) map.get("authorImageUrl"))
+                .setGameId(Long.valueOf(map.get("gameId").toString()))
+                .setGameName((String) map.get("gameName"))
+                .setGameStudio((String) map.get("gameStudio"))
+                .setImageUrl((String) map.get("imageUrl"))
+                .setUserVote((Short) map.get("userVote"));
 
-        return Optional.of(
-                new PostDTO(
-                        Long.valueOf(map.get("id").toString()),
-                        (String) map.get("description"),
-                        Long.valueOf(map.get("reputation").toString()),
-                        ZonedDateTime.parse(map.get("createdAt").toString()),
-                        ZonedDateTime.parse(map.get("modifiedAt").toString()),
-                        Long.valueOf(map.get("authorId").toString()),
-                        (String) map.get("authorName"),
-                        (String) map.get("authorImageUrl"),
-                        Long.valueOf(map.get("gameId").toString()),
-                        (String) map.get("gameName"),
-                        (String) map.get("gameStudio"),
-                        (String) map.get("imageUrl")
-                )
-        );
+        return Optional.of(post);
+    }
+
+    public Optional<PostDTO> findById(Long id) {
+        return this.findById(id, null);
+    }
+
+    public Page<Map<String, Object>> findAll(Long userId) {
+        return repository.findPosts(IMAGE_URL_PREFIX, null, userId, Pageable.unpaged());
     }
 
     public Page<Map<String, Object>> findAll() {
-        return repository.findPostsNew(IMAGE_URL_PREFIX, null, Pageable.unpaged());
+        return this.findAll(null);
+    }
+
+    public Page<Map<String, Object>> findAll(Long userId, int page, int size) {
+        return repository.findPosts(IMAGE_URL_PREFIX, null, userId, PageRequest.of(page, size, Sort.by(Direction.DESC, "created_at")));
     }
 
     public Page<Map<String, Object>> findAll(int page, int size) {
-        return repository.findPostsNew(IMAGE_URL_PREFIX, null, PageRequest.of(page, size, Sort.by(Direction.DESC, "created_at")));
+        return this.findAll(null, page, size);
     }
 
     public Post create(User user, Game game, Image image, String description) {
