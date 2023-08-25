@@ -1,6 +1,6 @@
 <template>
   <div id="container">
-    <PostComponent v-if="post" :post="post" :enable-show-post-link="false" />
+    <PostComponent v-if="post" :post="post" :enable-show-post-link="false" show-comments />
   </div>
 </template>
 <script lang="ts">
