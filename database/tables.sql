@@ -65,7 +65,9 @@ CREATE INDEX IF NOT EXISTS idx_post_id ON social.post_vote (post_id);
 
 DROP VIEW IF EXISTS social.post_reputation CASCADE;
 CREATE OR REPLACE VIEW social.post_reputation AS
-SELECT pv.post_id, SUM(pv.value) as reputation FROM social.post_vote pv GROUP BY pv.post_id;
+SELECT pv.post_id, SUM(pv.value) AS reputation
+FROM social.post_vote pv
+GROUP BY pv.post_id;
 
 DROP TABLE IF EXISTS social.post_comment CASCADE;
 CREATE TABLE IF NOT EXISTS social.post_comment
@@ -75,5 +77,8 @@ CREATE TABLE IF NOT EXISTS social.post_comment
     post_id     INTEGER      NOT NULL REFERENCES social.post (id) ON DELETE CASCADE,
     value       VARCHAR(200) NOT NULL,
     created_at  TIMESTAMPTZ  NOT NULL DEFAULT (CURRENT_TIMESTAMP AT TIME ZONE 'UTC'),
-    modified_at TIMESTAMPTZ  NOT NULL DEFAULT (CURRENT_TIMESTAMP AT TIME ZONE 'UTC')
+    modified_at TIMESTAMPTZ  NOT NULL DEFAULT (CURRENT_TIMESTAMP AT TIME ZONE 'UTC'),
+    deleted_at  TIMESTAMPTZ  NULL
 );
+DROP INDEX IF EXISTS idx_post_id;
+CREATE INDEX IF NOT EXISTS idx_post_id ON social.post_comment (post_id);

@@ -5,12 +5,16 @@ import com.softawii.social.model.Game;
 import com.softawii.social.model.Image;
 import com.softawii.social.model.Post;
 import com.softawii.social.model.User;
+import com.softawii.social.model.dto.request.comment.CommentDTO;
+import com.softawii.social.model.dto.request.comment.CreatePostCommentRequestDTO;
 import com.softawii.social.model.dto.request.post.CreatePostRequestDTO;
+import com.softawii.social.model.dto.request.post.IndexPostCommentsRequestDTO;
 import com.softawii.social.model.dto.request.post.IndexPostRequestDTO;
 import com.softawii.social.model.dto.request.post.PostDTO;
 import com.softawii.social.security.UserPrincipal;
 import com.softawii.social.service.*;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -33,13 +37,15 @@ public class PostController {
     private final PostService     postService;
     private final ImageService    imageService;
     private final PostVoteService postVoteService;
+    private final CommentService  commentService;
 
-    public PostController(UserService userService, GameService gameService, PostService postService, ImageService imageService, PostVoteService postVoteService) {
+    public PostController(UserService userService, GameService gameService, PostService postService, ImageService imageService, PostVoteService postVoteService, CommentService commentService) {
         this.userService = userService;
         this.gameService = gameService;
         this.postService = postService;
         this.imageService = imageService;
         this.postVoteService = postVoteService;
+        this.commentService = commentService;
     }
 
     @GetMapping
@@ -59,6 +65,27 @@ public class PostController {
             PostDTO post = this.postService.findById(postId, principal.getId()).orElseThrow();
 
             return ResponseEntity.ok(post);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("{postId}/comment")
+    public ResponseEntity<?> indexComments(@Valid IndexPostCommentsRequestDTO request, @PathVariable Long postId) {
+        try {
+            Page<CommentDTO> comments = this.commentService.findAll(postId, request.getPage(), request.getSize());
+
+            return ResponseEntity.ok(comments);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PostMapping("{postId}/comment")
+    public ResponseEntity<?> indexComments(@PathVariable Long postId, @Valid @RequestBody CreatePostCommentRequestDTO request, OAuth2AuthenticationToken authentication) {
+        UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
+        try {
+            return ResponseEntity.ok(this.commentService.create(postId, principal.getId(), request.getValue()));
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
         }

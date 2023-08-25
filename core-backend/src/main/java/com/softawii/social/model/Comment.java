@@ -1,6 +1,5 @@
 package com.softawii.social.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import org.hibernate.annotations.DynamicInsert;
 
@@ -11,17 +10,17 @@ import java.time.ZonedDateTime;
 @DynamicInsert
 public class Comment {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(/*fetch = FetchType.LAZY*/)
-    @JoinColumn(name = "author_id", referencedColumnName = "id")
-    private User user;
+    @Column(name = "author_id")
+    private Long authorId;
 
-    @ManyToOne(/*fetch = FetchType.LAZY*/)
-    @JoinColumn(name = "post_id", referencedColumnName = "id")
-    @JsonBackReference
-    private Post post;
+    @Column(name = "post_id")
+    private Long postId;
+
+    @Column(name = "value")
+    private String value;
 
     @Column(name = "created_at")
     private ZonedDateTime createdAt;
@@ -29,7 +28,16 @@ public class Comment {
     @Column(name = "modified_at")
     private ZonedDateTime modifiedAt;
 
+    @Column(name = "deleted_at")
+    private ZonedDateTime deletedAt;
+
     public Comment() {
+    }
+
+    public Comment(Long authorId, Long postId, String value) {
+        this.authorId = authorId;
+        this.postId = postId;
+        this.value = value;
     }
 
     public Long getId() {
@@ -40,20 +48,28 @@ public class Comment {
         this.id = id;
     }
 
-    public User getUser() {
-        return user;
+    public Long getAuthorId() {
+        return authorId;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setAuthorId(Long authorId) {
+        this.authorId = authorId;
     }
 
-    public Post getPost() {
-        return post;
+    public Long getPostId() {
+        return postId;
     }
 
-    public void setPost(Post post) {
-        this.post = post;
+    public void setPostId(Long postId) {
+        this.postId = postId;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
     }
 
     public ZonedDateTime getCreatedAt() {
@@ -70,5 +86,13 @@ public class Comment {
 
     public void setModifiedAt(ZonedDateTime modifiedAt) {
         this.modifiedAt = modifiedAt;
+    }
+
+    public ZonedDateTime getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void setDeletedAt(ZonedDateTime deletedAt) {
+        this.deletedAt = deletedAt;
     }
 }

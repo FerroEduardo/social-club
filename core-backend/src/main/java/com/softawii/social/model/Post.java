@@ -1,11 +1,9 @@
 package com.softawii.social.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import org.hibernate.annotations.DynamicInsert;
 
 import java.time.ZonedDateTime;
-import java.util.List;
 
 @Entity
 @Table(name = "post")
@@ -36,11 +34,6 @@ public class Post {
 
     @Column(name = "modified_at")
     private ZonedDateTime modifiedAt;
-
-    @OneToMany
-    @JoinColumn(name = "post_id", referencedColumnName = "id")
-    @JsonManagedReference
-    private List<Comment> comments;
 
     public Post() {
     }
@@ -99,13 +92,5 @@ public class Post {
 
     public void setModifiedAt(ZonedDateTime modifiedAt) {
         this.modifiedAt = modifiedAt;
-    }
-
-    public List<Comment> getComments() {
-        return comments;
-    }
-
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
     }
 }
