@@ -1,7 +1,24 @@
 <template>
-  <div style="display: flex; align-items: center; justify-content: center">
+  <div
+    style="
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-top: 10px;
+      padding: 10px 5px;
+    "
+  >
+    <n-alert
+      v-if="loginError"
+      :title="loginError.title"
+      type="error"
+      style="max-width: 600px; width: 100%"
+    >
+      {{ loginError.description }}
+    </n-alert>
     <n-card
-      style="max-width: 600px"
+      style="max-width: 600px; margin-top: 10px"
       content-style="margin:auto; max-width: 300px; display: flex; flex-direction: column; gap: 10px"
     >
       <n-button icon-placement="left" @click="loginOauth('google')">
@@ -49,19 +66,56 @@
 </template>
 
 <script lang="ts">
-import { NCard, NButton, NIcon } from 'naive-ui';
+import { NCard, NButton, NIcon, NAlert } from 'naive-ui';
 const API_URL = import.meta.env.VITE_API_URL;
+
+interface LoginError {
+  title: string;
+  description: string;
+}
 
 export default {
   components: {
     NCard,
     NButton,
-    NIcon
+    NIcon,
+    NAlert
+  },
+  setup() {
+    return {
+      loginErrors: {
+        'github-public-email-disabled': {
+          title: 'Falha no login com GitHub',
+          description:
+            'Para utilizar o login com GitHub, é necessário ter um e-mail público configurado.'
+        }
+      }
+    };
+  },
+  data() {
+    return {
+      loginError: null as LoginError | null
+    };
   },
   methods: {
     loginOauth(platform: string) {
       window.location.href = `${API_URL}/oauth2/authorize/${platform}`;
+    },
+    handleFailedLogin() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const reason = urlParams.get('reason');
+      if (reason && reason in this.loginErrors) {
+        const key = reason as keyof typeof this.loginErrors;
+        const error = this.loginErrors[key];
+        this.loginError = {
+          title: error.title,
+          description: error.description
+        };
+      }
     }
+  },
+  mounted() {
+    this.handleFailedLogin();
   }
 };
 </script>
