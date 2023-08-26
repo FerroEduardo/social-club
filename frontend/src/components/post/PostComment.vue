@@ -1,10 +1,7 @@
 <template>
-  <n-thing
-    :title="comment.authorName"
-    :title-extra="parseTimestamp(comment.createdAt)"
-    content-style="white-space: pre-line"
-  >
+  <n-thing :title="comment.authorName" content-style="white-space: pre-line">
     <template v-if="isUserOwnerOfComment" #header-extra>
+      {{ parseTimestamp(comment.createdAt) }}
       <n-button
         circle
         size="small"

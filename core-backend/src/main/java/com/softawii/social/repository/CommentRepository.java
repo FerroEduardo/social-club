@@ -22,7 +22,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
                     SELECT new com.softawii.social.model.dto.request.comment.CommentDTO(c.id, c.authorId, u.name, c.value, c.createdAt, u.imageUrl)
                     FROM Comment c INNER join User u ON u.id = c.authorId WHERE c.postId = :postId AND c.deletedAt IS NULL
                     """,
-            countQuery = "SELECT count(*) FROM Comment c WHERE c.postId = :postId")
+            countQuery = "SELECT count(*) FROM Comment c WHERE c.postId = :postId AND c.deletedAt IS NULL")
     Page<CommentDTO> findAllByPostIdSafe(Long postId, Pageable pageable);
 
     @Query(

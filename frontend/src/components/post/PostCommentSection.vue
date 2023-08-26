@@ -2,10 +2,18 @@
   <n-card title="Comentários">
     <n-list v-if="comments.length > 0">
       <n-list-item v-for="comment in comments" :key="comment.id">
-        <PostComment :comment="comment" @refreshList="indexComments" />
+        <PostComment :comment="comment" @refreshList="fetchComments" />
       </n-list-item>
     </n-list>
     <n-empty v-else description="Seja o primeiro a comentar" />
+    <template #header-extra>
+      <n-pagination
+        v-model:page="page"
+        :page-count="pageCount"
+        :onUpdatePage="fetchComments"
+        simple
+      />
+    </template>
     <template #action>
       <n-input-group>
         <n-input
@@ -25,7 +33,16 @@
   </n-card>
 </template>
 <script lang="ts">
-import { NCard, NList, NListItem, NEmpty, NButton, NInputGroup, NInput } from 'naive-ui';
+import {
+  NCard,
+  NList,
+  NListItem,
+  NEmpty,
+  NButton,
+  NInputGroup,
+  NInput,
+  NPagination
+} from 'naive-ui';
 import { type PropType } from 'vue';
 import axios from 'axios';
 import type Comment from '@/interface/comment';
@@ -41,7 +58,8 @@ export default {
     NButton,
     NInputGroup,
     NInput,
-    PostComment
+    PostComment,
+    NPagination
   },
   props: {
     postId: {
@@ -52,6 +70,9 @@ export default {
   data() {
     return {
       commentInput: '' as string,
+      page: 1,
+      pageSize: 5,
+      pageCount: 0,
       comments: [] as Comment[]
     };
   },
@@ -63,18 +84,23 @@ export default {
         })
         .then((response) => {
           this.commentInput = '';
-          this.indexComments();
+          this.fetchComments();
         })
         .catch((error) => {
           // display index failed
         });
     },
-    indexComments() {
-      // TODO infinite scroll
+    fetchComments() {
+      console.log('fetchComments');
+
+      const page = this.page - 1; // component starts with page 1
       axios
-        .get<IndexCommentResponse>(`/post/${this.postId}/comment?page=0&size=100`)
+        .get<IndexCommentResponse>(
+          `/post/${this.postId}/comment?page=${page}&size=${this.pageSize}`
+        )
         .then((response) => {
           this.comments = response.data.content;
+          this.pageCount = response.data.totalPages;
         })
         .catch((error) => {
           // display index failed
@@ -82,7 +108,7 @@ export default {
     }
   },
   mounted() {
-    this.indexComments();
+    this.fetchComments();
   }
 };
 </script>
