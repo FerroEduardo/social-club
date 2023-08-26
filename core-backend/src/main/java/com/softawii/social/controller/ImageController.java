@@ -4,10 +4,7 @@ import com.softawii.social.model.Image;
 import com.softawii.social.model.dto.request.image.IndexImageRequestDTO;
 import com.softawii.social.service.ImageService;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.nio.file.NoSuchFileException;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.NoSuchElementException;
 
 @RestController
@@ -45,6 +45,8 @@ public class ImageController {
             } else {
                 HttpHeaders responseHeaders = new HttpHeaders();
                 responseHeaders.setContentType(MediaType.IMAGE_PNG);
+                responseHeaders.setCacheControl(CacheControl.maxAge(Duration.ofHours(1)));
+                responseHeaders.setExpires(Instant.now().plus(1, ChronoUnit.HOURS));
 
                 byte[] blob;
                 if (image.getBlob() != null) {
