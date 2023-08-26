@@ -1,4 +1,5 @@
 import axios from 'axios';
+import router from '@/router';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -13,6 +14,12 @@ axios.interceptors.response.use(
       console.error(error.response.data);
       console.error(error.response.status);
       console.error(error.response.headers);
+      if (
+        !ignoreRoute(error.response.request.responseURL as string) &&
+        error.response.status === 401
+      ) {
+        router.push({ name: 'login', query: { reason: 'unauthenticated' } });
+      }
     } else if (error.request) {
       console.log(error.request);
     } else {
@@ -22,3 +29,7 @@ axios.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+function ignoreRoute(responseURL: string): boolean {
+  return responseURL.endsWith('/ping');
+}

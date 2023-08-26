@@ -74,6 +74,10 @@ interface LoginError {
   description: string;
 }
 
+type LoginErrors = {
+  [key: string]: LoginError;
+};
+
 export default {
   components: {
     NCard,
@@ -88,8 +92,12 @@ export default {
           title: 'Falha no login com GitHub',
           description:
             'Para utilizar o login com GitHub, é necessário ter um e-mail público configurado.'
+        },
+        unauthenticated: {
+          title: 'Você não está autenticado',
+          description: 'Você precisa fazer login para acessar essa página.'
         }
-      }
+      } as LoginErrors
     };
   },
   data() {
@@ -116,6 +124,13 @@ export default {
   },
   mounted() {
     this.handleFailedLogin();
+  },
+  beforeRouteEnter(to, from, next) {
+    next((vm) => {
+      if ('handleFailedLogin' in vm) {
+        (vm.handleFailedLogin as Function)();
+      }
+    });
   }
 };
 </script>

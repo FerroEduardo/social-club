@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import { NList, NListItem, NCard } from 'naive-ui';
+import { NList, NListItem, NCard, useMessage } from 'naive-ui';
 import axios from 'axios';
 
 import type Post from '@/interface/post';
@@ -23,6 +23,11 @@ export default {
     NListItem,
     NCard,
     PostContainer
+  },
+  setup() {
+    return {
+      message: useMessage()
+    };
   },
   data() {
     return {
@@ -73,7 +78,7 @@ export default {
           );
         })
         .catch((reason) => {
-          this.$router.push('/');
+          // failed
         })
         .finally(() => {
           this.isLoadingData = false;

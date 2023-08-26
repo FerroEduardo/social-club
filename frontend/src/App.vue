@@ -1,18 +1,27 @@
 <template>
   <n-config-provider :theme="theme">
-    <n-layout>
-      <n-layout-header bordered>
-        <Header />
-      </n-layout-header>
-      <n-layout-content bordered>
-        <router-view />
-      </n-layout-content>
-    </n-layout>
+    <n-message-provider>
+      <n-layout>
+        <n-layout-header bordered>
+          <Header />
+        </n-layout-header>
+        <n-layout-content bordered>
+          <router-view />
+        </n-layout-content>
+      </n-layout>
+    </n-message-provider>
   </n-config-provider>
 </template>
 
 <script lang="ts">
-import { darkTheme, NConfigProvider, NLayout, NLayoutHeader, NLayoutContent } from 'naive-ui';
+import {
+  darkTheme,
+  NConfigProvider,
+  NLayout,
+  NLayoutHeader,
+  NLayoutContent,
+  NMessageProvider
+} from 'naive-ui';
 import axios from 'axios';
 
 import Header from '@/components/Header.vue';
@@ -24,7 +33,8 @@ export default {
     Header,
     NLayout,
     NLayoutHeader,
-    NLayoutContent
+    NLayoutContent,
+    NMessageProvider
   },
   setup() {
     const theme = darkTheme;

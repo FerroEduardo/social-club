@@ -9,7 +9,7 @@ import './config/axios';
 
 const app = createApp(App);
 
-app.use(createPinia());
+app.use(createPinia()); // always first
 app.use(router);
 
 app.mount('#app');
