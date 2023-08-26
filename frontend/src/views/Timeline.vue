@@ -2,7 +2,7 @@
   <n-card id="container">
     <n-list>
       <n-list-item v-for="post in posts" :key="post.id">
-        <PostComponent :post="post" />
+        <PostContainer :post="post" />
       </n-list-item>
       <div ref="postContainer"></div>
     </n-list>
@@ -15,14 +15,14 @@ import axios from 'axios';
 
 import type Post from '@/interface/post';
 import type IndexPostRequest from '@/interface/response/indexPostRequest';
-import PostComponent from '@/components/Post.vue';
+import PostContainer from '@/components/post/PostContainer.vue';
 
 export default {
   components: {
     NList,
     NListItem,
     NCard,
-    PostComponent
+    PostContainer
   },
   data() {
     return {

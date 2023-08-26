@@ -1,18 +1,18 @@
 <template>
   <div id="container">
-    <PostComponent v-if="post" :post="post" :enable-show-post-link="false" show-comments />
+    <PostContainer v-if="post" :post="post" :enable-show-post-link="false" show-comments />
   </div>
 </template>
 <script lang="ts">
 import axios from 'axios';
 import { defineComponent, type PropType, type Ref, ref } from 'vue';
-import PostComponent from '@/components/Post.vue';
+import PostContainer from '@/components/post/PostContainer.vue';
 import type Post from '@/interface/post';
 import type ShowPostRequest from '@/interface/response/showPostResponse';
 
 export default defineComponent({
   components: {
-    PostComponent
+    PostContainer
   },
   props: {
     postId: {

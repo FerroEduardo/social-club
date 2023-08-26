@@ -39,55 +39,17 @@
       </div>
     </div>
     <template v-if="showComments" #footer>
-      <n-card title="Comentários">
-        <n-list v-if="comments.length > 0">
-          <n-list-item v-for="comment in comments" :key="comment.id">
-            <n-thing
-              :title="comment.authorName"
-              :title-extra="parseTimestamp(comment.createdAt)"
-              :description="comment.value"
-            />
-          </n-list-item>
-        </n-list>
-        <n-empty v-else description="Seja o primeiro a comentar" />
-        <template #action>
-          <n-input-group>
-            <n-input
-              v-model:value="commentInput"
-              placeholder="O que está pensando?"
-              type="textarea"
-              :autosize="{
-                minRows: 1,
-                maxRows: 5
-              }"
-              :maxlength="200"
-            />
-            <n-button type="primary" ghost @click="sendComment"> Comentar </n-button>
-          </n-input-group>
-        </template>
-      </n-card>
+      <PostCommentSection :post-id="post.id" />
     </template>
   </n-thing>
 </template>
 <script lang="ts">
-import {
-  NThing,
-  NButton,
-  NButtonGroup,
-  NPopover,
-  NCard,
-  NList,
-  NListItem,
-  NEmpty,
-  NInput,
-  NInputGroup
-} from 'naive-ui';
+import { NThing, NButton, NButtonGroup, NPopover } from 'naive-ui';
 import { defineComponent, type PropType } from 'vue';
 import axios from 'axios';
 import type Post from '@/interface/post';
 import type PostVoteResponse from '@/interface/response/postVoteResponse';
-import type IndexCommentResponse from '@/interface/response/indexCommentResponse';
-import type Comment from '@/interface/comment';
+import PostCommentSection from './PostCommentSection.vue';
 
 export default defineComponent({
   components: {
@@ -95,12 +57,7 @@ export default defineComponent({
     NButton,
     NButtonGroup,
     NPopover,
-    NCard,
-    NList,
-    NListItem,
-    NEmpty,
-    NInput,
-    NInputGroup
+    PostCommentSection
   },
   props: {
     post: {
@@ -130,20 +87,10 @@ export default defineComponent({
     return {
       commentInput: '' as string,
       userVote: this.post.userVote,
-      reputation: this.post.reputation,
-      comments: [] as Comment[]
+      reputation: this.post.reputation
     };
   },
   methods: {
-    parseTimestamp(timestamp: string) {
-      return new Date(timestamp).toLocaleDateString(undefined, {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: 'numeric',
-        minute: 'numeric'
-      });
-    },
     handlePostImageClick() {
       if (this.enableShowPostLink) {
         this.$router.push(`/post/${this.post.id}`);
@@ -167,34 +114,7 @@ export default defineComponent({
         .catch((error) => {
           // display vote failed
         });
-    },
-    indexComments() {
-      // TODO infinite scroll
-      axios
-        .get<IndexCommentResponse>(`/post/${this.post.id}/comment?page=0&size=100`)
-        .then((response) => {
-          this.comments = response.data.content;
-        })
-        .catch((error) => {
-          // display index failed
-        });
-    },
-    sendComment() {
-      axios
-        .post<IndexCommentResponse>(`/post/${this.post.id}/comment`, {
-          value: this.commentInput
-        })
-        .then((response) => {
-          this.commentInput = '';
-          this.indexComments();
-        })
-        .catch((error) => {
-          // display index failed
-        });
     }
-  },
-  mounted() {
-    this.indexComments();
   }
 });
 </script>
