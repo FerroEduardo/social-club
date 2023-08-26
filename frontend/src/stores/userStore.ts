@@ -19,9 +19,10 @@ export const useUserStore = defineStore('user', {
     setAuthenticated(authenticated: boolean) {
       this.authenticated = authenticated;
     },
-    setProfile(username: string, email: string, imageUrl: string) {
+    setProfile(id: number, name: string, email: string, imageUrl: string) {
       const profile: UserProfile = {
-        username,
+        id,
+        name,
         email,
         imageUrl
       };

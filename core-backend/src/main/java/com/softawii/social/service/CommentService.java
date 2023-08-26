@@ -8,8 +8,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
+import java.util.regex.Pattern;
+
 @Component
 public class CommentService {
+    public static final Pattern COMMENT_VALUE_PATTERN = Pattern.compile("(\n{2,2})(\n*)", Pattern.CASE_INSENSITIVE);
     private final CommentRepository repository;
 
     public CommentService(CommentRepository repository) {
@@ -24,5 +27,14 @@ public class CommentService {
 
     public Page<CommentDTO> findAll(Long postId, int page, int size) {
         return repository.findAllByPostIdSafe(postId, PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt")));
+    }
+
+    public void delete(Long commentId) {
+        repository.deleteById(commentId);
+    }
+
+    public void delete(Long commentId, Long authorId) {
+        Comment comment = repository.findByIdAndAuthorId(commentId, authorId).orElseThrow();
+        repository.softDelete(commentId);
     }
 }

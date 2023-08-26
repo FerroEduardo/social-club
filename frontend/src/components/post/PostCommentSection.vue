@@ -2,7 +2,7 @@
   <n-card title="Comentários">
     <n-list v-if="comments.length > 0">
       <n-list-item v-for="comment in comments" :key="comment.id">
-        <PostComment :comment="comment" />
+        <PostComment :comment="comment" @refreshList="indexComments" />
       </n-list-item>
     </n-list>
     <n-empty v-else description="Seja o primeiro a comentar" />
@@ -16,9 +16,10 @@
             minRows: 1,
             maxRows: 5
           }"
-          :maxlength="200"
         />
-        <n-button type="primary" ghost @click="sendComment"> Comentar </n-button>
+        <n-button type="primary" ghost @click="sendComment" style="height: auto">
+          Comentar
+        </n-button>
       </n-input-group>
     </template>
   </n-card>

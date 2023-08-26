@@ -53,9 +53,16 @@ export default {
     checkIsAuthenticated() {
       axios
         .get('/ping')
-        .then((response) => {
+        .then(async (response) => {
           if (response.status === 200) {
+            const response = await axios.get('/user/me');
             this.userStore.setAuthenticated(true);
+            this.userStore.setProfile(
+              response.data.id,
+              response.data.name,
+              response.data.username,
+              response.data.imageUrl
+            );
             console.log('authenticated');
           } else {
             console.error('failed to check if user is authenticated', { response });
