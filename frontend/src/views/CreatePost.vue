@@ -113,7 +113,7 @@ export default {
   },
   setup() {
     const formRef = ref<FormInst | null>(null);
-    const gameInputRef = ref(null) as Ref<string | null>;
+    const gameInputRef = ref(undefined) as Ref<string | undefined>;
     const imageInputRef = ref(null) as Ref<File | null>;
     const gameListRef = ref([]) as Ref<AutoCompleteOption[]>;
     const selectedGameIdRef = ref(null) as Ref<string | null>;
@@ -204,7 +204,7 @@ export default {
         });
       }
     },
-    handleGameSelect(id: string) {
+    handleGameSelect(id: any) {
       this.selectedGameId = id;
     },
     async validateForm() {

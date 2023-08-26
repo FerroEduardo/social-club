@@ -28,7 +28,7 @@ export default {
   },
   setup() {
     const theme = darkTheme;
-    document.querySelector('body').style.backgroundColor = theme.common.bodyColor;
+    document.querySelector('body')!.style.backgroundColor = theme.common.bodyColor;
 
     return {
       theme,
