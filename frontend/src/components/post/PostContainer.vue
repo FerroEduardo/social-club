@@ -49,7 +49,7 @@
   </n-thing>
 </template>
 <script lang="ts">
-import { NThing, NButton, NButtonGroup, NPopover } from 'naive-ui';
+import { NThing, NButton, NButtonGroup, NPopover, useMessage } from 'naive-ui';
 import { defineComponent, type PropType } from 'vue';
 import axios from 'axios';
 import type Post from '@/interface/post';
@@ -79,6 +79,11 @@ export default defineComponent({
       required: false,
       default: false
     }
+  },
+  setup() {
+    return {
+      message: useMessage()
+    };
   },
   computed: {
     isUpVoteGhosted() {
@@ -117,7 +122,8 @@ export default defineComponent({
           this.userVote = value;
         })
         .catch((error) => {
-          // display vote failed
+          this.message.error('Ocorreu um erro durante o voto');
+          console.error({ error });
         });
     }
   }

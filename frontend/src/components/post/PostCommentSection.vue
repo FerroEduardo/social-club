@@ -41,7 +41,8 @@ import {
   NButton,
   NInputGroup,
   NInput,
-  NPagination
+  NPagination,
+  useMessage
 } from 'naive-ui';
 import { type PropType } from 'vue';
 import axios from 'axios';
@@ -67,6 +68,11 @@ export default {
       required: true
     }
   },
+  setup() {
+    return {
+      message: useMessage()
+    };
+  },
   data() {
     return {
       commentInput: '' as string,
@@ -84,15 +90,15 @@ export default {
         })
         .then((response) => {
           this.commentInput = '';
+          this.message.success('Comentário criado com sucesso');
           this.fetchComments();
         })
         .catch((error) => {
-          // display index failed
+          this.message.error('Ocorreu um erro na criação de comentário');
+          console.error({ error });
         });
     },
     fetchComments() {
-      console.log('fetchComments');
-
       const page = this.page - 1; // component starts with page 1
       axios
         .get<IndexCommentResponse>(
@@ -103,7 +109,8 @@ export default {
           this.pageCount = response.data.totalPages;
         })
         .catch((error) => {
-          // display index failed
+          this.message.error('Ocorreu um erro ao buscar comentários');
+          console.error({ error });
         });
     }
   },

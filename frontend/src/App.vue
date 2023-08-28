@@ -73,7 +73,6 @@ export default {
               response.data.username,
               response.data.imageUrl
             );
-            console.log('authenticated');
           } else {
             console.error('failed to check if user is authenticated', { response });
           }
@@ -81,9 +80,9 @@ export default {
         .catch((reason) => {
           if (reason?.response?.status === 401) {
             this.userStore.setAuthenticated(false);
-            console.log('unauthenticated');
           } else {
             console.error('failed to check if user is authenticated', { reason });
+            window.alert('Ocorreu um erro na verificação de autenticação do usuário');
           }
         });
     }

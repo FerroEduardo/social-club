@@ -41,7 +41,6 @@ export default {
   methods: {
     getPostPage() {
       if (this.isLoadingData || this.isLast) return;
-      // eslint-disable-next-line no-plusplus
       const page = this.page++;
       const size = this.pageSize;
       this.isLoadingData = true;
@@ -79,7 +78,8 @@ export default {
           );
         })
         .catch((reason) => {
-          // failed
+          this.message.error('Ocorreu um erro na busca por postagens');
+          console.error(reason);
         })
         .finally(() => {
           this.isLoadingData = false;

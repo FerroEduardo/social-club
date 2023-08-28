@@ -82,8 +82,9 @@ export default {
             };
           });
         })
-        .catch((reason) => {
+        .catch((error) => {
           this.message.error('Ocorreu um erro ao buscar as postagens');
+          console.error({ error });
         });
     },
     parseTimestamp(date: Date) {

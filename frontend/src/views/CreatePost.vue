@@ -88,7 +88,8 @@ import {
   type AutoCompleteOption,
   type UploadFileInfo,
   type FormInst,
-  type FormItemRule
+  type FormItemRule,
+  useMessage
 } from 'naive-ui';
 import { ref, computed, type Ref } from 'vue';
 import axios from 'axios';
@@ -169,7 +170,8 @@ export default {
           }
         }
       },
-      isRequestRunning: ref(false)
+      isRequestRunning: ref(false),
+      message: useMessage()
     };
   },
   methods: {
@@ -187,7 +189,8 @@ export default {
         return response.data.content;
       } catch (error) {
         console.error({ error });
-        // display alert
+        this.message.error('Ocorreu um erro na busca por jogos');
+
         return [];
       }
     },
@@ -234,10 +237,10 @@ export default {
           if (response.status === 200) {
             this.$router.push(`/post/${response.data.id}`);
           }
-          // failed to create post ?
+          this.message.error('Ocorreu um erro inesperado na criação da postagem');
         })
         .catch((reason) => {
-          // failed to create post
+          this.message.error('Ocorreu um erro na criação da postagem');
           console.log({ reason });
         })
         .finally(() => {

@@ -52,6 +52,7 @@ export default {
         })
         .catch((error) => {
           this.message.error('Erro ao buscar dados do perfil');
+          console.error({ error });
         });
     }
   },

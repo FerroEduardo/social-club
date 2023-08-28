@@ -4,6 +4,7 @@
   </div>
 </template>
 <script lang="ts">
+import { useMessage } from 'naive-ui';
 import axios from 'axios';
 import { defineComponent, type PropType, type Ref, ref } from 'vue';
 import PostContainer from '@/components/post/PostContainer.vue';
@@ -22,7 +23,8 @@ export default defineComponent({
   },
   setup() {
     return {
-      post: ref(null) as Ref<Post | null>
+      post: ref(null) as Ref<Post | null>,
+      message: useMessage()
     };
   },
   methods: {
@@ -59,6 +61,7 @@ export default defineComponent({
         })
         .catch((reason) => {
           // failed to fetch post
+          this.message.error('Ocorreu um erro na busca por postagens do usuário');
         });
     }
   },
