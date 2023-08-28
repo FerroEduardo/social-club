@@ -13,4 +13,5 @@ export default interface Post {
     name: string;
     imageUrl: string;
   };
+  createdAt: Date;
 }

@@ -4,7 +4,7 @@
       <n-form ref="formRef" label-placement="top" :rules="rules" :model="model">
         <n-grid :x-gap="24" :cols="1">
           <n-form-item-gi label="Título" path="title" required>
-            <n-input v-model:value="model.title" placeholder="Título" />
+            <n-input v-model:value="model.title" placeholder="Título" :maxlength="100" />
           </n-form-item-gi>
           <n-form-item-gi label="Descrição" path="description" required>
             <n-input
@@ -15,6 +15,7 @@
                 minRows: 1,
                 maxRows: 5
               }"
+              :maxlength="200"
             />
           </n-form-item-gi>
           <n-form-item-gi label="Imagem" path="image" required>
