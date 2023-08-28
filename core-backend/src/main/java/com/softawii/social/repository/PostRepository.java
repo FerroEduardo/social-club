@@ -29,10 +29,10 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             FROM social.post p
                      INNER JOIN social.user u ON u.id = p.author_id
                      INNER JOIN social.game g ON g.id = p.game_id
-                     LEFT JOIN social.post_vote pv ON pv.post_id = p.id AND pv.user_id = :user_id
+                     LEFT JOIN social.post_vote pv ON pv.post_id = p.id AND (:user_id IS NULL OR :user_id = pv.user_id)
             WHERE (:post_id IS NULL OR :post_id = p.id)
             """,
-           countQuery = "SELECT COUNT(p) FROM social.post p WHERE (:post_id IS NULL OR :post_id = p.id) AND (:image_url = :image_url) AND (:user_id = :user_id)",
+           countQuery = "SELECT COUNT(p) FROM social.post p WHERE (:post_id IS NULL OR :post_id = p.id) AND (:image_url = :image_url) AND (:user_id IS NULL OR :user_id = :user_id)",
            nativeQuery = true)
     Page<Map<String, Object>> findPosts(
             @Param("image_url") String image_url,
