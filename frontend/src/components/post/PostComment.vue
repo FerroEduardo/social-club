@@ -2,25 +2,28 @@
   <n-thing :title="comment.authorName" content-style="white-space: pre-line">
     <template v-if="isUserOwnerOfComment" #header-extra>
       {{ parseTimestamp(comment.createdAt) }}
-      <n-button
-        circle
-        size="small"
-        type="error"
-        secondary
-        @click="deleteComment"
-        :loading="isDeleting"
+      <n-popconfirm
+        @positive-click="deleteComment"
+        negative-text="Não"
+        positive-text="Sim, quero remover"
       >
-        <template #icon>
-          <trash />
+        <template #trigger>
+          <n-button circle size="small" type="error" secondary :loading="isDeleting">
+            <template #icon>
+              <trash />
+            </template>
+          </n-button>
         </template>
-      </n-button>
+        Tem certeza que deseja remover o comentário?
+      </n-popconfirm>
     </template>
     {{ comment.value }}
   </n-thing>
 </template>
+
 <script lang="ts">
 import { type PropType } from 'vue';
-import { NThing, NButton } from 'naive-ui';
+import { NThing, NButton, NPopconfirm } from 'naive-ui';
 import { Trash } from '@vicons/ionicons5';
 import axios from 'axios';
 import type Comment from '@/interface/comment';
@@ -30,7 +33,8 @@ export default {
   components: {
     NThing,
     NButton,
-    Trash
+    Trash,
+    NPopconfirm
   },
   props: {
     comment: {
@@ -70,4 +74,5 @@ export default {
   }
 };
 </script>
+
 <style></style>
