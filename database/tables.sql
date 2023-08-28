@@ -3,15 +3,6 @@ SET TIMEZONE TO 'UTC';
 DROP SCHEMA IF EXISTS social CASCADE;
 CREATE SCHEMA IF NOT EXISTS social;
 
-DROP TABLE IF EXISTS social.user CASCADE;
-CREATE TABLE IF NOT EXISTS social.user
-(
-    id        SERIAL PRIMARY KEY,
-    name      VARCHAR(100)        NOT NULL,
-    email     VARCHAR(300) UNIQUE NOT NULL,
-    image_url VARCHAR(300)        NOT NULL
-);
-
 DROP TABLE IF EXISTS social.game CASCADE;
 CREATE TABLE IF NOT EXISTS social.game
 (
@@ -37,13 +28,22 @@ CREATE TABLE IF NOT EXISTS social.image
         ) -- Insert blob or s3, not both or none
 );
 
+DROP TABLE IF EXISTS social.user CASCADE;
+CREATE TABLE IF NOT EXISTS social.user
+(
+    id       SERIAL PRIMARY KEY,
+    name     VARCHAR(100)        NOT NULL,
+    email    VARCHAR(300) UNIQUE NOT NULL,
+    image_id INTEGER             NULL REFERENCES social.image (id) ON DELETE CASCADE
+);
+
 DROP TABLE IF EXISTS social.post CASCADE;
 CREATE TABLE IF NOT EXISTS social.post
 (
     id          SERIAL PRIMARY KEY,
     author_id   INTEGER      NOT NULL REFERENCES social.user (id) ON DELETE CASCADE,
     game_id     INTEGER      NOT NULL REFERENCES social.game (id) ON DELETE CASCADE,
-    title VARCHAR(100) NULL,
+    title       VARCHAR(100) NULL,
     description VARCHAR(200) NULL,
     image_id    INTEGER      NOT NULL REFERENCES social.image (id) ON DELETE CASCADE,
     created_at  TIMESTAMPTZ  NOT NULL DEFAULT (CURRENT_TIMESTAMP AT TIME ZONE 'UTC'),

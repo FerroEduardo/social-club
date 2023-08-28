@@ -20,7 +20,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
                 p.modified_at AS "modifiedAt",
                 u.id AS "authorId",
                 u.name AS "authorName",
-                u.image_url AS "authorImageUrl",
+                CONCAT(:image_url, u.image_id) AS "authorImageUrl",
                 p.game_id AS "gameId",
                 g.name AS "gameName",
                 g.studio AS "gameStudio",
@@ -29,8 +29,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             FROM social.post p
                      INNER JOIN social.user u ON u.id = p.author_id
                      INNER JOIN social.game g ON g.id = p.game_id
-                     LEFT JOIN social.post_vote pv ON pv.post_id = p.id AND (:user_id IS NULL OR :user_id = pv.user_id)
-            WHERE (:post_id IS NULL OR :post_id = p.id)
+                     LEFT JOIN social.post_vote pv ON pv.post_id = p.id AND pv.user_id = :user_id
+            WHERE (:post_id IS NULL OR :post_id = p.id) AND (:user_id IS NULL OR :user_id = pv.user_id)
             """,
            countQuery = "SELECT COUNT(p) FROM social.post p WHERE (:post_id IS NULL OR :post_id = p.id) AND (:image_url = :image_url) AND (:user_id IS NULL OR :user_id = :user_id)",
            nativeQuery = true)

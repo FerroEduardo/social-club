@@ -19,7 +19,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     @Query(
             value = """
-                    SELECT new com.softawii.social.model.dto.request.comment.CommentDTO(c.id, c.authorId, u.name, c.value, c.createdAt, u.imageUrl)
+                    SELECT new com.softawii.social.model.dto.request.comment.CommentDTO(c.id, c.authorId, u.name, c.value, c.createdAt, concat(com.softawii.social.service.ImageService.IMAGE_URL_PREFIX, u.imageId) )
                     FROM Comment c INNER join User u ON u.id = c.authorId WHERE c.postId = :postId AND c.deletedAt IS NULL
                     """,
             countQuery = "SELECT count(*) FROM Comment c WHERE c.postId = :postId AND c.deletedAt IS NULL")
@@ -27,7 +27,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     @Query(
             value = """
-                    SELECT new com.softawii.social.model.dto.request.comment.CommentDTO(c.id, c.authorId, u.name, c.value, c.createdAt, u.imageUrl)
+                    SELECT new com.softawii.social.model.dto.request.comment.CommentDTO(c.id, c.authorId, u.name, c.value, c.createdAt, concat(com.softawii.social.service.ImageService.IMAGE_URL_PREFIX, u.imageId))
                     FROM Comment c INNER join User u ON u.id = c.authorId WHERE c.id = :id AND c.deletedAt IS NULL
                     """)
     Optional<CommentDTO> findByIdSafe(Long id);

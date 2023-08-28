@@ -1,7 +1,9 @@
 package com.softawii.social.service;
 
+import com.softawii.social.exception.FailedToCreateImageException;
 import com.softawii.social.exception.GithubOAuth2MissingEmailException;
 import com.softawii.social.exception.OAuth2AuthenticationProcessingException;
+import com.softawii.social.model.Image;
 import com.softawii.social.model.User;
 import com.softawii.social.repository.UserRepository;
 import com.softawii.social.security.UserPrincipal;
@@ -16,15 +18,21 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.net.URL;
 import java.util.Optional;
 
 @Service
 public class OAuth2UserService extends DefaultOAuth2UserService {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final ImageService   imageService;
 
-    public OAuth2UserService(UserRepository userRepository) {
+    public OAuth2UserService(UserRepository userRepository, ImageService imageService) {
         this.userRepository = userRepository;
+        this.imageService = imageService;
     }
 
     @Override
@@ -54,7 +62,8 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         Optional<User> userOptional = userRepository.findByEmail(oAuth2UserInfo.getEmail());
         User           user;
         if (userOptional.isEmpty()) {
-            user = registerNewUser(oAuth2UserInfo);
+            Image image = uploadUserImage(oAuth2UserInfo);
+            user = registerNewUser(oAuth2UserInfo, image);
         } else {
             user = userOptional.get();
         }
@@ -62,12 +71,30 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         return UserPrincipal.create(user, oAuth2User.getAttributes());
     }
 
-    private User registerNewUser(OAuth2UserInfo oAuth2UserInfo) {
+    private User registerNewUser(OAuth2UserInfo oAuth2UserInfo, Image image) {
         User user = new User();
         user.setName(oAuth2UserInfo.getName());
         user.setEmail(oAuth2UserInfo.getEmail());
-        user.setImageUrl(oAuth2UserInfo.getImageUrl());
+        if (image != null) {
+            user.setImageId(image.getId());
+        }
 
         return userRepository.save(user);
+    }
+
+    private Image uploadUserImage(OAuth2UserInfo oAuth2UserInfo) {
+        try (BufferedInputStream in = new BufferedInputStream(new URL(oAuth2UserInfo.getImageUrl()).openStream());
+             ByteArrayOutputStream fileOutputStream = new ByteArrayOutputStream()) {
+            byte[] dataBuffer = new byte[1024];
+            int    bytesRead;
+            while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
+                fileOutputStream.write(dataBuffer, 0, bytesRead);
+            }
+            byte[] image = fileOutputStream.toByteArray();
+            return imageService.create(image);
+        } catch (IOException | FailedToCreateImageException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

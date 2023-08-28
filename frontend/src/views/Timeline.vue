@@ -4,13 +4,22 @@
       <n-list-item v-for="post in posts" :key="post.id">
         <PostContainer :post="post" />
       </n-list-item>
+      <div v-if="posts.length === 0">
+        <n-empty description="Nenhum post encontrado">
+          <template #extra>
+            <n-button size="small" @click="$router.push('/post')">
+              Seja o primeiro a fazer uma postagem
+            </n-button>
+          </template>
+        </n-empty>
+      </div>
       <div ref="postContainer"></div>
     </n-list>
   </n-card>
 </template>
 
 <script lang="ts">
-import { NList, NListItem, NCard, useMessage } from 'naive-ui';
+import { NList, NListItem, NCard, useMessage, NEmpty, NButton } from 'naive-ui';
 import axios from 'axios';
 
 import type Post from '@/interface/post';
@@ -22,7 +31,9 @@ export default {
     NList,
     NListItem,
     NCard,
-    PostContainer
+    PostContainer,
+    NEmpty,
+    NButton
   },
   setup() {
     return {
@@ -68,8 +79,7 @@ export default {
                 author: {
                   id: post.authorId,
                   name: post.authorName,
-                  imageUrl:
-                    'https://avatars.cloudflare.steamstatic.com/b69c069ae57724cc0bdbcf4eff87d4bb4feb3def_full.jpg' // post.authorImageUrl
+                  imageUrl: post.authorImageUrl
                 },
                 userVote: post.userVote,
                 createdAt: new Date(post.createdAt)

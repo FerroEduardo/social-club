@@ -234,10 +234,11 @@ export default {
       axios
         .post<CreatePostResponse>('/post', form)
         .then((response) => {
-          if (response.status === 200) {
-            this.$router.push(`/post/${response.data.id}`);
+          if (response.status !== 200) {
+            this.message.error('Ocorreu um erro inesperado na criação da postagem');
+            return;
           }
-          this.message.error('Ocorreu um erro inesperado na criação da postagem');
+          this.$router.push(`/post/${response.data.id}`);
         })
         .catch((reason) => {
           this.message.error('Ocorreu um erro na criação da postagem');

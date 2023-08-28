@@ -19,7 +19,6 @@ import java.util.Optional;
 
 @Component
 public class PostService {
-    private static final String         IMAGE_URL_PREFIX = "http://localhost:8099/image/";
     private final        PostRepository repository;
 
     public PostService(PostRepository repository) {
@@ -27,7 +26,7 @@ public class PostService {
     }
 
     public Optional<PostDTO> findById(Long id, Long userId) {
-        Optional<Map<String, Object>> optional = repository.findPosts(IMAGE_URL_PREFIX, id, userId, PageRequest.of(0, 1)).stream().findFirst();
+        Optional<Map<String, Object>> optional = repository.findPosts(ImageService.IMAGE_URL_PREFIX, id, userId, PageRequest.of(0, 1)).stream().findFirst();
         if (optional.isEmpty()) {
             return Optional.empty();
         }
@@ -57,7 +56,7 @@ public class PostService {
     }
 
     public Page<Map<String, Object>> findAll(Long userId) {
-        return repository.findPosts(IMAGE_URL_PREFIX, null, userId, Pageable.unpaged());
+        return repository.findPosts(ImageService.IMAGE_URL_PREFIX, null, userId, Pageable.unpaged());
     }
 
     public Page<Map<String, Object>> findAll() {
@@ -65,7 +64,7 @@ public class PostService {
     }
 
     public Page<Map<String, Object>> findAll(Long userId, int page, int size) {
-        return repository.findPosts(IMAGE_URL_PREFIX, null, userId, PageRequest.of(page, size, Sort.by(Direction.DESC, "created_at")));
+        return repository.findPosts(ImageService.IMAGE_URL_PREFIX, null, userId, PageRequest.of(page, size, Sort.by(Direction.DESC, "created_at")));
     }
 
     public Page<Map<String, Object>> findAll(int page, int size) {

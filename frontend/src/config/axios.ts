@@ -4,7 +4,7 @@ import router from '@/router';
 const API_URL = import.meta.env.VITE_API_URL;
 
 axios.defaults.baseURL = API_URL;
-axios.defaults.timeout = 5_000; // 5000 ms = 5 s
+axios.defaults.timeout = 15_000; // 5000 ms = 5 s
 axios.defaults.withCredentials = true;
 
 axios.interceptors.response.use(

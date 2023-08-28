@@ -15,8 +15,8 @@ public class User {
     @Email
     private String email;
 
-    @Column(name = "image_url")
-    private String imageUrl;
+    @Column(name = "image_id")
+    private Long imageId;
 
     public Long getId() {
         return id;
@@ -42,12 +42,12 @@ public class User {
         this.email = email;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public Long getImageId() {
+        return imageId;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setImageId(Long imageUrl) {
+        this.imageId = imageUrl;
     }
 
     @Override
@@ -56,7 +56,7 @@ public class User {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
-                ", imageUrl='" + imageUrl + '\'' +
+                ", imageUrl='" + imageId + '\'' +
                 '}';
     }
 }

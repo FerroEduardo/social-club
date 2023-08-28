@@ -69,7 +69,7 @@ export default {
                 id: post.gameId,
                 name: post.gameName,
                 studio: post.gameStudio,
-                imageUrl: 'https://cdn.cloudflare.steamstatic.com/steam/apps/730/header.jpg'
+                imageUrl: post.authorImageUrl
               },
               author: {
                 id: post.authorId,

@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("user")
@@ -28,10 +27,10 @@ public class UserController {
     }
 
     @GetMapping("me")
-    public Object user(OAuth2AuthenticationToken authentication) throws Exception {
+    public ResponseEntity<?> user(OAuth2AuthenticationToken authentication) throws Exception {
         UserPrincipal user = (UserPrincipal) authentication.getPrincipal();
 
-        return service.findByEmail(user.getEmail()).get();
+        return ResponseEntity.ok(service.findByEmailSafe(user.getEmail()).get());
     }
 
     @GetMapping("post")

@@ -28,9 +28,10 @@ import java.util.Optional;
 @Component
 public class ImageService {
 
-    private final AppConfig       appConfig;
-    private final ImageRepository repository;
-    private final FileUploadUtil  fileUploadUtil;
+    public static final String          IMAGE_URL_PREFIX = "http://localhost:8099/image/";
+    private final       AppConfig       appConfig;
+    private final       ImageRepository repository;
+    private final       FileUploadUtil  fileUploadUtil;
 
     public ImageService(AppConfig appConfig, ImageRepository repository, FileUploadUtil fileUploadUtil) {
         this.appConfig = appConfig;
