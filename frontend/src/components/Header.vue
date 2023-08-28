@@ -17,23 +17,24 @@
       </router-link>
     </nav>
     <div id="header-right">
-      <router-link v-if="!userStore.isAuthenticated" to="/login">
+      <HeaderProfilePopover v-if="userStore.isAuthenticated" />
+      <router-link v-else to="/login">
         <n-button type="primary"> Fazer login </n-button>
       </router-link>
-      <n-button v-else type="default" @click="logout"> Log out </n-button>
     </div>
   </header>
 </template>
 <script lang="ts">
-import { NButton, NA } from 'naive-ui';
+import { NButton, NA, NPopover } from 'naive-ui';
 
 import { useUserStore } from '@/stores/userStore';
-const API_URL = import.meta.env.VITE_API_URL;
+import HeaderProfilePopover from '@/components/header/HeaderProfilePopover.vue';
 
 export default {
   components: {
     NButton,
-    NA
+    NA,
+    HeaderProfilePopover
   },
   setup() {
     return {
@@ -53,11 +54,6 @@ export default {
         }
       ]
     };
-  },
-  methods: {
-    logout() {
-      window.location.href = `${API_URL}/logout`;
-    }
   }
 };
 </script>
