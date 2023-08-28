@@ -37,7 +37,7 @@ export default defineComponent({
           const post = request.data;
           this.post = {
             id: post.id,
-            title: 'Lorem ipsum dolor sit amet',
+            title: post.title,
             description: post.description,
             reputation: post.reputation,
             imageUrl: post.imageUrl,
@@ -53,7 +53,8 @@ export default defineComponent({
               imageUrl:
                 'https://avatars.cloudflare.steamstatic.com/b69c069ae57724cc0bdbcf4eff87d4bb4feb3def_full.jpg' // post.authorImageUrl
             },
-            userVote: post.userVote
+            userVote: post.userVote,
+            createdAt: new Date(post.createdAt)
           };
         })
         .catch((reason) => {

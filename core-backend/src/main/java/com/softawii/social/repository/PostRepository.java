@@ -13,6 +13,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query(value = """
             SELECT
                 p.id,
+                p.title,
                 p.description,
                 COALESCE((SELECT pr.reputation FROM social.post_reputation pr WHERE pr.post_id = p.id), 0) AS reputation,
                 p.created_at AS "createdAt",

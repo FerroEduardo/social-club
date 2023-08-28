@@ -9,6 +9,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.stream.Stream;
 
 public class CreatePostRequestDTO {
+    @Size(min = 1, max = 100, message = "The length of \"title\" must be between 1 and 100")
+    private String title;
+
     @Size(min = 1, max = 200, message = "The length of \"description\" must be between 1 and 200")
     private String description;
 
@@ -24,8 +27,16 @@ public class CreatePostRequestDTO {
 
     @AssertTrue(message = "Invalid image content type")
     private boolean invalidImageContentType() {
-        return Stream.of("image/png", "image/jpg", "image/jpeg")
+        return Stream.of("image/png", "image/jpg", "image/jpeg", "image/webp")
                 .noneMatch(contentType -> contentType.equals(image.getContentType()));
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getDescription() {

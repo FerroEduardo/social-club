@@ -127,8 +127,8 @@ export default {
         return gameListRef.value;
       }),
       model: ref({
-        title: null,
-        description: null,
+        title: null as string | null,
+        description: null as string | null,
         game: gameInputRef,
         image: imageInputRef
       }),
@@ -137,12 +137,12 @@ export default {
       gameListRef,
       rules: {
         title: {
-          required: true,
+          // required: true,
           trigger: ['blur', 'input'],
           message: 'Insira um título'
         },
         description: {
-          required: true,
+          // required: true,
           trigger: ['blur', 'input'],
           message: 'Insira uma descrição'
         },
@@ -226,11 +226,7 @@ export default {
 
       this.isRequestRunning = true;
 
-      const form = new FormData();
-      form.append('image', this.model.image!);
-      form.append('gameId', this.selectedGameId!);
-      form.append('title', this.model.title!);
-      form.append('description', this.model.description!);
+      const form = this.getFormData();
 
       axios
         .post<CreatePostResponse>('/post', form)
@@ -247,6 +243,21 @@ export default {
         .finally(() => {
           this.isRequestRunning = false;
         });
+    },
+    getFormData(): FormData {
+      const form = new FormData();
+      form.append('image', this.model.image!);
+      form.append('gameId', this.selectedGameId!);
+      if (this.model.title && this.model.title.trim().length) {
+        let title = this.model.title.trim();
+        form.append('title', title);
+      }
+      if (this.model.description && this.model.description.trim().length) {
+        let description = this.model.description.trim();
+        form.append('description', description);
+      }
+
+      return form;
     }
   }
 };

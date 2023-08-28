@@ -36,6 +36,7 @@ public class PostService {
         PostDTO             post = new PostDTO();
         post.setId(Long.valueOf(map.get("id").toString()))
                 .setDescription((String) map.get("description"))
+                .setTitle((String) map.get("title"))
                 .setReputation(Long.valueOf(map.get("reputation").toString()))
                 .setCreatedAt(ZonedDateTime.parse(map.get("createdAt").toString()))
                 .setModifiedAt(ZonedDateTime.parse(map.get("modifiedAt").toString()))
@@ -71,10 +72,11 @@ public class PostService {
         return this.findAll(null, page, size);
     }
 
-    public Post create(User user, Game game, Image image, String description) {
+    public Post create(User user, Game game, Image image, String title, String description) {
         Post post = new Post();
         post.setUser(user);
         post.setGame(game);
+        post.setTitle(title);
         post.setDescription(description);
         post.setImage(image);
 

@@ -4,6 +4,7 @@ import java.time.ZonedDateTime;
 
 public class PostDTO {
     private Long          id;
+    private String        title;
     private String        description;
     private Long          reputation;
     private ZonedDateTime createdAt;
@@ -26,6 +27,15 @@ public class PostDTO {
 
     public PostDTO setId(Long id) {
         this.id = id;
+        return this;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public PostDTO setTitle(String title) {
+        this.title = title;
         return this;
     }
 

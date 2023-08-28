@@ -114,7 +114,7 @@ public class PostController {
             e.printStackTrace();
             return ResponseEntity.internalServerError().body(Map.of("message", "Unable to save image"));
         }
-        Post post = postService.create(user, game, image, dto.getDescription());
+        Post post = postService.create(user, game, image, dto.getTitle(), dto.getDescription());
 
         return ResponseEntity.ok(Map.of("id", post.getId()));
     }

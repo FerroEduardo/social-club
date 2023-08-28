@@ -29,6 +29,9 @@ public class Post {
     @Column
     private String description;
 
+    @Column
+    private String title;
+
     @Column(name = "created_at")
     private ZonedDateTime createdAt;
 
@@ -60,6 +63,14 @@ public class Post {
 
     public void setGame(Game game) {
         this.game = game;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getDescription() {

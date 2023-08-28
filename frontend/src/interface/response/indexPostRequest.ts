@@ -2,6 +2,7 @@ import type Page from '../page';
 
 interface Post {
   id: number;
+  title: string;
   description: string;
   reputation: number;
   createdAt: string;

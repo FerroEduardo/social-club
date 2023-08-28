@@ -1,5 +1,10 @@
 <template>
-  <n-thing :title="post.title" :description="post.description" style="max-width: 800px">
+  <n-thing
+    id="post"
+    :title="post.title"
+    :description="post.description"
+    description-style="word-wrap: anywhere"
+  >
     <template #header-extra>
       <n-button-group>
         <n-button size="small" :ghost="isUpVoteGhosted" type="success" @click="upvote">⬆️</n-button>
@@ -118,7 +123,17 @@ export default defineComponent({
   }
 });
 </script>
+<style>
+#post .n-thing-header__extra {
+  margin-left: auto;
+}
+</style>
+
 <style scoped>
+#post {
+  max-width: 800px;
+  width: 100%;
+}
 .post-image {
   width: 100%;
 }

@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts">
-import { NCard, useMessage, NDivider } from 'naive-ui';
+import { NCard, NDivider } from 'naive-ui';
 import ProfileData from '@/components/profile/profileData.vue';
 import UserPosts from '@/components/profile/UserPosts.vue';
 

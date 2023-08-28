@@ -61,7 +61,7 @@ export default {
           this.posts = response.data.content.map((post) => {
             return {
               id: post.id,
-              title: 'Lorem ipsum dolor sit amet',
+              title: post.title,
               description: post.description,
               reputation: post.reputation,
               imageUrl: post.imageUrl,
@@ -83,7 +83,7 @@ export default {
           });
         })
         .catch((reason) => {
-          // failed
+          this.message.error('Ocorreu um erro ao buscar as postagens');
         });
     },
     parseTimestamp(date: Date) {
