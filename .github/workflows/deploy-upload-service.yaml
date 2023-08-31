@@ -1,0 +1,61 @@
+name: deploy-upload-service
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy-upload-service-job:
+    name: Deploy Upload Service
+    runs-on: ubuntu-latest
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@v3
+
+      - name: 'Wait for SSH'
+        run: |
+          SLEEP=1
+          TRIES=0
+          MAX_TRIES=10
+          while ! nc -w5 -z ${{ secrets.INSTANCE_IP }} 22; do
+            echo "SSH not available..."
+            if [[ $TRIES -eq $MAX_TRIES ]]; then
+              echo "Max tries reached, exiting"
+              exit 1
+            fi
+            ((TRIES += 1))
+            sleep $SLEEP
+          done; echo "SSH ready!"
+
+      - name: 'Creating Env File'
+        run: 'echo "$ENV_FILE" > .env'
+        shell: bash
+        working-directory: upload-service
+        env:
+          ENV_FILE: ${{ secrets.UPLOAD_SERVICE_ENV_FILE }}
+
+      - name: 'Push Repo'
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.INSTANCE_IP }}
+          username: ${{ secrets.SSH_USERNAME }}
+          passphrase: ${{ secrets.VM_SSH_PRIVATE_KEY_PASSPHRASE }}
+          key: ${{ secrets.VM_SSH_PRIVATE_KEY }}
+          source: "upload-service/*"
+          target: /var/www/project/upload-service
+          strip_components: 1
+
+      - name: 'Install and build'
+        uses: appleboy/ssh-action@v0.1.4
+        with:
+          host: ${{ secrets.INSTANCE_IP }}
+          username: ${{ secrets.SSH_USERNAME }}
+          passphrase: ${{ secrets.VM_SSH_PRIVATE_KEY_PASSPHRASE }}
+          key: ${{ secrets.VM_SSH_PRIVATE_KEY }}
+          script: |
+            export NVM_DIR="$HOME/.nvm"; [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+            cd /var/www/project/upload-service
+            npm ci
+            npm run build
+            pm2 start /var/www/project/upload-service --watch
+            echo 'Done install and build'
