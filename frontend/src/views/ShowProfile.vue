@@ -20,7 +20,7 @@
 <script lang="ts">
 import { NCard, NDivider } from 'naive-ui';
 import ProfileData from '@/components/profile/profileData.vue';
-import UserPosts from '@/components/profile/UserPosts.vue';
+import UserPosts from '@/components/profile/userPosts.vue';
 
 export default {
   components: { NCard, NDivider, ProfileData, UserPosts }

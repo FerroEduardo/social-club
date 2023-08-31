@@ -1,0 +1,67 @@
+name: deploy-front
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy-job:
+    name: Deploy Front
+    runs-on: ubuntu-latest
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: 'Wait for SSH'
+        run: |
+          SLEEP=1
+          TRIES=0
+          MAX_TRIES=10
+          while ! nc -w5 -z ${{ secrets.INSTANCE_IP }} 22; do
+            echo "SSH not available..."
+            if [[ $TRIES -eq $MAX_TRIES ]]; then
+              echo "Max tries reached, exiting"
+              exit 1
+            fi
+            ((TRIES += 1))
+            sleep $SLEEP
+          done; echo "SSH ready!"
+
+      - name: 'Creating Env File'
+        run: 'echo "$ENV_FILE" > .env'
+        shell: bash
+        working-directory: frontend
+        env:
+          ENV_FILE: ${{ secrets.FRONTEND_ENV_FILE }}
+
+      - name: 'Install packages'
+        working-directory: frontend
+        run: npm ci
+
+      - name: 'Build project'
+        working-directory: frontend
+        run: npm run build
+
+      - name: 'Push Repo'
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.INSTANCE_IP }}
+          username: ${{ secrets.SSH_USERNAME }}
+          passphrase: ${{ secrets.VM_SSH_PRIVATE_KEY_PASSPHRASE }}
+          key: ${{ secrets.VM_SSH_PRIVATE_KEY }}
+          source: "frontend/dist/*"
+          target: /var/www/project/frontend
+          strip_components: 2
