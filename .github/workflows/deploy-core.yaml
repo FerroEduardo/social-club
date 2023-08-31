@@ -1,0 +1,92 @@
+name: deploy-core
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy-core-job:
+    name: Deploy Core
+    runs-on: ubuntu-latest
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@v3
+
+      - name: 'Wait for SSH'
+        run: |
+          SLEEP=1
+          TRIES=0
+          MAX_TRIES=10
+          while ! nc -w5 -z ${{ secrets.INSTANCE_IP }} 22; do
+            echo "SSH not available..."
+            if [[ $TRIES -eq $MAX_TRIES ]]; then
+              echo "Max tries reached, exiting"
+              exit 1
+            fi
+            ((TRIES += 1))
+            sleep $SLEEP
+          done; echo "SSH ready!"
+
+      - name: 'Download latest JDK 17'
+        run: wget https://download.oracle.com/java/17/latest/jdk-17_linux-x64_bin.tar.gz
+
+      - name: 'Set up JDK'
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'jdkfile'
+          jdkFile: jdk-17_linux-x64_bin.tar.gz
+          cache: 'gradle'
+
+      - name: 'Grant execute permission for gradlew'
+        working-directory: core-backend
+        run: chmod +x gradlew
+
+      - name: 'Build and Generate JAR'
+        working-directory: core-backend
+        run: ./gradlew bootJar --no-daemon
+
+      - name: 'Creating Env File'
+        run: |
+          echo -e '#!/bin/bash\n' > start.sh
+          echo $ENV_KEYS | tr \; \\n | while read line ; do echo 'export' $line; done >> start.sh
+          echo -e '\n/usr/bin/java -jar social-club-0.0.1-SNAPSHOT.jar' >> start.sh
+        shell: bash
+        working-directory: core-backend/build/libs
+        env:
+          ENV_KEYS: ${{ secrets.CORE_BACKEND_ENVIRONMENT_KEYS }} # key=value;key=value
+
+      - name: 'Stop and Delete Previous App'
+        uses: appleboy/ssh-action@master
+        continue-on-error: true
+        with:
+          host: ${{ secrets.INSTANCE_IP }}
+          username: ${{ secrets.SSH_USERNAME }}
+          passphrase: ${{ secrets.VM_SSH_PRIVATE_KEY_PASSPHRASE }}
+          key: ${{ secrets.VM_SSH_PRIVATE_KEY }}
+          script: |
+            kill $(ps aux | grep 'java -jar .*social-club.*\.jar' | awk '{print $2}')
+            rm -rf /var/www/project/core-backend/social-club-0.0.1-SNAPSHOT.jar
+
+      - name: 'Push Repo'
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.INSTANCE_IP }}
+          username: ${{ secrets.SSH_USERNAME }}
+          passphrase: ${{ secrets.VM_SSH_PRIVATE_KEY_PASSPHRASE }}
+          key: ${{ secrets.VM_SSH_PRIVATE_KEY }}
+          source: "core-backend/build/libs/*"
+          target: /var/www/project/core-backend
+          strip_components: 3
+
+      - name: 'Run'
+        uses: appleboy/ssh-action@v0.1.4
+        with:
+          host: ${{ secrets.INSTANCE_IP }}
+          username: ${{ secrets.SSH_USERNAME }}
+          passphrase: ${{ secrets.VM_SSH_PRIVATE_KEY_PASSPHRASE }}
+          key: ${{ secrets.VM_SSH_PRIVATE_KEY }}
+          script: |
+            cd /var/www/project/core-backend
+            nohup /bin/bash start.sh > nohup.out 2> nohup.err < /dev/null &
+            echo 'Done'
