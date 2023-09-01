@@ -1,5 +1,8 @@
 package com.softawii.social.model.dto.request.user;
 
+import com.softawii.social.model.User;
+import com.softawii.social.service.ImageService;
+
 public class UserDTO {
     private Long   id;
     private String name;
@@ -46,5 +49,9 @@ public class UserDTO {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public static UserDTO fromEntity(User user) {
+        return new UserDTO(user.getId(), user.getName(), user.getEmail(), ImageService.getImageUrlFromImageId(user.getImageId()));
     }
 }

@@ -1,6 +1,7 @@
 package com.softawii.social.controller;
 
 import com.softawii.social.model.dto.request.post.IndexPostRequestDTO;
+import com.softawii.social.model.dto.request.post.PostDTO;
 import com.softawii.social.security.UserPrincipal;
 import com.softawii.social.service.PostService;
 import com.softawii.social.service.UserService;
@@ -11,8 +12,6 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Map;
 
 @RestController
 @RequestMapping("user")
@@ -36,7 +35,7 @@ public class UserController {
     @GetMapping("post")
     public ResponseEntity<?> userPosts(@Valid IndexPostRequestDTO dto, OAuth2AuthenticationToken authentication) {
         UserPrincipal user = (UserPrincipal) authentication.getPrincipal();
-        Page<Map<String, Object>> post = this.postService.findAll(user.getId(), dto.getPage().intValue(), dto.getSize().intValue());
+        Page<PostDTO> post = this.postService.findAll(user.getId(), dto.getPage().intValue(), dto.getSize().intValue());
 
         return ResponseEntity.ok(post);
     }

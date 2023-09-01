@@ -95,4 +95,8 @@ public class ImageService {
 
         return fileUploadUtil.readFile(image.getLocal());
     }
+
+    public static String getImageUrlFromImageId(Long imageId) {
+        return IMAGE_URL_PREFIX + imageId.toString();
+    }
 }

@@ -1,5 +1,7 @@
 package com.softawii.social.model.dto.request.post;
 
+import com.softawii.social.model.Post;
+
 import java.time.ZonedDateTime;
 
 public class PostDTO {
@@ -145,5 +147,11 @@ public class PostDTO {
     public PostDTO setUserVote(Short userVote) {
         this.userVote = userVote;
         return this;
+    }
+
+    public static PostDTO fromEntity(Post post) {
+        PostDTO postDTO = new PostDTO();
+
+        return postDTO;
     }
 }

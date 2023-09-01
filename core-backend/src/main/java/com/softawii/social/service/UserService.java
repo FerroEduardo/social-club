@@ -21,6 +21,11 @@ public class UserService {
     }
 
     public Optional<UserDTO> findByEmailSafe(String email) {
-        return repository.findByEmailSafe(email);
+        Optional<User> userOptional = repository.findByEmail(email);
+        if (userOptional.isEmpty()) {
+            return Optional.empty();
+        }
+
+        return Optional.of(UserDTO.fromEntity(userOptional.get()));
     }
 }

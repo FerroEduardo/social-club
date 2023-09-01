@@ -3,7 +3,6 @@ package com.softawii.social.controller;
 import com.softawii.social.exception.FailedToCreateImageException;
 import com.softawii.social.model.Game;
 import com.softawii.social.model.Image;
-import com.softawii.social.model.Post;
 import com.softawii.social.model.User;
 import com.softawii.social.model.dto.request.comment.CommentDTO;
 import com.softawii.social.model.dto.request.comment.CreatePostCommentRequestDTO;
@@ -11,6 +10,7 @@ import com.softawii.social.model.dto.request.post.CreatePostRequestDTO;
 import com.softawii.social.model.dto.request.post.IndexPostCommentsRequestDTO;
 import com.softawii.social.model.dto.request.post.IndexPostRequestDTO;
 import com.softawii.social.model.dto.request.post.PostDTO;
+import com.softawii.social.repository.PostRepository;
 import com.softawii.social.security.UserPrincipal;
 import com.softawii.social.service.*;
 import jakarta.validation.Valid;
@@ -27,42 +27,41 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @RestController
 @RequestMapping(value = "post")
 @Validated
 public class PostController {
 
-    private final UserService userService;
+    private final UserService     userService;
     private final GameService     gameService;
     private final PostService     postService;
     private final ImageService    imageService;
     private final PostVoteService postVoteService;
     private final CommentService  commentService;
+    private final PostRepository  test;
 
-    public PostController(UserService userService, GameService gameService, PostService postService, ImageService imageService, PostVoteService postVoteService, CommentService commentService) {
+    public PostController(UserService userService, GameService gameService, PostService postService, ImageService imageService, PostVoteService postVoteService, CommentService commentService, PostRepository test) {
         this.userService = userService;
         this.gameService = gameService;
         this.postService = postService;
         this.imageService = imageService;
         this.postVoteService = postVoteService;
         this.commentService = commentService;
+        this.test = test;
     }
 
     @GetMapping
-    public Iterable<?> index(@Valid IndexPostRequestDTO dto) {
-        if (dto.isPaginated()) {
-            return this.postService.findAll(dto.getPage().intValue(), dto.getSize().intValue());
-        }
-
-        return this.postService.findAll();
+    public Iterable<?> index(@Valid IndexPostRequestDTO dto, OAuth2AuthenticationToken authentication) {
+        UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
+        return this.postService.findAll(principal.getId(), dto.getPage().intValue(), dto.getSize().intValue());
     }
 
     @GetMapping("{postId}")
     public ResponseEntity<?> show(@PathVariable Long postId, OAuth2AuthenticationToken authentication) {
         try {
-            PostDTO post = this.postService.findById(postId).orElseThrow();
+            UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
+            PostDTO       post      = this.postService.findById(postId, principal.getId()).orElseThrow();
 
             return ResponseEntity.ok(post);
         } catch (NoSuchElementException e) {
@@ -114,9 +113,9 @@ public class PostController {
             e.printStackTrace();
             return ResponseEntity.internalServerError().body(Map.of("message", "Unable to save image"));
         }
-        Post post = postService.create(user, game, image, dto.getTitle(), dto.getDescription());
+        Number postId = postService.create(user, game, image, dto.getTitle(), dto.getDescription());
 
-        return ResponseEntity.ok(Map.of("id", post.getId()));
+        return ResponseEntity.ok(Map.of("id", postId));
     }
 
     @PostMapping("{postId}/vote/{voteValue}")
@@ -128,8 +127,8 @@ public class PostController {
         try {
             UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
             if (voteValue == 1 || voteValue == -1 || voteValue == 0) {
-                this.postService.findById(postId).orElseThrow();
                 long userId = userPrincipal.getId();
+                this.postService.findById(postId, userId).orElseThrow();
 
                 this.postVoteService.vote(postId, userId, voteValue);
                 Long reputation = this.postVoteService.getPostReputation(postId);
