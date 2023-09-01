@@ -31,7 +31,7 @@ public class PostService {
         return this.findAll(null, page, size);
     }
 
-    public Number create(User user, Game game, Image image, String title, String description) {
+    public Post create(User user, Game game, Image image, String title, String description) {
         Post post = new Post();
         post.setUser(user);
         post.setGame(game);

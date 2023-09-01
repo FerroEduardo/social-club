@@ -3,6 +3,7 @@ package com.softawii.social.controller;
 import com.softawii.social.exception.FailedToCreateImageException;
 import com.softawii.social.model.Game;
 import com.softawii.social.model.Image;
+import com.softawii.social.model.Post;
 import com.softawii.social.model.User;
 import com.softawii.social.model.dto.request.comment.CommentDTO;
 import com.softawii.social.model.dto.request.comment.CreatePostCommentRequestDTO;
@@ -113,9 +114,9 @@ public class PostController {
             e.printStackTrace();
             return ResponseEntity.internalServerError().body(Map.of("message", "Unable to save image"));
         }
-        Number postId = postService.create(user, game, image, dto.getTitle(), dto.getDescription());
+        Post post = postService.create(user, game, image, dto.getTitle(), dto.getDescription());
 
-        return ResponseEntity.ok(Map.of("id", postId));
+        return ResponseEntity.ok(Map.of("id", post.getId()));
     }
 
     @PostMapping("{postId}/vote/{voteValue}")

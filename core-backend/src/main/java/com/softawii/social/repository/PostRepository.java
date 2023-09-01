@@ -26,7 +26,7 @@ public class PostRepository {
     }
 
     @Transactional
-    public Number save(Post post) {
+    public Post save(Post post) {
         String sql = """
                 INSERT INTO social.post (author_id, game_id, title, description, image_id)
                 VALUES (:author_id, :game_id, :title, :description, :image_id)
@@ -42,8 +42,9 @@ public class PostRepository {
                 .param("description", post.getDescription(), Types.VARCHAR)
                 .param("image_id", post.getImage().getId(), Types.BIGINT)
                 .update(keyHolder);
+        post.setId(keyHolder.getKey().longValue());
 
-        return keyHolder.getKey();
+        return post;
     }
 
     public Optional<PostDTO> findByIdSafe(Long postId, Long userId) {
