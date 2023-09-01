@@ -1,7 +1,6 @@
 package com.softawii.social.service;
 
 import com.softawii.social.model.PostVote;
-import com.softawii.social.model.embeddable.PostVoteId;
 import com.softawii.social.repository.PostVoteRepository;
 import org.springframework.stereotype.Component;
 
@@ -20,16 +19,15 @@ public class PostVoteService {
     }
 
     public void vote(Long postId, Long userId, Long value) {
-        PostVoteId         postVoteId       = new PostVoteId(postId, userId);
-        Optional<PostVote> optionalPostVote = repository.findById(postVoteId);
+        Optional<PostVote> optionalPostVote = repository.findById(userId, postId);
         PostVote           postVote;
         if (optionalPostVote.isPresent()) {
             postVote = optionalPostVote.get();
+            postVote.setValue(value);
+            repository.update(postVote);
         } else {
-            postVote = repository.save(new PostVote(postVoteId, value, null, null));
+            repository.create(new PostVote(postId, userId, value, null, null));
         }
 
-        postVote.setValue(value);
-        repository.save(postVote);
     }
 }

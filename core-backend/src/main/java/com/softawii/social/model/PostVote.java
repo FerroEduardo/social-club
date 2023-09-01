@@ -1,7 +1,9 @@
 package com.softawii.social.model;
 
-import com.softawii.social.model.embeddable.PostVoteId;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import org.hibernate.annotations.DynamicInsert;
 
 import java.time.ZonedDateTime;
@@ -9,7 +11,6 @@ import java.time.ZonedDateTime;
 @Entity
 @Table(name = "post_vote")
 @DynamicInsert
-@IdClass(PostVoteId.class)
 public class PostVote {
     @Id
     private Long postId;
@@ -27,14 +28,6 @@ public class PostVote {
     private ZonedDateTime modifiedAt;
 
     public PostVote() {
-    }
-
-    public PostVote(PostVoteId postVoteId, Long value, ZonedDateTime createdAt, ZonedDateTime modifiedAt) {
-        this.postId = postVoteId.getPostId();
-        this.userId = postVoteId.getUserId();
-        this.value = value;
-        this.createdAt = createdAt;
-        this.modifiedAt = modifiedAt;
     }
 
     public PostVote(Long postId, Long userId, Long value, ZonedDateTime createdAt, ZonedDateTime modifiedAt) {
