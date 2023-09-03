@@ -25,10 +25,9 @@ import java.util.Optional;
 @Component
 public class ImageService {
 
-    public static final String          IMAGE_URL_PREFIX = "http://localhost:8099/image/";
-    private final       AppConfig       appConfig;
-    private final       ImageRepository repository;
-    private final       FileUploadUtil  fileUploadUtil;
+    private final AppConfig       appConfig;
+    private final ImageRepository repository;
+    private final FileUploadUtil  fileUploadUtil;
 
     public ImageService(AppConfig appConfig, ImageRepository repository, FileUploadUtil fileUploadUtil) {
         this.appConfig = appConfig;
@@ -85,7 +84,7 @@ public class ImageService {
         return fileUploadUtil.readFile(image.getLocal());
     }
 
-    public static String getImageUrlFromImageId(Long imageId) {
-        return IMAGE_URL_PREFIX + imageId.toString();
+    public String getImageUrlFromImageId(Long imageId) {
+        return this.appConfig.getImageUrlPrefix() + imageId.toString();
     }
 }

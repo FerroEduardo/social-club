@@ -11,6 +11,12 @@ import java.time.OffsetDateTime;
 
 @Component
 public class PostDtoRowMapper implements RowMapper<PostDTO> {
+    private final ImageService imageService;
+
+    public PostDtoRowMapper(ImageService imageService) {
+        this.imageService = imageService;
+    }
+
     @Override
     public PostDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
         PostDTO post = new PostDTO();
@@ -22,11 +28,11 @@ public class PostDtoRowMapper implements RowMapper<PostDTO> {
                 .setModifiedAt(rs.getObject("modifiedAt", OffsetDateTime.class).toZonedDateTime())
                 .setAuthorId(rs.getLong("authorId"))
                 .setAuthorName(rs.getString("authorName"))
-                .setAuthorImageUrl(ImageService.getImageUrlFromImageId(rs.getLong("authorImageId")))
+                .setAuthorImageUrl(imageService.getImageUrlFromImageId(rs.getLong("authorImageId")))
                 .setGameId(rs.getLong("gameId"))
                 .setGameName(rs.getString("gameName"))
                 .setGameStudio(rs.getString("gameStudio"))
-                .setImageUrl(ImageService.getImageUrlFromImageId(rs.getLong("imageId")))
+                .setImageUrl(imageService.getImageUrlFromImageId(rs.getLong("imageId")))
                 .setUserVote(rs.getShort("userVote"));
 
         return post;

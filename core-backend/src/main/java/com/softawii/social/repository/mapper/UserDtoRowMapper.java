@@ -10,13 +10,19 @@ import java.sql.SQLException;
 
 @Component
 public class UserDtoRowMapper implements RowMapper<UserDTO> {
+    private final ImageService imageService;
+
+    public UserDtoRowMapper(ImageService imageService) {
+        this.imageService = imageService;
+    }
+
     @Override
     public UserDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
         UserDTO userDTO = new UserDTO();
         userDTO.setId(rs.getLong("id"));
         userDTO.setName(rs.getString("name"));
         userDTO.setEmail(rs.getString("email"));
-        userDTO.setImageUrl(ImageService.getImageUrlFromImageId(rs.getLong("image_id")));
+        userDTO.setImageUrl(imageService.getImageUrlFromImageId(rs.getLong("image_id")));
 
         return userDTO;
     }

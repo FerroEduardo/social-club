@@ -21,7 +21,8 @@ public class AppConfig {
 
     private UploadStorageType uploadStorageType;
 
-    private URI uploadServiceUrl;
+    private URI    uploadServiceUrl;
+    private String imageUrlPrefix;
 
     public boolean isProduction() {
         return isProduction;
@@ -65,5 +66,14 @@ public class AppConfig {
         } catch (IllegalArgumentException | MalformedURLException | URISyntaxException e) {
             throw new IllegalStateException("Invalid upload service url: '%s'".formatted(uploadServiceUrl), e);
         }
+    }
+
+    @Autowired
+    public void setImageUrlPrefix(@Value("${softawii.image-url-prefix}") String imageUrlPrefix) {
+        this.imageUrlPrefix = imageUrlPrefix;
+    }
+
+    public String getImageUrlPrefix() {
+        return this.imageUrlPrefix;
     }
 }
