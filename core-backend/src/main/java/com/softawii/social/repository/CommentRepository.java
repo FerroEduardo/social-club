@@ -60,14 +60,13 @@ public class CommentRepository {
                 .optional();
     }
 
-    // TODO: IMPLEMENT SORTED PAGE
     public Page<CommentDTO> findByPostId(Long postId, Pageable pageable, boolean isActive) {
         MapSqlParameterSource parameterSource = new MapSqlParameterSource();
         String sql = """
                 SELECT pc.id, pc.author_id, u.name as "author_name", u.image_id as "author_image_id", pc.value, pc.created_at
                 FROM social.post_comment pc
                 INNER JOIN social.user u on u.id = author_id
-                WHERE pc.post_id = :post_id AND (:active IS NULL OR pc.deleted_at < CURRENT_TIMESTAMP)
+                WHERE pc.post_id = :post_id AND (:active IS NULL OR pc.deleted_at IS NULL OR pc.deleted_at < CURRENT_TIMESTAMP)
                 """;
 
         parameterSource.addValue("post_id", postId, Types.BIGINT);
