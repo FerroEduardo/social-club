@@ -2,15 +2,13 @@ package com.softawii.social.repository.mapper;
 
 import com.softawii.social.model.User;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+@Component
 public class UserRowMapper implements RowMapper<User> {
-    public static final UserRowMapper INSTANCE = new UserRowMapper();
-
-    private UserRowMapper() {}
-
     @Override
     public User mapRow(ResultSet rs, int rowNum) throws SQLException {
         User user = new User();

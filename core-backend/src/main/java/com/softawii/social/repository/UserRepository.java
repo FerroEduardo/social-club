@@ -16,10 +16,14 @@ import java.util.Optional;
 @Repository
 @Transactional(readOnly = true)
 public class UserRepository {
-    public final JdbcClient jdbcClient;
+    private final JdbcClient       jdbcClient;
+    private final UserRowMapper    userRowMapper;
+    private final UserDtoRowMapper userDtoRowMapper;
 
-    public UserRepository(JdbcClient jdbcClient) {
+    public UserRepository(JdbcClient jdbcClient, UserRowMapper userRowMapper, UserDtoRowMapper userDtoRowMapper) {
         this.jdbcClient = jdbcClient;
+        this.userRowMapper = userRowMapper;
+        this.userDtoRowMapper = userDtoRowMapper;
     }
 
     @Transactional
@@ -53,7 +57,7 @@ public class UserRepository {
         return jdbcClient
                 .sql(sql)
                 .param("email", email, Types.VARCHAR)
-                .query(UserRowMapper.INSTANCE)
+                .query(userRowMapper)
                 .optional();
     }
 
@@ -67,7 +71,7 @@ public class UserRepository {
         return jdbcClient
                 .sql(sql)
                 .param("email", email, Types.VARCHAR)
-                .query(UserDtoRowMapper.INSTANCE)
+                .query(userDtoRowMapper)
                 .optional();
     }
 }

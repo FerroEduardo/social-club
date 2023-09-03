@@ -2,16 +2,14 @@ package com.softawii.social.repository.mapper;
 
 import com.softawii.social.model.PostVote;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.OffsetDateTime;
 
+@Component
 public class PostVoteRowMapper implements RowMapper<PostVote> {
-    public static final PostVoteRowMapper INSTANCE = new PostVoteRowMapper();
-
-    private PostVoteRowMapper() {}
-
     @Override
     public PostVote mapRow(ResultSet rs, int rowNum) throws SQLException {
         PostVote postVote = new PostVote();

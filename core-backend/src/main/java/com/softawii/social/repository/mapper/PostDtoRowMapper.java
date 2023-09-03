@@ -3,16 +3,14 @@ package com.softawii.social.repository.mapper;
 import com.softawii.social.model.dto.request.post.PostDTO;
 import com.softawii.social.service.ImageService;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.OffsetDateTime;
 
+@Component
 public class PostDtoRowMapper implements RowMapper<PostDTO> {
-    public static final PostDtoRowMapper INSTANCE = new PostDtoRowMapper();
-
-    private PostDtoRowMapper() {}
-
     @Override
     public PostDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
         PostDTO post = new PostDTO();

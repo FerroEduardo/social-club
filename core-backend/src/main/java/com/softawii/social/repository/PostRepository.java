@@ -19,10 +19,12 @@ import java.util.Optional;
 @Repository
 @Transactional(readOnly = true)
 public class PostRepository {
-    private final JdbcClient jdbcClient;
+    private final JdbcClient       jdbcClient;
+    private final PostDtoRowMapper postDtoRowMapper;
 
-    public PostRepository(JdbcClient jdbcClient) {
+    public PostRepository(JdbcClient jdbcClient, PostDtoRowMapper postDtoRowMapper) {
         this.jdbcClient = jdbcClient;
+        this.postDtoRowMapper = postDtoRowMapper;
     }
 
     @Transactional
@@ -76,7 +78,7 @@ public class PostRepository {
                 .sql(sql)
                 .param("post_id", postId, Types.BIGINT)
                 .param("user_id", userId, Types.BIGINT)
-                .query(PostDtoRowMapper.INSTANCE)
+                .query(postDtoRowMapper)
                 .optional();
     }
 
@@ -112,7 +114,7 @@ public class PostRepository {
                 .param("user_id", user_id, Types.BIGINT)
                 .param("size", size, Types.INTEGER)
                 .param("offset", page * size, Types.INTEGER)
-                .query(PostDtoRowMapper.INSTANCE)
+                .query(postDtoRowMapper)
                 .list();
 
 

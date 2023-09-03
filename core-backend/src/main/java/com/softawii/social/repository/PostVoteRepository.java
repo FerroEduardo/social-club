@@ -14,10 +14,12 @@ import java.util.Optional;
 @Repository
 @Transactional(readOnly = true)
 public class PostVoteRepository {
-    public final JdbcClient jdbcClient;
+    private final JdbcClient        jdbcClient;
+    private final PostVoteRowMapper postVoteRowMapper;
 
-    public PostVoteRepository(JdbcClient jdbcClient) {
+    public PostVoteRepository(JdbcClient jdbcClient, PostVoteRowMapper postVoteRowMapper) {
         this.jdbcClient = jdbcClient;
+        this.postVoteRowMapper = postVoteRowMapper;
     }
 
     public Optional<PostVote> findById(Long userId, Long postId) {
@@ -31,7 +33,7 @@ public class PostVoteRepository {
                 .sql(sql)
                 .param("user_id", userId, Types.BIGINT)
                 .param("post_id", postId, Types.BIGINT)
-                .query(PostVoteRowMapper.INSTANCE)
+                .query(postVoteRowMapper)
                 .optional();
     }
 
