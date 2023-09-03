@@ -8,6 +8,7 @@ import com.softawii.social.service.GameService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -26,13 +27,12 @@ public class GameController {
     }
 
     @GetMapping
-    public Iterable<Game> index(@Valid IndexGameRequestDTO dto) {
+    public ResponseEntity<Page<?>> index(@Valid IndexGameRequestDTO dto) {
         if (dto.isPaginated()) {
-            if (dto.getName() == null) return this.service.findAll(dto.getPage().intValue(), dto.getSize().intValue());
-            else return this.service.findAll(dto.getPage().intValue(), dto.getSize().intValue(), dto.getName());
+            return ResponseEntity.ok(this.service.findAll(dto.getPage().intValue(), dto.getSize().intValue(), dto.getName()));
         }
 
-        return this.service.findAll();
+        return ResponseEntity.ok(this.service.findAll(dto.getName()));
     }
 
     @PostMapping

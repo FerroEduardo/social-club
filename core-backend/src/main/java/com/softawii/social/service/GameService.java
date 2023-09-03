@@ -2,9 +2,9 @@ package com.softawii.social.service;
 
 import com.softawii.social.model.Game;
 import com.softawii.social.repository.GameRepository;
+import com.softawii.social.util.Unpaged;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.util.NoSuchElementException;
@@ -23,20 +23,16 @@ public class GameService {
         return repository.findById(id);
     }
 
-    public Page<Game> findAll() {
-        return repository.findAll(Pageable.unpaged());
-    }
-
-    public Page<Game> findAll(int page, int size) {
-        return repository.findAll(PageRequest.of(page, size));
+    public Page<Game> findAll(String name) {
+        return repository.findAll(name, Unpaged.UNSORTED);
     }
 
     public Page<Game> findAll(int page, int size, String name) {
-        return repository.findByNameContainingIgnoreCase(name, PageRequest.of(page, size));
+        return repository.findAll(name, PageRequest.of(page, size));
     }
 
     public Game save(String name, String studio) {
-        return repository.save(new Game(name, studio));
+        return repository.create(new Game(name, studio));
     }
 
     public Game update(Long id, String name, String studio) {
@@ -45,12 +41,11 @@ public class GameService {
         game.setName(name);
         game.setStudio(studio);
 
-        return repository.save(game);
+        return repository.update(game);
     }
 
     public void remove(Long id) throws NoSuchElementException {
-        Optional<Game> optionalGame = repository.findById(id);
-        Game           game         = optionalGame.orElseThrow();
-        repository.delete(game);
+        repository.findById(id).orElseThrow();
+        repository.delete(id);
     }
 }
