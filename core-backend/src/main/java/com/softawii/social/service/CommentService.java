@@ -8,6 +8,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Component
@@ -20,21 +21,22 @@ public class CommentService {
     }
 
     public CommentDTO create(Long postId, Long authorId, String value) {
-        Comment comment = repository.save(new Comment(authorId, postId, value));
+        Comment comment = repository.create(new Comment(authorId, postId, parseCommentValue(value)));
 
-        return repository.findByIdSafe(comment.getId()).get();
+        return repository.findById(comment.getId()).get();
     }
 
     public Page<CommentDTO> findAll(Long postId, int page, int size) {
-        return repository.findAllByPostIdSafe(postId, PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt")));
-    }
-
-    public void delete(Long commentId) {
-        repository.deleteById(commentId);
+        return repository.findByPostId(postId, PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt")), true);
     }
 
     public void delete(Long commentId, Long authorId) {
-        Comment comment = repository.findByIdAndAuthorId(commentId, authorId).orElseThrow();
+        CommentDTO comment = repository.findByIdAndUserId(commentId, authorId).orElseThrow();
         repository.softDelete(commentId);
+    }
+
+    private String parseCommentValue(String value) {
+        Matcher matcher = CommentService.COMMENT_VALUE_PATTERN.matcher(value);
+        return matcher.replaceAll("$1").trim();
     }
 }

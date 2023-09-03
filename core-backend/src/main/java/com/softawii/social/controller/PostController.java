@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.regex.Matcher;
 
 @RestController
 @RequestMapping(value = "post")
@@ -85,9 +84,7 @@ public class PostController {
     public ResponseEntity<?> indexComments(@PathVariable Long postId, @Valid @RequestBody CreatePostCommentRequestDTO request, OAuth2AuthenticationToken authentication) {
         UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
         try {
-            Matcher matcher = CommentService.COMMENT_VALUE_PATTERN.matcher(request.getValue());
-            String  value      = matcher.replaceAll("$1").trim();
-            return ResponseEntity.ok(this.commentService.create(postId, principal.getId(), value));
+            return ResponseEntity.ok(this.commentService.create(postId, principal.getId(), request.getValue()));
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
         }
