@@ -27,7 +27,7 @@ public class CommentService {
     }
 
     public Page<CommentDTO> findAll(Long postId, int page, int size) {
-        return repository.findByPostId(postId, PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt")), true);
+        return repository.findByPostId(postId, PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "created_at")), true);
     }
 
     public void delete(Long commentId, Long authorId) {

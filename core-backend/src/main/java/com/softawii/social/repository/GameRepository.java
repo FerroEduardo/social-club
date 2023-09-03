@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Types;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 @Transactional(readOnly = true)
@@ -46,10 +47,12 @@ public class GameRepository {
                 SELECT id, name, studio FROM social.game
                 WHERE (:name IS NULL OR LOWER(name) LIKE LOWER(:name))
                 """;
-        if (name != null) {
-            parameterSource.addValue("name", '%' + name + '%', Types.VARCHAR);
-        } else {
-            parameterSource.addValue("name", null, Types.VARCHAR);
+
+        parameterSource.addValue("name", name != null ? '%' + name + '%' : null, Types.VARCHAR);
+
+        String orders = pageable.getSort().stream().map(order -> String.format("%s %s", order.getProperty(), order.getDirection().name())).collect(Collectors.joining(", "));
+        if (!orders.isBlank()) {
+            sql += "\nORDER BY " + orders;
         }
         if (pageable.isPaged()) {
             sql += "\nLIMIT :size OFFSET :offset";

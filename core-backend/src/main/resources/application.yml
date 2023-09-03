@@ -10,13 +10,13 @@ softawii:
 
 logging:
   level:
-    root: DEBUG
+    root: info
 
 server:
   port: ${SERVER_PORT:8099}
   servlet:
     session:
-      timeout: ${SESSION_TIMEOUT:9999h}
+      timeout: ${SESSION_TIMEOUT:1h}
 
 spring:
   datasource:

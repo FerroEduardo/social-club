@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Types;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 @Transactional(readOnly = true)
@@ -71,6 +72,11 @@ public class CommentRepository {
 
         parameterSource.addValue("post_id", postId, Types.BIGINT);
         parameterSource.addValue("active", isActive, Types.BOOLEAN);
+
+        String orders = pageable.getSort().stream().map(order -> String.format("%s %s", order.getProperty(), order.getDirection().name())).collect(Collectors.joining(", "));
+        if (!orders.isBlank()) {
+            sql += "\nORDER BY " + orders;
+        }
         if (pageable.isPaged()) {
             sql += "\nLIMIT :size OFFSET :offset";
             parameterSource.addValue("offset", pageable.getOffset(), Types.INTEGER);
