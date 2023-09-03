@@ -18,8 +18,14 @@ server:
   servlet:
     session:
       timeout: ${SESSION_TIMEOUT:1h}
+  tomcat:
+    max-swallow-size: 100MB
 
 spring:
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 15MB
   datasource:
     url: ${SOFTAWII_DATABASE_URL:jdbc:postgresql://localhost/default}
     username: ${SOFTAWII_DATABASE_USERNAME:default}
