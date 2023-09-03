@@ -79,7 +79,7 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
             user.setImageId(image.getId());
         }
 
-        return userRepository.save(user);
+        return userRepository.create(user);
     }
 
     private Image uploadUserImage(OAuth2UserInfo oAuth2UserInfo) {

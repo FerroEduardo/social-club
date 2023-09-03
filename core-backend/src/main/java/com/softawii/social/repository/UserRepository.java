@@ -27,7 +27,7 @@ public class UserRepository {
     }
 
     @Transactional
-    public User save(User user) {
+    public User create(User user) {
         String sql = """
                 INSERT INTO social.user (name, email, image_id)
                 VALUES (:name, :email, :image_id)

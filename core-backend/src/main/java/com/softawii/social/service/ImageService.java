@@ -6,9 +6,6 @@ import com.softawii.social.model.Image;
 import com.softawii.social.repository.ImageRepository;
 import com.softawii.social.util.FileUploadUtil;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -41,14 +38,6 @@ public class ImageService {
 
     public Optional<Image> findById(Long id) {
         return repository.findById(id);
-    }
-
-    public Page<Image> findAll() {
-        return repository.findAll(Pageable.unpaged());
-    }
-
-    public Page<Image> findAll(int page, int size) {
-        return repository.findAll(PageRequest.of(page, size));
     }
 
     public Image create(byte[] blob) throws FailedToCreateImageException {

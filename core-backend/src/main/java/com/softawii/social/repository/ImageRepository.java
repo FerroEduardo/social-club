@@ -1,7 +1,35 @@
 package com.softawii.social.repository;
 
 import com.softawii.social.model.Image;
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.softawii.social.repository.mapper.ImageRowMapper;
+import org.springframework.jdbc.core.simple.JdbcClient;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
-public interface ImageRepository extends JpaRepository<Image, Long> {
+import java.sql.Types;
+import java.util.Optional;
+
+@Repository
+@Transactional(readOnly = true)
+public class ImageRepository {
+    private final JdbcClient     jdbcClient;
+    private final ImageRowMapper imageRowMapper;
+
+    public ImageRepository(JdbcClient jdbcClient, ImageRowMapper imageRowMapper) {
+        this.jdbcClient = jdbcClient;
+        this.imageRowMapper = imageRowMapper;
+    }
+
+    public Optional<Image> findById(Long id) {
+        String sql = """
+                SELECT id, blob, s3, local FROM social.image
+                WHERE id = :id
+                """;
+
+        return jdbcClient
+                .sql(sql)
+                .param("id", id, Types.BIGINT)
+                .query(imageRowMapper)
+                .optional();
+    }
 }

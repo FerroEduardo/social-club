@@ -1,9 +1,7 @@
 package com.softawii.social.controller;
 
 import com.softawii.social.model.Image;
-import com.softawii.social.model.dto.request.image.IndexImageRequestDTO;
 import com.softawii.social.service.ImageService;
-import jakarta.validation.Valid;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,15 +23,6 @@ public class ImageController {
 
     public ImageController(ImageService service) {
         this.service = service;
-    }
-
-    @GetMapping
-    public Iterable<Image> index(@Valid IndexImageRequestDTO dto) {
-        if (dto.isPaginated()) {
-            return this.service.findAll(dto.getPage().intValue(), dto.getSize().intValue());
-        }
-
-        return this.service.findAll();
     }
 
     @GetMapping("{id}")
