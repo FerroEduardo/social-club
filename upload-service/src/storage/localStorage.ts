@@ -12,14 +12,15 @@ export default class LocalStorage extends Storage {
   }
 
   async save(imageData: Buffer) {
-    const filePath = `${this.uploadStoragePath}/${this.generateFilename()}`;
+    const filename = this.generateFilename();
+    const filePath = `${this.uploadStoragePath}/${filename}`;
 
     fs.writeFileSync(filePath, imageData);
 
     const image = await this.prisma.image.create(
       {
         data: {
-          local: filePath,
+          local: filename,
         },
         select: {
           id: true,
