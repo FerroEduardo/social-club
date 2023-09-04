@@ -35,7 +35,7 @@ public class UserController {
     @GetMapping("post")
     public ResponseEntity<?> userPosts(@Valid IndexPostRequestDTO dto, OAuth2AuthenticationToken authentication) {
         UserPrincipal user = (UserPrincipal) authentication.getPrincipal();
-        Page<PostDTO> post = this.postService.findAll(user.getId(), dto.getPage().intValue(), dto.getSize().intValue());
+        Page<PostDTO> post = this.postService.findUserPosts(user.getId(), dto.getPage().intValue(), dto.getSize().intValue());
 
         return ResponseEntity.ok(post);
     }

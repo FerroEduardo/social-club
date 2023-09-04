@@ -27,6 +27,10 @@ public class PostService {
         return repository.findAllSafe(page, size, userId);
     }
 
+    public Page<PostDTO> findUserPosts(Long userId, int page, int size) {
+        return repository.findUserPosts(page, size, userId);
+    }
+
     public Page<PostDTO> findAll(int page, int size) {
         return this.findAll(null, page, size);
     }

@@ -52,8 +52,10 @@ public class PostController {
     }
 
     @GetMapping
-    public Iterable<?> index(@Valid IndexPostRequestDTO dto) {
-        return this.postService.findAll(null, dto.getPage().intValue(), dto.getSize().intValue());
+    public Iterable<?> index(@Valid IndexPostRequestDTO dto, OAuth2AuthenticationToken authentication) {
+        UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
+
+        return this.postService.findAll(principal.getId(), dto.getPage().intValue(), dto.getSize().intValue());
     }
 
     @GetMapping("{postId}")
