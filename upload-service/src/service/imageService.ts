@@ -16,7 +16,7 @@ export async function processImage(rawImage: Buffer): Promise<Buffer> {
     return imageSharp
       .webp({
         lossless: false,
-        quality: 80,
+        quality: 100,
         alphaQuality: 100,
         preset: 'default',
         force: true,
