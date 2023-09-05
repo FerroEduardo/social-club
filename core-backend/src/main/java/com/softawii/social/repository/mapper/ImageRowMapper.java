@@ -16,6 +16,7 @@ public class ImageRowMapper implements RowMapper<Image> {
         image.setBlob(rs.getBytes("blob"));
         image.setS3(rs.getString("s3"));
         image.setLocal(rs.getString("local"));
+        image.setExtension(rs.getString("extension"));
 
         return image;
     }

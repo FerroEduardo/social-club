@@ -11,8 +11,9 @@ datasource db {
 }
 
 model image {
-  id    Int    @id @default(autoincrement())
-  blob  Bytes?
-  s3    String?
-  local String?
+  id        Int     @id @default(autoincrement())
+  blob      Bytes?
+  s3        String?
+  local     String?
+  extension String
 }

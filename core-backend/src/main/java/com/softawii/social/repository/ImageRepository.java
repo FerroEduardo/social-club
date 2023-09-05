@@ -22,7 +22,7 @@ public class ImageRepository {
 
     public Optional<Image> findById(Long id) {
         String sql = """
-                SELECT id, blob, s3, local FROM social.image
+                SELECT id, blob, s3, local, extension FROM social.image
                 WHERE id = :id
                 """;
 

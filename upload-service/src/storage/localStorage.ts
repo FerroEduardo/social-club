@@ -2,6 +2,7 @@ import fs from 'fs';
 import crypto from 'crypto';
 import { PrismaClient } from '@prisma/client';
 import Storage from './storage';
+import ImageData from '../interface/imageData';
 
 export default class LocalStorage extends Storage {
   readonly uploadStoragePath: string;
@@ -11,16 +12,17 @@ export default class LocalStorage extends Storage {
     this.uploadStoragePath = uploadStoragePath;
   }
 
-  async save(imageData: Buffer) {
+  async save(imageData: ImageData) {
     const filename = this.generateFilename();
     const filePath = `${this.uploadStoragePath}/${filename}`;
 
-    fs.writeFileSync(filePath, imageData);
+    fs.writeFileSync(filePath, await imageData.buffer);
 
     const image = await this.prisma.image.create(
       {
         data: {
           local: filename,
+          extension: imageData.format.id,
         },
         select: {
           id: true,

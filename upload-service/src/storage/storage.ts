@@ -1,5 +1,6 @@
 /* eslint-disable class-methods-use-this */
 import { PrismaClient } from '@prisma/client';
+import ImageData from '../interface/imageData';
 
 export default abstract class Storage {
   protected prisma: PrismaClient;
@@ -8,5 +9,5 @@ export default abstract class Storage {
     this.prisma = prisma;
   }
 
-  abstract save(imageData: Buffer): number | Promise<number>;
+  abstract save(imageData: ImageData): number | Promise<number>;
 }

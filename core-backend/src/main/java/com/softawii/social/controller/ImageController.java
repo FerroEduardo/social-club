@@ -1,5 +1,6 @@
 package com.softawii.social.controller;
 
+import com.softawii.social.model.dto.request.image.ImageDto;
 import com.softawii.social.service.ImageService;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.*;
@@ -9,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -28,13 +28,14 @@ public class ImageController {
     @GetMapping("{id}")
     public ResponseEntity<InputStreamResource> show(@PathVariable Long id) {
         try {
+            ImageDto            image               = service.getImageInputStreamById(id);
+            InputStreamResource inputStreamResource = new InputStreamResource(image.getStream());
+
             HttpHeaders responseHeaders = new HttpHeaders();
-            responseHeaders.setContentType(MediaType.IMAGE_PNG);
+            responseHeaders.setContentType(new MediaType("image", image.getExtension()));
             responseHeaders.setCacheControl(CacheControl.maxAge(Duration.ofHours(1)));
             responseHeaders.setExpires(Instant.now().plus(1, ChronoUnit.HOURS));
 
-            InputStream         stream              = service.getImageInputStreamById(id);
-            InputStreamResource inputStreamResource = new InputStreamResource(stream);
             return ResponseEntity.status(HttpStatus.OK).headers(responseHeaders).body(inputStreamResource);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();

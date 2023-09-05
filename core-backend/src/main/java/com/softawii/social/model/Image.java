@@ -5,6 +5,7 @@ public class Image {
     private String s3;
     private String local;
     private byte[] blob;
+    private String extension;
 
     public Image() {
     }
@@ -39,5 +40,13 @@ public class Image {
 
     public void setBlob(byte[] blob) {
         this.blob = blob;
+    }
+
+    public String getExtension() {
+        return extension;
+    }
+
+    public void setExtension(String extension) {
+        this.extension = extension;
     }
 }

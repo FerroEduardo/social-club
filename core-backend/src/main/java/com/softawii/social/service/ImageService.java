@@ -3,6 +3,7 @@ package com.softawii.social.service;
 import com.softawii.social.config.AppConfig;
 import com.softawii.social.exception.FailedToCreateImageException;
 import com.softawii.social.model.Image;
+import com.softawii.social.model.dto.request.image.ImageDto;
 import com.softawii.social.repository.ImageRepository;
 import com.softawii.social.util.FileUploadUtil;
 import org.springframework.core.io.ByteArrayResource;
@@ -40,16 +41,19 @@ public class ImageService {
         return repository.findById(id);
     }
 
-    public InputStream getImageInputStreamById(Long id) throws IOException {
-        Image image = repository.findById(id).orElseThrow();
+    public ImageDto getImageInputStreamById(Long id) throws IOException {
+        Image       image = repository.findById(id).orElseThrow();
+        InputStream inputStream;
         if (image.getBlob() != null) {
-            return new ByteArrayInputStream(image.getBlob());
+            inputStream = new ByteArrayInputStream(image.getBlob());
         } else if (image.getLocal() != null) {
-            return readImageFile(image);
+            inputStream = readImageFile(image);
         } else {
             // TODO: FIND BETTER EXCEPTION
             throw new RuntimeException();
         }
+
+        return new ImageDto(inputStream, image.getExtension());
     }
 
     public Image create(byte[] blob) throws FailedToCreateImageException {
