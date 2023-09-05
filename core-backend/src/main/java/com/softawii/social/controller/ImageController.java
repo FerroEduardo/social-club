@@ -1,7 +1,7 @@
 package com.softawii.social.controller;
 
-import com.softawii.social.model.Image;
 import com.softawii.social.service.ImageService;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
-import java.nio.file.NoSuchFileException;
+import java.io.InputStream;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -26,34 +26,18 @@ public class ImageController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<?> show(@PathVariable Long id) {
+    public ResponseEntity<InputStreamResource> show(@PathVariable Long id) {
         try {
-            Image image = service.findById(id).orElseThrow();
-            if (image.getS3() != null) {
-                // redirect to S3 instead of return data
-            } else {
-                HttpHeaders responseHeaders = new HttpHeaders();
-                responseHeaders.setContentType(MediaType.IMAGE_PNG);
-                responseHeaders.setCacheControl(CacheControl.maxAge(Duration.ofHours(1)));
-                responseHeaders.setExpires(Instant.now().plus(1, ChronoUnit.HOURS));
+            HttpHeaders responseHeaders = new HttpHeaders();
+            responseHeaders.setContentType(MediaType.IMAGE_PNG);
+            responseHeaders.setCacheControl(CacheControl.maxAge(Duration.ofHours(1)));
+            responseHeaders.setExpires(Instant.now().plus(1, ChronoUnit.HOURS));
 
-                byte[] blob;
-                if (image.getBlob() != null) {
-                    blob = image.getBlob();
-                } else if (image.getLocal() != null) {
-                    blob = service.readImageFile(image);
-                } else {
-                    // TODO: FIND BETTER EXCEPTION
-                    throw new RuntimeException();
-                }
-                return ResponseEntity.status(HttpStatus.OK).headers(responseHeaders).body(blob);
-            }
-
-            return ResponseEntity.notFound().build();
+            InputStream         stream              = service.getImageInputStreamById(id);
+            InputStreamResource inputStreamResource = new InputStreamResource(stream);
+            return ResponseEntity.status(HttpStatus.OK).headers(responseHeaders).body(inputStreamResource);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
-        } catch (NoSuchFileException e) { // File not found
-            return ResponseEntity.internalServerError().build();
         } catch (IOException e) {
             return ResponseEntity.internalServerError().build();
         }

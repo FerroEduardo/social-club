@@ -1,21 +1,9 @@
 package com.softawii.social.model;
 
-import jakarta.persistence.*;
-
-@Entity
-@Table(name = "image")
 public class Image {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column
+    private Long   id;
     private String s3;
-
-    @Column
     private String local;
-
-    @Column
     private byte[] blob;
 
     public Image() {

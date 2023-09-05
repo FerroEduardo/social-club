@@ -17,8 +17,9 @@ import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.nio.file.NoSuchFileException;
+import java.io.InputStream;
 import java.util.Map;
 import java.util.Optional;
 
@@ -37,6 +38,18 @@ public class ImageService {
 
     public Optional<Image> findById(Long id) {
         return repository.findById(id);
+    }
+
+    public InputStream getImageInputStreamById(Long id) throws IOException {
+        Image image = repository.findById(id).orElseThrow();
+        if (image.getBlob() != null) {
+            return new ByteArrayInputStream(image.getBlob());
+        } else if (image.getLocal() != null) {
+            return readImageFile(image);
+        } else {
+            // TODO: FIND BETTER EXCEPTION
+            throw new RuntimeException();
+        }
     }
 
     public Image create(byte[] blob) throws FailedToCreateImageException {
@@ -75,12 +88,7 @@ public class ImageService {
         }
     }
 
-    public byte[] readImageFile(Image image) throws NoSuchFileException, IOException {
-        if (image.getLocal() == null) {
-            // TODO: FIND BETTER EXCEPTION
-            throw new RuntimeException();
-        }
-
+    public InputStream readImageFile(Image image) throws IOException {
         return fileUploadUtil.readFile(image.getLocal());
     }
 

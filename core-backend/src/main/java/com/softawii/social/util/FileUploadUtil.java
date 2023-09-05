@@ -3,10 +3,7 @@ package com.softawii.social.util;
 import com.softawii.social.config.AppConfig;
 import org.springframework.stereotype.Component;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
@@ -30,13 +27,13 @@ public class FileUploadUtil {
         }
     }
 
-    public byte[] readFile(String fileName) throws IOException {
+    public InputStream readFile(String fileName) throws IOException {
         Path filePath = this.uploadFolder.resolve(fileName);
 
         if (!Files.isRegularFile(filePath)) {
             throw new NoSuchFileException(filePath.toString());
         }
 
-        return Files.readAllBytes(filePath);
+        return new BufferedInputStream(new FileInputStream(filePath.toFile()));
     }
 }
