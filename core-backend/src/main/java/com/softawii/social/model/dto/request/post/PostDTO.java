@@ -17,6 +17,7 @@ public class PostDTO {
     private Long          gameId;
     private String        gameName;
     private String        gameStudio;
+    private String        gameImageUrl;
     private String        imageUrl;
     private Short         userVote;
 
@@ -153,5 +154,13 @@ public class PostDTO {
         PostDTO postDTO = new PostDTO();
 
         return postDTO;
+    }
+
+    public String getGameImageUrl() {
+        return gameImageUrl;
+    }
+
+    public void setGameImageUrl(String gameImageUrl) {
+        this.gameImageUrl = gameImageUrl;
     }
 }

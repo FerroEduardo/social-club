@@ -64,6 +64,7 @@ public class PostRepository {
                     p.game_id AS "gameId",
                     g.name AS "gameName",
                     g.studio AS "gameStudio",
+                    g.image_url AS "gameImageUrl",
                     p.image_id as "imageId",
                     pv.value AS "userVote"
                 FROM social.post p
@@ -97,6 +98,7 @@ public class PostRepository {
                     p.game_id AS "gameId",
                     g.name AS "gameName",
                     g.studio AS "gameStudio",
+                    g.image_url AS "gameImageUrl",
                     p.image_id as "imageId",
                     pv.value AS "userVote"
                 FROM social.post p
@@ -145,6 +147,7 @@ public class PostRepository {
                     p.game_id AS "gameId",
                     g.name AS "gameName",
                     g.studio AS "gameStudio",
+                    g.image_url AS "gameImageUrl",
                     p.image_id as "imageId",
                     pv.value AS "userVote"
                 FROM social.post p

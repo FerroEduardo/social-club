@@ -1,32 +1,18 @@
 package com.softawii.social.model;
 
-import jakarta.persistence.*;
-
-@Entity
-@Table(name = "game")
 public class Game {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column
+    private Long   id;
     private String name;
-
-    @Column
     private String studio;
+    private String imageUrl;
 
     public Game() {
     }
 
-    public Game(String name, String studio) {
+    public Game(String name, String studio, String imageUrl) {
         this.name = name;
         this.studio = studio;
-    }
-
-    public Game(Long id, String name, String studio) {
-        this.id = id;
-        this.name = name;
-        this.studio = studio;
+        this.imageUrl = imageUrl;
     }
 
     public Long getId() {
@@ -53,12 +39,11 @@ public class Game {
         this.studio = studio;
     }
 
-    @Override
-    public String toString() {
-        return "Game{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", studio='" + studio + '\'' +
-                '}';
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

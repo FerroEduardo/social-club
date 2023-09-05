@@ -15,6 +15,7 @@ public class GameRowMapper implements RowMapper<Game> {
         game.setId(rs.getLong("id"));
         game.setName(rs.getString("name"));
         game.setStudio(rs.getString("studio"));
+        game.setImageUrl(rs.getString("image_url"));
 
         return game;
     }

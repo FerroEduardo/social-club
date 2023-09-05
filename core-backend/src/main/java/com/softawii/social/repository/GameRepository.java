@@ -30,7 +30,7 @@ public class GameRepository {
 
     public Optional<Game> findById(Long id) {
         String sql = """
-                SELECT id, name, studio FROM social.game
+                SELECT id, name, studio, image_url FROM social.game
                 WHERE id = :id
                 """;
 
@@ -44,7 +44,7 @@ public class GameRepository {
     public Page<Game> findAll(String name, Pageable pageable) {
         MapSqlParameterSource parameterSource = new MapSqlParameterSource();
         String sql = """
-                SELECT id, name, studio FROM social.game
+                SELECT id, name, studio, image_url FROM social.game
                 WHERE (:name IS NULL OR LOWER(name) LIKE LOWER(:name))
                 """;
 
@@ -88,8 +88,8 @@ public class GameRepository {
     @Transactional
     public Game create(Game game) {
         String sql = """
-                INSERT INTO social.game (name, studio)
-                VALUES (:name, :studio)
+                INSERT INTO social.game (name, studio, image_url)
+                VALUES (:name, :studio, :image_url)
                 RETURNING id
                 """;
 
@@ -98,6 +98,7 @@ public class GameRepository {
                 .sql(sql)
                 .param("name", game.getName(), Types.VARCHAR)
                 .param("studio", game.getStudio(), Types.VARCHAR)
+                .param("image_url", game.getImageUrl(), Types.VARCHAR)
                 .update(keyHolder);
 
         game.setId(keyHolder.getKey().longValue());
@@ -109,7 +110,7 @@ public class GameRepository {
     public Game update(Game game) {
         String sql = """
                 UPDATE social.game
-                SET name = :name, studio = :studio
+                SET name = :name, studio = :studio, image_url = :image_url
                 WHERE id = :id
                 """;
 
@@ -118,6 +119,7 @@ public class GameRepository {
                 .param("id", game.getId(), Types.BIGINT)
                 .param("name", game.getName(), Types.VARCHAR)
                 .param("studio", game.getStudio(), Types.VARCHAR)
+                .param("image_url", game.getImageUrl(), Types.VARCHAR)
                 .update();
 
         return game;

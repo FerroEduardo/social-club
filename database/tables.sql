@@ -8,8 +8,8 @@ CREATE TABLE IF NOT EXISTS social.game
 (
     id     SERIAL PRIMARY KEY,
     name   VARCHAR(100) NOT NULL,
-    studio VARCHAR(100) NOT NULL
-    --- image_id INTEGER NOT NULL REFERENCES social.image (id) ON DELETE CASCADE
+    studio VARCHAR(100) NOT NULL,
+    image_url VARCHAR(150) NOT NULL
 );
 DROP TABLE IF EXISTS social.image CASCADE;
 CREATE TABLE IF NOT EXISTS social.image

@@ -12,6 +12,10 @@ public class SaveGameRequestDTO {
     @Size(min = 1, max = 100, message = "The length of \"studio\" must be between 1 and 100")
     private String studio;
 
+    @NotBlank(message = "Image URL is required")
+    @Size(min = 1, max = 100, message = "The length of \"imageUrl\" must be between 1 and 100")
+    private String imageUrl;
+
     public SaveGameRequestDTO() {
     }
 
@@ -31,11 +35,11 @@ public class SaveGameRequestDTO {
         this.studio = studio;
     }
 
-    @Override
-    public String toString() {
-        return "SaveGameDTO{" +
-                "name='" + name + '\'' +
-                ", studio='" + studio + '\'' +
-                '}';
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

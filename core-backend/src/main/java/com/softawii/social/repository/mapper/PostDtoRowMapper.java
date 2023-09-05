@@ -33,7 +33,8 @@ public class PostDtoRowMapper implements RowMapper<PostDTO> {
                 .setGameName(rs.getString("gameName"))
                 .setGameStudio(rs.getString("gameStudio"))
                 .setImageUrl(imageService.getImageUrlFromImageId(rs.getLong("imageId")))
-                .setUserVote(rs.getShort("userVote"));
+                .setUserVote(rs.getShort("userVote"))
+                .setGameImageUrl(rs.getString("gameImageUrl"));
 
         return post;
     }

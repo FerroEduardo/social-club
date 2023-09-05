@@ -31,8 +31,8 @@ public class GameService {
         return repository.findAll(name, PageRequest.of(page, size));
     }
 
-    public Game save(String name, String studio) {
-        return repository.create(new Game(name, studio));
+    public Game save(String name, String studio, String imageUrl) {
+        return repository.create(new Game(name, studio, imageUrl));
     }
 
     public Game update(Long id, String name, String studio) {

@@ -37,7 +37,7 @@ public class GameController {
 
     @PostMapping
     public Game store(@Valid @RequestBody SaveGameRequestDTO game) {
-        return this.service.save(game.getName(), game.getStudio());
+        return this.service.save(game.getName(), game.getStudio(), game.getImageUrl());
     }
 
     @PutMapping("{id}")

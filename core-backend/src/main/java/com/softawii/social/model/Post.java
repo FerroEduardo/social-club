@@ -1,41 +1,15 @@
 package com.softawii.social.model;
 
-import jakarta.persistence.*;
-import org.hibernate.annotations.DynamicInsert;
-
 import java.time.ZonedDateTime;
 
-@Entity
-@Table(name = "post")
-@DynamicInsert
 public class Post {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @ManyToOne(/*fetch = FetchType.LAZY*/)
-    @JoinColumn(name = "author_id", referencedColumnName = "id")
     private User user;
-
-    @ManyToOne(/*fetch = FetchType.LAZY*/)
-    @JoinColumn(name = "game_id", referencedColumnName = "id")
     private Game game;
-
-    @ManyToOne(/*fetch = FetchType.LAZY*/)
-    @JoinColumn(name = "image_id", referencedColumnName = "id")
     private Image image;
-
-    @Column
     private String description;
-
-    @Column
     private String title;
-
-    @Column(name = "created_at")
     private ZonedDateTime createdAt;
-
-    @Column(name = "modified_at")
     private ZonedDateTime modifiedAt;
 
     public Post() {

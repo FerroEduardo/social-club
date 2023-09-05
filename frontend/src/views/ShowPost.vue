@@ -47,7 +47,7 @@ export default defineComponent({
               id: post.gameId,
               name: post.gameName,
               studio: post.gameStudio,
-              imageUrl: 'https://cdn.cloudflare.steamstatic.com/steam/apps/730/header.jpg'
+              imageUrl: post.gameImageUrl
             },
             author: {
               id: post.authorId,

@@ -11,6 +11,7 @@ export default interface Post {
   gameId: number;
   gameName: string;
   gameStudio: string;
+  gameImageUrl: string;
   imageUrl: string;
   userVote?: number;
 }
