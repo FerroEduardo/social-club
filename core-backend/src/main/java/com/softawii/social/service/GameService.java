@@ -1,7 +1,9 @@
 package com.softawii.social.service;
 
 import com.softawii.social.model.Game;
+import com.softawii.social.model.dto.request.post.PostDTO;
 import com.softawii.social.repository.GameRepository;
+import com.softawii.social.repository.PostRepository;
 import com.softawii.social.util.Unpaged;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -13,39 +15,45 @@ import java.util.Optional;
 @Component
 public class GameService {
 
-    private final GameRepository repository;
+    private final GameRepository gameRepository;
+    private final PostRepository postRepository;
 
-    public GameService(GameRepository repository) {
-        this.repository = repository;
+    public GameService(GameRepository gameRepository, PostRepository postRepository) {
+        this.gameRepository = gameRepository;
+        this.postRepository = postRepository;
     }
 
     public Optional<Game> findById(Long id) {
-        return repository.findById(id);
+        return gameRepository.findById(id);
     }
 
     public Page<Game> findAll(String name) {
-        return repository.findAll(name, Unpaged.UNSORTED);
+        return gameRepository.findAll(name, Unpaged.UNSORTED);
     }
 
     public Page<Game> findAll(int page, int size, String name) {
-        return repository.findAll(name, PageRequest.of(page, size));
+        return gameRepository.findAll(name, PageRequest.of(page, size));
+    }
+
+    public Page<PostDTO> findPostsByGameId(int page, int size, Long userId, Long gameId) {
+        return postRepository.findByGame(page, size, userId, gameId);
     }
 
     public Game save(String name, String studio, String imageUrl) {
-        return repository.create(new Game(name, studio, imageUrl));
+        return gameRepository.create(new Game(name, studio, imageUrl));
     }
 
     public Game update(Long id, String name, String studio) {
-        Optional<Game> optionalGame = repository.findById(id);
+        Optional<Game> optionalGame = gameRepository.findById(id);
         Game           game         = optionalGame.orElseThrow();
         game.setName(name);
         game.setStudio(studio);
 
-        return repository.update(game);
+        return gameRepository.update(game);
     }
 
     public void remove(Long id) throws NoSuchElementException {
-        repository.findById(id).orElseThrow();
-        repository.delete(id);
+        gameRepository.findById(id).orElseThrow();
+        gameRepository.delete(id);
     }
 }

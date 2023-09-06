@@ -9,16 +9,7 @@
     />
     <n-list hoverable>
       <n-list-item v-for="game in gameList" :key="game.id" @click="handleGameSelect(game)">
-        <div style="display: flex; flex-direction: row; gap: 10px">
-          <div style="width: 100%; display: flex; flex-direction: column">
-            <span style="font-weight: bold">Nome:</span> {{ game.name }}
-            <span style="font-weight: bold">Studio/Publicadora/Desenvolvedor:</span>
-            {{ game.studio }}
-          </div>
-        </div>
-        <template #prefix>
-          <img loading="lazy" :src="game.imageUrl" class="post-image" />
-        </template>
+        <GameCard :game="game" />
       </n-list-item>
       <div ref="postContainerGame"></div>
     </n-list>
@@ -30,12 +21,14 @@ import { useMessage, NInput, NList, NListItem } from 'naive-ui';
 import { ref, type Ref } from 'vue';
 import type IndexGameResponse from '@/interface/response/indexGameResponse';
 import type Game from '@/interface/game';
+import GameCard from '@/components/game/GameCard.vue';
 
 export default {
   components: {
     NInput,
     NList,
-    NListItem
+    NListItem,
+    GameCard
   },
   setup() {
     return {

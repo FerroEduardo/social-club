@@ -182,6 +182,54 @@ public class PostRepository {
         });
     }
 
+    public Page<PostDTO> findByGame(int page, int size, Long userId, Long gameId) {
+        String sql = """
+                SELECT
+                    p.id,
+                    p.title,
+                    p.description,
+                    COALESCE((SELECT pr.reputation FROM social.post_reputation pr WHERE pr.post_id = p.id), 0) AS reputation,
+                    p.created_at AS "createdAt",
+                    p.modified_at AS "modifiedAt",
+                    u.id AS "authorId",
+                    u.name AS "authorName",
+                    u.image_id AS "authorImageId",
+                    p.game_id AS "gameId",
+                    g.name AS "gameName",
+                    g.studio AS "gameStudio",
+                    g.image_url AS "gameImageUrl",
+                    p.image_id as "imageId",
+                    pv.value AS "userVote"
+                FROM social.post p
+                         INNER JOIN social.user u ON u.id = p.author_id
+                         INNER JOIN social.game g ON g.id = p.game_id
+                         LEFT JOIN social.post_vote pv ON pv.post_id = p.id AND pv.user_id = :user_id
+                WHERE :gameId = p.game_id
+                ORDER BY p.created_at DESC
+                LIMIT :size
+                OFFSET :offset
+                """;
+
+        List<PostDTO> content = jdbcClient
+                .sql(sql)
+                .param("user_id", userId, Types.BIGINT)
+                .param("gameId", gameId, Types.BIGINT)
+                .param("size", size, Types.INTEGER)
+                .param("offset", page * size, Types.INTEGER)
+                .query(postDtoRowMapper)
+                .list();
+
+        return PageableExecutionUtils.getPage(content, PageRequest.of(page, size), () -> {
+            String countQuery = "SELECT COUNT(*) FROM social.post p WHERE :gameId = p.game_id";
+
+            return jdbcClient
+                    .sql(countQuery)
+                    .param("gameId", gameId, Types.BIGINT)
+                    .query()
+                    .singleValue();
+        });
+    }
+
     public Page<PostDTO> findAllSafe(int page, int size) {
         return this.findAllSafe(page, size, null);
     }

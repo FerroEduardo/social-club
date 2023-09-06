@@ -46,6 +46,13 @@ const router = createRouter({
       component: () => import('../views/GameList.vue'),
       // meta: { requiresAuth: true },
       props: true
+    },
+    {
+      path: '/game/:gameId',
+      name: 'game-posts',
+      component: () => import('../views/GamePostList.vue'),
+      // meta: { requiresAuth: true },
+      props: true
     }
   ]
 });

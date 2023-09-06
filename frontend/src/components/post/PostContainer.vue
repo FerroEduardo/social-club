@@ -1,10 +1,5 @@
 <template>
-  <n-thing
-    id="post"
-    :title="post.title"
-    :description="post.description"
-    description-style="word-wrap: anywhere"
-  >
+  <n-thing id="post" :description="post.description" description-style="word-wrap: anywhere">
     <template #header>
       <n-popover trigger="hover" raw show-arrow placement="bottom">
         <template #trigger>
@@ -14,6 +9,7 @@
         </template>
         <img loading="lazy" :src="post.author.imageUrl" />
       </n-popover>
+      <span style="font-weight: bold">{{ post.title }}</span>
     </template>
     <template #header-extra>
       <n-popover trigger="hover" show-arrow placement="bottom">
@@ -56,7 +52,9 @@
         </n-button-group>
         <n-popover trigger="hover" raw :show-arrow="false">
           <template #trigger>
-            <div style="margin-left: auto">{{ post.game.name }} - {{ post.game.studio }}</div>
+            <div style="margin-left: auto" @click="goToGame(post.game.id)">
+              {{ post.game.name }} - {{ post.game.studio }}
+            </div>
           </template>
           <div>
             <img loading="lazy" :src="post.game.imageUrl" />
@@ -167,6 +165,11 @@ export default defineComponent({
         hour: 'numeric',
         minute: 'numeric'
       });
+    },
+    goToGame(gameId: number) {
+      if (this.$route.name !== 'post') {
+        this.$router.push(`/game/${gameId}`);
+      }
     }
   }
 });

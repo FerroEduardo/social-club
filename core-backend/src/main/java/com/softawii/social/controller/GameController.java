@@ -1,19 +1,24 @@
 package com.softawii.social.controller;
 
 import com.softawii.social.model.Game;
+import com.softawii.social.model.dto.request.game.IndexGamePostsRequestDTO;
 import com.softawii.social.model.dto.request.game.IndexGameRequestDTO;
 import com.softawii.social.model.dto.request.game.SaveGameRequestDTO;
 import com.softawii.social.model.dto.request.game.UpdateGameRequestDTO;
+import com.softawii.social.model.dto.request.post.PostDTO;
+import com.softawii.social.security.UserPrincipal;
 import com.softawii.social.service.GameService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/game")
@@ -29,6 +34,26 @@ public class GameController {
     @GetMapping
     public ResponseEntity<Page<?>> index(@Valid IndexGameRequestDTO dto) {
         return ResponseEntity.ok(this.service.findAll(dto.getPage().intValue(), dto.getSize().intValue(), dto.getName()));
+    }
+
+    @GetMapping("{gameId}")
+    public ResponseEntity<Game> show(@Valid @PathVariable @NotNull @PositiveOrZero Long gameId) {
+        Optional<Game> optionalGame = this.service.findById(gameId);
+        if (optionalGame.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(optionalGame.get());
+    }
+
+    @GetMapping("{gameId}/post")
+    public ResponseEntity<Page<PostDTO>> indexPosts(
+            @Valid @PathVariable @NotNull @PositiveOrZero Long gameId,
+            @Valid IndexGamePostsRequestDTO dto,
+            OAuth2AuthenticationToken authentication
+    ) {
+        UserPrincipal user = (UserPrincipal) authentication.getPrincipal();
+        return ResponseEntity.ok(this.service.findPostsByGameId(dto.getPage(), dto.getSize(), user.getId(), gameId));
     }
 
     @PostMapping
