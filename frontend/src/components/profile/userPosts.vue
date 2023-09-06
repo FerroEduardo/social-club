@@ -78,7 +78,8 @@ export default {
                   'https://avatars.cloudflare.steamstatic.com/b69c069ae57724cc0bdbcf4eff87d4bb4feb3def_full.jpg' // post.authorImageUrl
               },
               userVote: post.userVote,
-              createdAt: new Date(post.createdAt)
+              createdAt: new Date(post.createdAt),
+              modifiedAt: new Date(post.modifiedAt)
             };
           });
         })
