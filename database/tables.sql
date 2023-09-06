@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS social.user
     id       SERIAL PRIMARY KEY,
     name     VARCHAR(100)        NOT NULL,
     email    VARCHAR(300) UNIQUE NOT NULL,
-    image_id INTEGER             NULL REFERENCES social.image (id) ON DELETE CASCADE
+    image_id INTEGER             NOT NULL REFERENCES social.image (id) ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS social.post CASCADE;

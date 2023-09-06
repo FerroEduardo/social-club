@@ -49,7 +49,7 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         }
     }
 
-    private OAuth2User processOAuth2User(OAuth2UserRequest oAuth2UserRequest, OAuth2User oAuth2User) {
+    private OAuth2User processOAuth2User(OAuth2UserRequest oAuth2UserRequest, OAuth2User oAuth2User) throws FailedToCreateImageException, IOException {
         String         platform       = oAuth2UserRequest.getClientRegistration().getRegistrationId();
         OAuth2UserInfo oAuth2UserInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(platform, oAuth2User.getAttributes());
         if (!StringUtils.hasLength(oAuth2UserInfo.getEmail())) {
@@ -82,7 +82,7 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         return userRepository.create(user);
     }
 
-    private Image uploadUserImage(OAuth2UserInfo oAuth2UserInfo) {
+    private Image uploadUserImage(OAuth2UserInfo oAuth2UserInfo) throws FailedToCreateImageException, IOException {
         try (BufferedInputStream in = new BufferedInputStream(new URL(oAuth2UserInfo.getImageUrl()).openStream());
              ByteArrayOutputStream fileOutputStream = new ByteArrayOutputStream()) {
             byte[] dataBuffer = new byte[1024];
@@ -94,7 +94,7 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
             return imageService.create(image);
         } catch (IOException | FailedToCreateImageException e) {
             e.printStackTrace();
-            return null;
+            throw e;
         }
     }
 }
