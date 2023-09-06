@@ -63,10 +63,14 @@ public class CommentRepository {
     public Page<CommentDTO> findByPostId(Long postId, Pageable pageable, boolean isActive) {
         MapSqlParameterSource parameterSource = new MapSqlParameterSource();
         String sql = """
-                SELECT pc.id, pc.author_id, u.name as "author_name", u.image_id as "author_image_id", pc.value, pc.created_at
+                SELECT pc.id, pc.author_id, u.name AS "author_name", u.image_id AS "author_image_id", pc.value, pc.created_at
                 FROM social.post_comment pc
-                INNER JOIN social.user u on u.id = author_id
-                WHERE pc.post_id = :post_id AND (:active IS NULL OR pc.deleted_at IS NULL OR pc.deleted_at < CURRENT_TIMESTAMP)
+                INNER JOIN social.user u ON u.id = author_id
+                WHERE pc.post_id = :post_id
+                  AND CASE
+                          WHEN :active = TRUE THEN (pc.deleted_at IS NULL OR pc.deleted_at > CURRENT_TIMESTAMP)
+                          ELSE TRUE
+                    END
                 """;
 
         parameterSource.addValue("post_id", postId, Types.BIGINT);
@@ -90,12 +94,18 @@ public class CommentRepository {
 
         return PageableExecutionUtils.getPage(content, pageable, () -> {
             String countQuery = """
-                    SELECT COUNT(*) FROM social.post_comment where post_id = :post_id AND (:active IS NULL OR pc.deleted_at < CURRENT_TIMESTAMP)
+                    SELECT COUNT(*) FROM social.post_comment pc
+                    WHERE pc.post_id = :post_id
+                      AND CASE
+                              WHEN :active = TRUE THEN (pc.deleted_at IS NULL OR pc.deleted_at > CURRENT_TIMESTAMP)
+                              ELSE TRUE
+                        END
                     """;
 
             return jdbcClient
                     .sql(countQuery)
                     .param("post_id", postId, Types.BIGINT)
+                    .param("active", isActive, Types.BOOLEAN)
                     .query()
                     .singleValue();
         });
@@ -106,7 +116,7 @@ public class CommentRepository {
                 SELECT pc.id, pc.author_id, u.name as "author_name", u.image_id as "author_image_id", pc.value, pc.created_at
                 FROM social.post_comment pc
                 INNER JOIN social.user u on u.id = author_id
-                WHERE pc.id = :id AND pc.author_id = :author_id AND pc.deleted_at < CURRENT_TIMESTAMP
+                WHERE pc.id = :id AND pc.author_id = :author_id AND (pc.deleted_at < CURRENT_TIMESTAMP OR pc.deleted_at IS NULL)
                 """;
 
         return jdbcClient
