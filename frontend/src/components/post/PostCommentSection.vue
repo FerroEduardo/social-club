@@ -25,7 +25,14 @@
             maxRows: 5
           }"
         />
-        <n-button type="primary" ghost @click="sendComment" style="height: auto">
+        <n-button
+          type="primary"
+          ghost
+          @click="sendComment"
+          style="height: auto"
+          :disabled="isCommentRequestRunning"
+          :loading="isCommentRequestRunning"
+        >
           Comentar
         </n-button>
       </n-input-group>
@@ -79,11 +86,15 @@ export default {
       page: 1,
       pageSize: 5,
       pageCount: 0,
-      comments: [] as Comment[]
+      comments: [] as Comment[],
+      isCommentRequestRunning: false
     };
   },
   methods: {
     sendComment() {
+      if (this.isCommentRequestRunning) return;
+
+      this.isCommentRequestRunning = true;
       axios
         .post<IndexCommentResponse>(`/post/${this.postId}/comment`, {
           value: this.commentInput
@@ -96,6 +107,9 @@ export default {
         .catch((error) => {
           this.message.error('Ocorreu um erro na criação de comentário');
           console.error({ error });
+        })
+        .finally(() => {
+          this.isCommentRequestRunning = false;
         });
     },
     fetchComments() {

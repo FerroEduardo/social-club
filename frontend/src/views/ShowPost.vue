@@ -55,7 +55,8 @@ export default defineComponent({
               imageUrl: post.authorImageUrl
             },
             userVote: post.userVote,
-            createdAt: new Date(post.createdAt)
+            createdAt: new Date(post.createdAt),
+            modifiedAt: new Date(post.modifiedAt)
           };
         })
         .catch((reason) => {

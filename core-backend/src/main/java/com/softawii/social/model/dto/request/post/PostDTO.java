@@ -1,7 +1,5 @@
 package com.softawii.social.model.dto.request.post;
 
-import com.softawii.social.model.Post;
-
 import java.time.ZonedDateTime;
 
 public class PostDTO {
@@ -28,132 +26,112 @@ public class PostDTO {
         return id;
     }
 
-    public PostDTO setId(Long id) {
+    public void setId(Long id) {
         this.id = id;
-        return this;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public PostDTO setTitle(String title) {
+    public void setTitle(String title) {
         this.title = title;
-        return this;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public PostDTO setDescription(String description) {
+    public void setDescription(String description) {
         this.description = description;
-        return this;
     }
 
     public Long getReputation() {
         return reputation;
     }
 
-    public PostDTO setReputation(Long reputation) {
+    public void setReputation(Long reputation) {
         this.reputation = reputation;
-        return this;
     }
 
     public ZonedDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public PostDTO setCreatedAt(ZonedDateTime createdAt) {
+    public void setCreatedAt(ZonedDateTime createdAt) {
         this.createdAt = createdAt;
-        return this;
     }
 
     public ZonedDateTime getModifiedAt() {
         return modifiedAt;
     }
 
-    public PostDTO setModifiedAt(ZonedDateTime modifiedAt) {
+    public void setModifiedAt(ZonedDateTime modifiedAt) {
         this.modifiedAt = modifiedAt;
-        return this;
     }
 
     public Long getAuthorId() {
         return authorId;
     }
 
-    public PostDTO setAuthorId(Long authorId) {
+    public void setAuthorId(Long authorId) {
         this.authorId = authorId;
-        return this;
     }
 
     public String getAuthorName() {
         return authorName;
     }
 
-    public PostDTO setAuthorName(String authorName) {
+    public void setAuthorName(String authorName) {
         this.authorName = authorName;
-        return this;
     }
 
     public String getAuthorImageUrl() {
         return authorImageUrl;
     }
 
-    public PostDTO setAuthorImageUrl(String authorImageUrl) {
+    public void setAuthorImageUrl(String authorImageUrl) {
         this.authorImageUrl = authorImageUrl;
-        return this;
     }
 
     public Long getGameId() {
         return gameId;
     }
 
-    public PostDTO setGameId(Long gameId) {
+    public void setGameId(Long gameId) {
         this.gameId = gameId;
-        return this;
     }
 
     public String getGameName() {
         return gameName;
     }
 
-    public PostDTO setGameName(String gameName) {
+    public void setGameName(String gameName) {
         this.gameName = gameName;
-        return this;
     }
 
     public String getGameStudio() {
         return gameStudio;
     }
 
-    public PostDTO setGameStudio(String gameStudio) {
+    public void setGameStudio(String gameStudio) {
         this.gameStudio = gameStudio;
-        return this;
     }
 
     public String getImageUrl() {
         return imageUrl;
     }
 
-    public PostDTO setImageUrl(String imageUrl) {
+    public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
-        return this;
     }
 
     public Short getUserVote() {
         return userVote;
     }
 
-    public PostDTO setUserVote(Short userVote) {
+    public void setUserVote(Short userVote) {
         this.userVote = userVote;
-        return this;
-    }
-
-    public static PostDTO fromEntity(Post post) {
-        PostDTO postDTO = new PostDTO();
-
-        return postDTO;
     }
 
     public String getGameImageUrl() {

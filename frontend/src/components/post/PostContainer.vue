@@ -5,14 +5,28 @@
     :description="post.description"
     description-style="word-wrap: anywhere"
   >
+    <template #header>
+      <n-popover trigger="hover" raw show-arrow placement="bottom">
+        <template #trigger>
+          <div>
+            {{ post.author.name }}
+          </div>
+        </template>
+        <img loading="lazy" :src="post.author.imageUrl" />
+      </n-popover>
+    </template>
     <template #header-extra>
-      <n-button-group>
-        <n-button size="small" :ghost="isUpVoteGhosted" type="success" @click="upvote">⬆️</n-button>
-        <n-button size="small" type="info">{{ reputation }}</n-button>
-        <n-button size="small" :ghost="isDownVoteGhosted" type="error" @click="downvote"
-          >⬇️</n-button
-        >
-      </n-button-group>
+      <n-popover trigger="hover" show-arrow placement="bottom">
+        <template #trigger>
+          <div>
+            {{ parseTimestamp(post.createdAt) }}
+          </div>
+        </template>
+        <div style="text-align: right">
+          Criado: {{ parseTimestamp(post.createdAt) }} <br />
+          Modificado: {{ parseTimestamp(post.modifiedAt) }}
+        </div>
+      </n-popover>
     </template>
     <div>
       <img
@@ -23,16 +37,23 @@
         :style="{ cursor: enableShowPostLink ? 'pointer' : 'auto' }"
       />
       <div style="display: flex; flex-direction: row">
-        <n-popover trigger="hover" raw :show-arrow="false">
-          <template #trigger>
-            <div style="margin-right: auto">
-              {{ post.author.name }}
-            </div>
-          </template>
-          <div>
-            <img loading="lazy" :src="post.author.imageUrl" />
-          </div>
-        </n-popover>
+        <n-button-group>
+          <n-button size="small" :quaternary="isUpVoteGhosted" type="success" @click="upvote">
+            <template #icon>
+              <n-icon>
+                <ArrowUp />
+              </n-icon>
+            </template>
+          </n-button>
+          <n-button size="small" type="info">{{ reputation }}</n-button>
+          <n-button size="small" :quaternary="isDownVoteGhosted" type="error" @click="downvote">
+            <template #icon>
+              <n-icon>
+                <arrow-down />
+              </n-icon>
+            </template>
+          </n-button>
+        </n-button-group>
         <n-popover trigger="hover" raw :show-arrow="false">
           <template #trigger>
             <div style="margin-left: auto">{{ post.game.name }} - {{ post.game.studio }}</div>
@@ -49,7 +70,8 @@
   </n-thing>
 </template>
 <script lang="ts">
-import { NThing, NButton, NButtonGroup, NPopover, useMessage } from 'naive-ui';
+import { NThing, NButton, NButtonGroup, NPopover, useMessage, NIcon } from 'naive-ui';
+import { ArrowUp, ArrowDown } from '@vicons/ionicons5';
 import { defineComponent, type PropType } from 'vue';
 import axios from 'axios';
 import type Post from '@/interface/post';
@@ -62,7 +84,10 @@ export default defineComponent({
     NButton,
     NButtonGroup,
     NPopover,
-    PostCommentSection
+    PostCommentSection,
+    NIcon,
+    ArrowUp,
+    ArrowDown
   },
   props: {
     post: {
@@ -97,7 +122,8 @@ export default defineComponent({
     return {
       commentInput: '' as string,
       userVote: this.post.userVote,
-      reputation: this.post.reputation
+      reputation: this.post.reputation,
+      isVoteRequestRunning: false
     };
   },
   methods: {
@@ -115,6 +141,10 @@ export default defineComponent({
       this.vote(value);
     },
     vote(value: number) {
+      if (this.isVoteRequestRunning) return;
+
+      this.isVoteRequestRunning = true;
+      this.reputation += value;
       axios
         .post<PostVoteResponse>(`/post/${this.post.id}/vote/${value}`)
         .then((response) => {
@@ -124,14 +154,28 @@ export default defineComponent({
         .catch((error) => {
           this.message.error('Ocorreu um erro durante o voto');
           console.error({ error });
+        })
+        .finally(() => {
+          this.isVoteRequestRunning = false;
         });
+    },
+    parseTimestamp(date: Date) {
+      return date.toLocaleDateString(undefined, {
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric'
+      });
     }
   }
 });
 </script>
 <style>
 #post .n-thing-header__extra {
-  margin-left: auto;
+  /* margin-left: auto; */
+  /* width: 100%; */
+  display: flex;
 }
 </style>
 

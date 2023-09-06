@@ -8,7 +8,14 @@
         positive-text="Sim, quero remover"
       >
         <template #trigger>
-          <n-button circle size="small" type="error" secondary :loading="isDeleting">
+          <n-button
+            circle
+            size="small"
+            type="error"
+            secondary
+            :loading="isDeleting"
+            style="margin-left: 4px"
+          >
             <template #icon>
               <trash />
             </template>
@@ -23,7 +30,7 @@
 
 <script lang="ts">
 import { type PropType } from 'vue';
-import { NThing, NButton, NPopconfirm } from 'naive-ui';
+import { NThing, NButton, NPopconfirm, useMessage } from 'naive-ui';
 import { Trash } from '@vicons/ionicons5';
 import axios from 'axios';
 import type Comment from '@/interface/comment';
@@ -47,7 +54,8 @@ export default {
     const isUserOwnerOfComment = userStore.profile?.id === props.comment.authorId;
 
     return {
-      isUserOwnerOfComment
+      isUserOwnerOfComment,
+      message: useMessage()
     };
   },
   data() {
@@ -59,7 +67,7 @@ export default {
     parseTimestamp(timestamp: string) {
       return new Date(timestamp).toLocaleDateString(undefined, {
         year: 'numeric',
-        month: 'long',
+        month: 'numeric',
         day: 'numeric',
         hour: 'numeric',
         minute: 'numeric'
@@ -67,9 +75,16 @@ export default {
     },
     deleteComment() {
       this.isDeleting = true;
-      axios.delete(`/comment/${this.comment.id}`).then((response) => {
-        this.$emit('refreshList');
-      });
+      axios
+        .delete(`/comment/${this.comment.id}`)
+        .then((response) => {
+          this.$emit('refreshList');
+        })
+        .catch((error) => {
+          this.isDeleting = false;
+          this.message.error('Ocorreu um erro na remoção do comentário');
+          console.error({ error });
+        });
     }
   }
 };
