@@ -51,6 +51,10 @@ export default {
         {
           label: 'Postar',
           to: '/post'
+        },
+        {
+          label: 'Jogos',
+          to: '/game'
         }
       ]
     };

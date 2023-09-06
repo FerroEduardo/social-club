@@ -28,11 +28,7 @@ public class GameController {
 
     @GetMapping
     public ResponseEntity<Page<?>> index(@Valid IndexGameRequestDTO dto) {
-        if (dto.isPaginated()) {
-            return ResponseEntity.ok(this.service.findAll(dto.getPage().intValue(), dto.getSize().intValue(), dto.getName()));
-        }
-
-        return ResponseEntity.ok(this.service.findAll(dto.getName()));
+        return ResponseEntity.ok(this.service.findAll(dto.getPage().intValue(), dto.getSize().intValue(), dto.getName()));
     }
 
     @PostMapping
