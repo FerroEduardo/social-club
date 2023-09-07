@@ -29,8 +29,8 @@
         loading="lazy"
         :src="post.imageUrl"
         class="post-image"
-        @click="handlePostImageClick"
-        :style="{ cursor: enableShowPostLink ? 'pointer' : 'auto' }"
+        @click="openPostDetails"
+        :style="{ cursor: enableOpenPostDetails ? 'pointer' : 'default' }"
       />
       <div style="display: flex; flex-direction: row">
         <n-button-group>
@@ -92,7 +92,7 @@ export default defineComponent({
       type: Object as PropType<Post>,
       required: true
     },
-    enableShowPostLink: {
+    enableOpenPostDetails: {
       type: Boolean,
       required: false,
       default: true
@@ -125,8 +125,8 @@ export default defineComponent({
     };
   },
   methods: {
-    handlePostImageClick() {
-      if (this.enableShowPostLink) {
+    openPostDetails() {
+      if (this.enableOpenPostDetails) {
         this.$router.push(`/post/${this.post.id}`);
       }
     },
