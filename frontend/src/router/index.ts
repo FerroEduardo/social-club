@@ -50,7 +50,7 @@ const router = createRouter({
     {
       path: '/game/:gameId',
       name: 'game-posts',
-      component: () => import('../views/GamePostList.vue'),
+      component: () => import('../views/Timeline.vue'),
       // meta: { requiresAuth: true },
       props: true
     }

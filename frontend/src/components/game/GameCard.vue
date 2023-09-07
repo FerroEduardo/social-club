@@ -1,12 +1,10 @@
 <template>
-  <div style="display: flex; flex-direction: row; gap: 10px">
-    <img loading="lazy" :src="game.imageUrl" class="post-image" />
-    <div style="display: flex; flex-direction: row; gap: 10px">
-      <div style="width: 100%; display: flex; flex-direction: column">
-        <span style="font-weight: bold">Nome:</span> {{ game.name }}
-        <span style="font-weight: bold">Studio/Publicador/Desenvolvedor:</span>
-        {{ game.studio }}
-      </div>
+  <div id="container">
+    <img id="cover" loading="lazy" :src="game.imageUrl" />
+    <div id="field-container">
+      <span class="field-name" style="">Nome:</span> {{ game.name }}
+      <span class="field-name">Studio/Publicador/Desenvolvedor:</span>
+      {{ game.studio }}
     </div>
   </div>
 </template>
@@ -23,4 +21,22 @@ export default {
   }
 };
 </script>
-<style></style>
+<style scoped>
+#container {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  cursor: pointer;
+}
+#cover {
+  max-width: 120px;
+  width: 100%;
+}
+#field-container {
+  display: flex;
+  flex-direction: column;
+}
+.field-name {
+  font-weight: bold;
+}
+</style>

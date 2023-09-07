@@ -1,9 +1,9 @@
 <template>
   <n-thing id="post" :description="post.description" description-style="word-wrap: anywhere">
     <template #header>
-      <n-popover trigger="hover" raw show-arrow placement="bottom">
+      <n-popover trigger="hover" raw show-arrow placement="bottom" :keep-alive-on-hover="false">
         <template #trigger>
-          <div>
+          <div style="cursor: default">
             {{ post.author.name }}
           </div>
         </template>
@@ -12,13 +12,13 @@
       <span style="font-weight: bold">{{ post.title }}</span>
     </template>
     <template #header-extra>
-      <n-popover trigger="hover" show-arrow placement="bottom">
+      <n-popover trigger="hover" show-arrow placement="bottom" :keep-alive-on-hover="false">
         <template #trigger>
-          <div>
+          <div style="cursor: default">
             {{ parseTimestamp(post.createdAt) }}
           </div>
         </template>
-        <div style="text-align: right">
+        <div style="text-align: right; cursor: default">
           Criado: {{ parseTimestamp(post.createdAt) }} <br />
           Modificado: {{ parseTimestamp(post.modifiedAt) }}
         </div>
@@ -50,10 +50,10 @@
             </template>
           </n-button>
         </n-button-group>
-        <n-popover trigger="hover" raw :show-arrow="false">
+        <n-popover trigger="hover" raw :show-arrow="false" :keep-alive-on-hover="false">
           <template #trigger>
-            <div style="margin-left: auto" @click="goToGame(post.game.id)">
-              {{ post.game.name }} - {{ post.game.studio }}
+            <div style="margin-left: auto; cursor: pointer" @click="goToGame(post.game.id)">
+              {{ post.game.name }}
             </div>
           </template>
           <div>

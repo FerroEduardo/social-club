@@ -1,5 +1,8 @@
 <template>
   <n-card id="container">
+    <n-card v-if="isGameTimeline && game" style="margin-bottom: 10px">
+      <GameCard :game="game" />
+    </n-card>
     <n-list>
       <n-list-item v-for="post in posts" :key="post.id">
         <PostContainer :post="post" />
@@ -20,11 +23,15 @@
 
 <script lang="ts">
 import { NList, NListItem, NCard, useMessage, NEmpty, NButton } from 'naive-ui';
+import { ref, type Ref, type PropType, defineAsyncComponent } from 'vue';
 import axios from 'axios';
 
 import type Post from '@/interface/post';
 import type IndexPostRequest from '@/interface/response/indexPostRequest';
 import PostContainer from '@/components/post/PostContainer.vue';
+import type Game from '@/interface/game';
+
+const GameCard = defineAsyncComponent(() => import('@/components/game/GameCard.vue'));
 
 export default {
   components: {
@@ -33,11 +40,20 @@ export default {
     NCard,
     PostContainer,
     NEmpty,
-    NButton
+    NButton,
+    GameCard
   },
-  setup() {
+  props: {
+    gameId: {
+      type: String as PropType<string>,
+      required: false
+    }
+  },
+  setup(props) {
     return {
-      message: useMessage()
+      message: useMessage(),
+      isGameTimeline: props.gameId !== undefined,
+      game: ref() as Ref<Game>
     };
   },
   data() {
@@ -56,10 +72,12 @@ export default {
       const size = this.pageSize;
       this.isLoadingData = true;
 
+      const url = this.isGameTimeline
+        ? `/game/${this.gameId}/post?page=${page}&size=${size}`
+        : `/post?page=${page}&size=${size}`;
+
       axios
-        .get<IndexPostRequest>(`/post?page=${page}&size=${size}`, {
-          withCredentials: true
-        })
+        .get<IndexPostRequest>(url)
         .then((request) => {
           this.isLast = request.data.last;
           this.posts.push(
@@ -112,9 +130,23 @@ export default {
         }
       );
       observer.observe(this.$refs.postContainer as Element);
+    },
+    fetchGame() {
+      axios
+        .get<Game>(`/game/${this.gameId}`)
+        .then((response) => {
+          this.game = response.data;
+        })
+        .catch((error) => {
+          console.error({ error });
+          this.message.error('Ocorreu um erro na busca do jogo');
+        });
     }
   },
   mounted() {
+    if (this.isGameTimeline) {
+      this.fetchGame();
+    }
     this.getPostPage();
     this.setupInfiniteScroll();
   }

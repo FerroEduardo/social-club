@@ -7,7 +7,7 @@
       clearable
       :loading="isLoading"
     />
-    <n-list hoverable>
+    <n-list hoverable clickable>
       <n-list-item v-for="game in gameList" :key="game.id" @click="handleGameSelect(game)">
         <GameCard :game="game" />
       </n-list-item>
@@ -75,7 +75,7 @@ export default {
         });
     },
     handleGameSelect(game: Game) {
-      console.log({ game });
+      this.$router.push(`/game/${game.id}`);
     },
     setupInfiniteScroll() {
       const observer = new IntersectionObserver(

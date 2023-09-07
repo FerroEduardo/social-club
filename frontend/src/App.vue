@@ -6,7 +6,7 @@
           <Header />
         </n-layout-header>
         <n-layout-content bordered>
-          <router-view />
+          <router-view :key="$route.path" />
         </n-layout-content>
       </n-layout>
     </n-message-provider>

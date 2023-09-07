@@ -8,10 +8,15 @@
         v-for="link in links"
         :key="link.label"
         :to="link.to"
-        #="{ navigate, href }"
+        #="{ navigate, href, isActive }"
         custom
       >
-        <n-a class="no-decoration" :href="href" @click="navigate">
+        <n-a
+          class="no-decoration"
+          :style="{ fontWeight: isActive ? 'bold' : 'unset' }"
+          :href="href"
+          @click="navigate"
+        >
           {{ link.label }}
         </n-a>
       </router-link>
