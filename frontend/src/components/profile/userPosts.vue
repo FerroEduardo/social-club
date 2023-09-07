@@ -69,13 +69,12 @@ export default {
                 id: post.gameId,
                 name: post.gameName,
                 studio: post.gameStudio,
-                imageUrl: post.authorImageUrl
+                imageUrl: post.gameImageUrl
               },
               author: {
                 id: post.authorId,
                 name: post.authorName,
-                imageUrl:
-                  'https://avatars.cloudflare.steamstatic.com/b69c069ae57724cc0bdbcf4eff87d4bb4feb3def_full.jpg' // post.authorImageUrl
+                imageUrl: post.authorImageUrl
               },
               userVote: post.userVote,
               createdAt: new Date(post.createdAt),
