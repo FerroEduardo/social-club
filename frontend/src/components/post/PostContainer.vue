@@ -40,6 +40,7 @@
           @update-reputation="updateReputation"
           @update-user-vote="updateUserVote"
         />
+        <PostManagementButtons v-if="showManagementButtons" :post-id="post.id" />
         <n-popover trigger="hover" raw :show-arrow="false" :keep-alive-on-hover="false">
           <template #trigger>
             <div style="margin-left: auto; cursor: pointer" @click="goToGame(post.game.id)">
@@ -63,13 +64,15 @@ import { defineComponent, type PropType } from 'vue';
 import type Post from '@/interface/post';
 import PostCommentSection from './PostCommentSection.vue';
 import PostVoteButtons from './PostVoteButtons.vue';
+import PostManagementButtons from './PostManagementButtons.vue';
 
 export default defineComponent({
   components: {
     NThing,
     NPopover,
     PostCommentSection,
-    PostVoteButtons
+    PostVoteButtons,
+    PostManagementButtons
   },
   props: {
     post: {

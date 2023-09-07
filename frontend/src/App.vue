@@ -1,15 +1,17 @@
 <template>
   <n-config-provider :theme="theme">
-    <n-message-provider>
-      <n-layout>
-        <n-layout-header bordered>
-          <Header />
-        </n-layout-header>
-        <n-layout-content bordered>
-          <router-view :key="$route.path" />
-        </n-layout-content>
-      </n-layout>
-    </n-message-provider>
+    <n-dialog-provider>
+      <n-message-provider>
+        <n-layout>
+          <n-layout-header bordered>
+            <Header />
+          </n-layout-header>
+          <n-layout-content bordered>
+            <router-view :key="$route.path" />
+          </n-layout-content>
+        </n-layout>
+      </n-message-provider>
+    </n-dialog-provider>
   </n-config-provider>
 </template>
 
@@ -20,7 +22,8 @@ import {
   NLayout,
   NLayoutHeader,
   NLayoutContent,
-  NMessageProvider
+  NMessageProvider,
+  NDialogProvider
 } from 'naive-ui';
 import axios from 'axios';
 
@@ -34,7 +37,8 @@ export default {
     NLayout,
     NLayoutHeader,
     NLayoutContent,
-    NMessageProvider
+    NMessageProvider,
+    NDialogProvider
   },
   setup() {
     const theme = darkTheme;
