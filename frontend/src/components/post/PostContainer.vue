@@ -33,23 +33,13 @@
         :style="{ cursor: enableOpenPostDetails ? 'pointer' : 'default' }"
       />
       <div style="display: flex; flex-direction: row">
-        <n-button-group>
-          <n-button size="small" :quaternary="isUpVoteGhosted" type="success" @click="upvote">
-            <template #icon>
-              <n-icon>
-                <ArrowUp />
-              </n-icon>
-            </template>
-          </n-button>
-          <n-button size="small" type="info">{{ reputation }}</n-button>
-          <n-button size="small" :quaternary="isDownVoteGhosted" type="error" @click="downvote">
-            <template #icon>
-              <n-icon>
-                <arrow-down />
-              </n-icon>
-            </template>
-          </n-button>
-        </n-button-group>
+        <PostVoteButtons
+          :reputation="reputation"
+          :user-vote="userVote"
+          :post-id="post.id"
+          @update-reputation="updateReputation"
+          @update-user-vote="updateUserVote"
+        />
         <n-popover trigger="hover" raw :show-arrow="false" :keep-alive-on-hover="false">
           <template #trigger>
             <div style="margin-left: auto; cursor: pointer" @click="goToGame(post.game.id)">
@@ -68,24 +58,18 @@
   </n-thing>
 </template>
 <script lang="ts">
-import { NThing, NButton, NButtonGroup, NPopover, useMessage, NIcon } from 'naive-ui';
-import { ArrowUp, ArrowDown } from '@vicons/ionicons5';
+import { NThing, NPopover, useMessage } from 'naive-ui';
 import { defineComponent, type PropType } from 'vue';
-import axios from 'axios';
 import type Post from '@/interface/post';
-import type PostVoteResponse from '@/interface/response/postVoteResponse';
 import PostCommentSection from './PostCommentSection.vue';
+import PostVoteButtons from './PostVoteButtons.vue';
 
 export default defineComponent({
   components: {
     NThing,
-    NButton,
-    NButtonGroup,
     NPopover,
     PostCommentSection,
-    NIcon,
-    ArrowUp,
-    ArrowDown
+    PostVoteButtons
   },
   props: {
     post: {
@@ -101,6 +85,11 @@ export default defineComponent({
       type: Boolean,
       required: false,
       default: false
+    },
+    showManagementButtons: {
+      type: Boolean,
+      required: false,
+      default: false
     }
   },
   setup() {
@@ -108,20 +97,11 @@ export default defineComponent({
       message: useMessage()
     };
   },
-  computed: {
-    isUpVoteGhosted() {
-      return this.userVote === -1 || !this.userVote;
-    },
-    isDownVoteGhosted() {
-      return this.userVote === 1 || !this.userVote;
-    }
-  },
   data() {
     return {
       commentInput: '' as string,
-      userVote: this.post.userVote,
-      reputation: this.post.reputation,
-      isVoteRequestRunning: false
+      userVote: this.post.userVote as number,
+      reputation: this.post.reputation as number
     };
   },
   methods: {
@@ -129,33 +109,6 @@ export default defineComponent({
       if (this.enableOpenPostDetails) {
         this.$router.push(`/post/${this.post.id}`);
       }
-    },
-    upvote() {
-      const value = this.userVote === 1 ? 0 : 1;
-      this.vote(value);
-    },
-    downvote() {
-      const value = this.userVote === -1 ? 0 : -1;
-      this.vote(value);
-    },
-    vote(value: number) {
-      if (this.isVoteRequestRunning) return;
-
-      this.isVoteRequestRunning = true;
-      this.reputation += value;
-      axios
-        .post<PostVoteResponse>(`/post/${this.post.id}/vote/${value}`)
-        .then((response) => {
-          this.reputation = response.data.reputation;
-          this.userVote = value;
-        })
-        .catch((error) => {
-          this.message.error('Ocorreu um erro durante o voto');
-          console.error({ error });
-        })
-        .finally(() => {
-          this.isVoteRequestRunning = false;
-        });
     },
     parseTimestamp(date: Date) {
       return date.toLocaleDateString(undefined, {
@@ -170,6 +123,12 @@ export default defineComponent({
       if (this.$route.name !== 'post') {
         this.$router.push(`/game/${gameId}`);
       }
+    },
+    updateReputation(newValue: number) {
+      this.reputation = newValue;
+    },
+    updateUserVote(newValue: number) {
+      this.userVote = newValue;
     }
   }
 });
