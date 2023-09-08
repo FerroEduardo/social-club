@@ -33,7 +33,6 @@ import {
 import { Trash, Pencil, Cog } from '@vicons/ionicons5';
 import { type PropType, ref, h, type Component } from 'vue';
 import axios from 'axios';
-import { useUserStore } from '@/stores/userStore';
 import PostEditCard from './PostEditCard.vue';
 
 function renderIcon(icon: Component) {
@@ -58,12 +57,8 @@ export default {
   emits: {
     'update-post': () => true
   },
-  setup(props) {
-    const userStore = useUserStore();
-    const isUserOwnerOfPost = userStore.profile?.id === props.postId;
-
+  setup() {
     return {
-      isUserOwnerOfPost,
       message: useMessage(),
       dialog: useDialog(),
       isDeleting: false,

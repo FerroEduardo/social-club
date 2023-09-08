@@ -41,7 +41,7 @@
           @update-user-vote="updateUserVote"
         />
         <PostManagementButtons
-          v-if="showManagementButtons"
+          v-if="showManagementButtons && isUserOwnerOfPost"
           :post-id="post.id"
           @update-post="onPostUpdated"
         />
@@ -66,6 +66,7 @@
 import { NThing, NPopover, useMessage } from 'naive-ui';
 import { type PropType, defineAsyncComponent } from 'vue';
 import type Post from '@/interface/post';
+import { useUserStore } from '@/stores/userStore';
 import PostVoteButtons from './PostVoteButtons.vue';
 const PostCommentSection = defineAsyncComponent(() => import('./PostCommentSection.vue'));
 const PostManagementButtons = defineAsyncComponent(() => import('./PostManagementButtons.vue'));
@@ -102,9 +103,13 @@ export default {
   emits: {
     'update-post': () => true
   },
-  setup() {
+  setup(props) {
+    const userStore = useUserStore();
+    const isUserOwnerOfPost = userStore.profile?.id === props.post.author.id;
+
     return {
-      message: useMessage()
+      message: useMessage(),
+      isUserOwnerOfPost
     };
   },
   data() {
