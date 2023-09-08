@@ -26,7 +26,9 @@ CREATE TABLE IF NOT EXISTS social.image
                     ((blob IS NULL) AND (s3 IS NULL) AND (local IS NOT NULL))
             )
         ), -- Insert blob or s3, not both or none
-    extension VARCHAR(50) NOT NULL
+    extension VARCHAR(50) NOT NULL,
+    created_at  TIMESTAMPTZ  NOT NULL DEFAULT (CURRENT_TIMESTAMP),
+    deleted_at  TIMESTAMPTZ  NULL
 );
 
 DROP TABLE IF EXISTS social.user CASCADE;

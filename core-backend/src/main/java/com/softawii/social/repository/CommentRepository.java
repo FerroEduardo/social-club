@@ -68,7 +68,7 @@ public class CommentRepository {
                 INNER JOIN social.user u ON u.id = author_id
                 WHERE pc.post_id = :post_id
                   AND CASE
-                          WHEN :active = TRUE THEN (pc.deleted_at IS NULL OR pc.deleted_at > CURRENT_TIMESTAMP)
+                          WHEN :active = TRUE THEN pc.deleted_at IS NULL
                           ELSE TRUE
                     END
                 """;
@@ -97,7 +97,7 @@ public class CommentRepository {
                     SELECT COUNT(*) FROM social.post_comment pc
                     WHERE pc.post_id = :post_id
                       AND CASE
-                              WHEN :active = TRUE THEN (pc.deleted_at IS NULL OR pc.deleted_at > CURRENT_TIMESTAMP)
+                              WHEN :active = TRUE THEN pc.deleted_at IS NULL
                               ELSE TRUE
                         END
                     """;
@@ -116,7 +116,7 @@ public class CommentRepository {
                 SELECT pc.id, pc.author_id, u.name as "author_name", u.image_id as "author_image_id", pc.value, pc.created_at
                 FROM social.post_comment pc
                 INNER JOIN social.user u on u.id = author_id
-                WHERE pc.id = :id AND pc.author_id = :author_id AND (pc.deleted_at < CURRENT_TIMESTAMP OR pc.deleted_at IS NULL)
+                WHERE pc.id = :id AND pc.author_id = :author_id AND pc.deleted_at IS NULL
                 """;
 
         return jdbcClient
@@ -138,6 +138,20 @@ public class CommentRepository {
         jdbcClient
                 .sql(sql)
                 .param("id", id, Types.BIGINT)
+                .update();
+    }
+
+    @Transactional
+    public void softDeleteByPostId(Long postId) {
+        String sql = """
+                UPDATE social.post_comment
+                SET deleted_at = CURRENT_TIMESTAMP, modified_at = CURRENT_TIMESTAMP
+                WHERE post_id = :post_id
+                """;
+
+        jdbcClient
+                .sql(sql)
+                .param("post_id", postId, Types.BIGINT)
                 .update();
     }
 

@@ -49,6 +49,39 @@ public class PostRepository {
         return post;
     }
 
+    public boolean existsActive(Long postId, Long userId) {
+        String sql = """
+                SELECT 1
+                FROM social.post p
+                WHERE p.id = :post_id AND p.author_id = :author_id AND p.deleted_at IS NULL
+                LIMIT 1
+                """;
+
+        return !jdbcClient
+                .sql(sql)
+                .param("post_id", postId, Types.BIGINT)
+                .param("author_id", userId, Types.BIGINT)
+                .query()
+                .listOfRows()
+                .isEmpty();
+    }
+
+    public boolean existsActive(Long postId) {
+        String sql = """
+                SELECT 1
+                FROM social.post p
+                WHERE p.id = :post_id AND p.deleted_at IS NULL
+                LIMIT 1
+                """;
+
+        return !jdbcClient
+                .sql(sql)
+                .param("post_id", postId, Types.BIGINT)
+                .query()
+                .listOfRows()
+                .isEmpty();
+    }
+
     public Optional<PostDTO> findByIdSafe(Long postId, Long userId) {
         String sql = """
                 SELECT
@@ -71,7 +104,7 @@ public class PostRepository {
                          INNER JOIN social.user u ON u.id = p.author_id
                          INNER JOIN social.game g ON g.id = p.game_id
                          LEFT JOIN social.post_vote pv ON pv.post_id = p.id AND pv.user_id = :user_id
-                WHERE :post_id = p.id
+                WHERE :post_id = p.id AND p.deleted_at IS NULL
                 LIMIT 1
                 """;
 
@@ -83,7 +116,7 @@ public class PostRepository {
                 .optional();
     }
 
-    public Page<PostDTO> findAllSafe(int page, int size, Long userId) {
+    public Page<PostDTO> findAllDTOActive(int page, int size, Long userId) {
         String sql = """
                 SELECT
                     p.id,
@@ -105,6 +138,7 @@ public class PostRepository {
                          INNER JOIN social.user u ON u.id = p.author_id
                          INNER JOIN social.game g ON g.id = p.game_id
                          LEFT JOIN social.post_vote pv ON pv.post_id = p.id AND pv.user_id = :user_id
+                WHERE p.deleted_at IS NULL
                 ORDER BY p.created_at DESC
                 LIMIT :size
                 OFFSET :offset
@@ -121,7 +155,7 @@ public class PostRepository {
 
         return PageableExecutionUtils.getPage(content, PageRequest.of(page, size), () -> {
             String countQuery = """
-                    SELECT COUNT(p) FROM social.post p INNER JOIN social.user u ON u.id = p.author_id WHERE (:user_id IS NULL OR :user_id = u.id)
+                    SELECT COUNT(p) FROM social.post p INNER JOIN social.user u ON u.id = p.author_id WHERE (:user_id IS NULL OR :user_id = u.id) AND p.deleted_at IS NULL
                     """;
 
             return jdbcClient
@@ -132,7 +166,7 @@ public class PostRepository {
         });
     }
 
-    public Page<PostDTO> findUserPosts(int page, int size, Long user_id) {
+    public Page<PostDTO> findAllActiveByUser(int page, int size, Long user_id) {
         String sql = """
                 SELECT
                     p.id,
@@ -154,7 +188,7 @@ public class PostRepository {
                          INNER JOIN social.user u ON u.id = p.author_id
                          INNER JOIN social.game g ON g.id = p.game_id
                          LEFT JOIN social.post_vote pv ON pv.post_id = p.id AND pv.user_id = :user_id
-                WHERE (:user_id IS NULL OR :user_id = u.id)
+                WHERE (:user_id IS NULL OR :user_id = u.id) AND p.deleted_at IS NULL
                 ORDER BY p.created_at DESC
                 LIMIT :size
                 OFFSET :offset
@@ -171,7 +205,7 @@ public class PostRepository {
 
         return PageableExecutionUtils.getPage(content, PageRequest.of(page, size), () -> {
             String countQuery = """
-                    SELECT COUNT(p) FROM social.post p INNER JOIN social.user u ON u.id = p.author_id WHERE (:user_id IS NULL OR :user_id = u.id)
+                    SELECT COUNT(p) FROM social.post p INNER JOIN social.user u ON u.id = p.author_id WHERE (:user_id IS NULL OR :user_id = u.id) AND p.deleted_at IS NULL
                     """;
 
             return jdbcClient
@@ -182,7 +216,7 @@ public class PostRepository {
         });
     }
 
-    public Page<PostDTO> findByGame(int page, int size, Long userId, Long gameId) {
+    public Page<PostDTO> findAllActiveByGame(int page, int size, Long userId, Long gameId) {
         String sql = """
                 SELECT
                     p.id,
@@ -204,7 +238,7 @@ public class PostRepository {
                          INNER JOIN social.user u ON u.id = p.author_id
                          INNER JOIN social.game g ON g.id = p.game_id
                          LEFT JOIN social.post_vote pv ON pv.post_id = p.id AND pv.user_id = :user_id
-                WHERE :gameId = p.game_id
+                WHERE :gameId = p.game_id AND p.deleted_at IS NULL
                 ORDER BY p.created_at DESC
                 LIMIT :size
                 OFFSET :offset
@@ -220,7 +254,7 @@ public class PostRepository {
                 .list();
 
         return PageableExecutionUtils.getPage(content, PageRequest.of(page, size), () -> {
-            String countQuery = "SELECT COUNT(*) FROM social.post p WHERE :gameId = p.game_id";
+            String countQuery = "SELECT COUNT(*) FROM social.post p WHERE :gameId = p.game_id AND p.deleted_at IS NULL";
 
             return jdbcClient
                     .sql(countQuery)
@@ -231,7 +265,21 @@ public class PostRepository {
     }
 
     public Page<PostDTO> findAllSafe(int page, int size) {
-        return this.findAllSafe(page, size, null);
+        return this.findAllDTOActive(page, size, null);
+    }
+
+    @Transactional
+    public void softDelete(Long id) {
+        String sql = """
+                UPDATE social.post
+                SET deleted_at = CURRENT_TIMESTAMP, modified_at = CURRENT_TIMESTAMP
+                WHERE id = :id
+                """;
+
+        jdbcClient
+                .sql(sql)
+                .param("id", id, Types.BIGINT)
+                .update();
     }
 
 }

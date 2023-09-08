@@ -5,7 +5,6 @@ import com.softawii.social.model.Game;
 import com.softawii.social.model.Image;
 import com.softawii.social.model.Post;
 import com.softawii.social.model.User;
-import com.softawii.social.model.dto.request.comment.CommentDTO;
 import com.softawii.social.model.dto.request.comment.CreatePostCommentRequestDTO;
 import com.softawii.social.model.dto.request.post.CreatePostRequestDTO;
 import com.softawii.social.model.dto.request.post.IndexPostCommentsRequestDTO;
@@ -15,7 +14,6 @@ import com.softawii.social.repository.PostRepository;
 import com.softawii.social.security.UserPrincipal;
 import com.softawii.social.service.*;
 import jakarta.validation.Valid;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -60,11 +58,26 @@ public class PostController {
 
     @GetMapping("{postId}")
     public ResponseEntity<?> show(@PathVariable Long postId, OAuth2AuthenticationToken authentication) {
+        UserPrincipal     principal    = (UserPrincipal) authentication.getPrincipal();
+        Optional<PostDTO> postOptional = this.postService.findById(postId, principal.getId());
+
+        if (postOptional.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(postOptional.get());
+    }
+
+    @DeleteMapping("{postId}")
+    public ResponseEntity<?> delete(@PathVariable Long postId, OAuth2AuthenticationToken authentication) {
         try {
             UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
-            PostDTO       post      = this.postService.findById(postId, principal.getId()).orElseThrow();
+            if (!this.postService.exists(postId, principal.getId())) {
+                return ResponseEntity.badRequest().build();
+            }
+            this.postService.delete(postId);
 
-            return ResponseEntity.ok(post);
+            return ResponseEntity.ok().build();
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
         }
@@ -73,9 +86,11 @@ public class PostController {
     @GetMapping("{postId}/comment")
     public ResponseEntity<?> indexComments(@Valid IndexPostCommentsRequestDTO request, @PathVariable Long postId) {
         try {
-            Page<CommentDTO> comments = this.commentService.findAll(postId, request.getPage(), request.getSize());
+            if (!this.postService.exists(postId)) {
+                return ResponseEntity.badRequest().build();
+            }
 
-            return ResponseEntity.ok(comments);
+            return ResponseEntity.ok(this.commentService.findAll(postId, request.getPage(), request.getSize()));
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
         }
@@ -83,8 +98,12 @@ public class PostController {
 
     @PostMapping("{postId}/comment")
     public ResponseEntity<?> indexComments(@PathVariable Long postId, @Valid @RequestBody CreatePostCommentRequestDTO request, OAuth2AuthenticationToken authentication) {
-        UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
         try {
+            UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
+            if (!this.postService.exists(postId)) {
+                return ResponseEntity.badRequest().build();
+            }
+
             return ResponseEntity.ok(this.commentService.create(postId, principal.getId(), request.getValue()));
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
@@ -125,6 +144,10 @@ public class PostController {
     ) {
         try {
             UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+            if (!this.postService.exists(postId)) {
+                return ResponseEntity.badRequest().build();
+            }
+
             if (voteValue == 1 || voteValue == -1 || voteValue == 0) {
                 long userId = userPrincipal.getId();
                 this.postService.findById(postId, userId).orElseThrow();

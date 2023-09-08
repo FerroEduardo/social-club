@@ -38,11 +38,11 @@ public class ImageService {
     }
 
     public Optional<Image> findById(Long id) {
-        return repository.findById(id);
+        return repository.findByIdActive(id);
     }
 
     public ImageDto getImageInputStreamById(Long id) throws IOException {
-        Image       image = repository.findById(id).orElseThrow();
+        Image       image = repository.findByIdActive(id).orElseThrow();
         InputStream inputStream;
         if (image.getBlob() != null) {
             inputStream = new ByteArrayInputStream(image.getBlob());

@@ -36,7 +36,7 @@ public class GameService {
     }
 
     public Page<PostDTO> findPostsByGameId(int page, int size, Long userId, Long gameId) {
-        return postRepository.findByGame(page, size, userId, gameId);
+        return postRepository.findAllActiveByGame(page, size, userId, gameId);
     }
 
     public Game save(String name, String studio, String imageUrl) {
