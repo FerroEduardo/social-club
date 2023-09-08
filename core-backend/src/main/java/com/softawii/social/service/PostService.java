@@ -65,4 +65,8 @@ public class PostService {
         imageRepository.softDeleteByPostId(postId);
         commentRepository.softDeleteByPostId(postId);
     }
+
+    public void update(Post post) {
+        postRepository.update(post);
+    }
 }

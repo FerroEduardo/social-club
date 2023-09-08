@@ -40,7 +40,11 @@
           @update-reputation="updateReputation"
           @update-user-vote="updateUserVote"
         />
-        <PostManagementButtons v-if="showManagementButtons" :post-id="post.id" />
+        <PostManagementButtons
+          v-if="showManagementButtons"
+          :post-id="post.id"
+          @update-post="onPostUpdated"
+        />
         <n-popover trigger="hover" raw :show-arrow="false" :keep-alive-on-hover="false">
           <template #trigger>
             <div style="margin-left: auto; cursor: pointer" @click="goToGame(post.game.id)">
@@ -60,13 +64,13 @@
 </template>
 <script lang="ts">
 import { NThing, NPopover, useMessage } from 'naive-ui';
-import { defineComponent, type PropType } from 'vue';
+import { type PropType, defineAsyncComponent } from 'vue';
 import type Post from '@/interface/post';
-import PostCommentSection from './PostCommentSection.vue';
 import PostVoteButtons from './PostVoteButtons.vue';
-import PostManagementButtons from './PostManagementButtons.vue';
+const PostCommentSection = defineAsyncComponent(() => import('./PostCommentSection.vue'));
+const PostManagementButtons = defineAsyncComponent(() => import('./PostManagementButtons.vue'));
 
-export default defineComponent({
+export default {
   components: {
     NThing,
     NPopover,
@@ -94,6 +98,9 @@ export default defineComponent({
       required: false,
       default: false
     }
+  },
+  emits: {
+    'update-post': () => true
   },
   setup() {
     return {
@@ -132,9 +139,12 @@ export default defineComponent({
     },
     updateUserVote(newValue: number) {
       this.userVote = newValue;
+    },
+    onPostUpdated() {
+      this.$emit('update-post');
     }
   }
-});
+};
 </script>
 <style>
 #post .n-thing-header__extra {

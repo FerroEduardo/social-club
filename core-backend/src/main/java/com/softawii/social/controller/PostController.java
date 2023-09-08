@@ -6,10 +6,7 @@ import com.softawii.social.model.Image;
 import com.softawii.social.model.Post;
 import com.softawii.social.model.User;
 import com.softawii.social.model.dto.request.comment.CreatePostCommentRequestDTO;
-import com.softawii.social.model.dto.request.post.CreatePostRequestDTO;
-import com.softawii.social.model.dto.request.post.IndexPostCommentsRequestDTO;
-import com.softawii.social.model.dto.request.post.IndexPostRequestDTO;
-import com.softawii.social.model.dto.request.post.PostDTO;
+import com.softawii.social.model.dto.request.post.*;
 import com.softawii.social.repository.PostRepository;
 import com.softawii.social.security.UserPrincipal;
 import com.softawii.social.service.*;
@@ -160,6 +157,30 @@ public class PostController {
             return ResponseEntity.badRequest().body(Map.of("message", "Invalid 'value' field"));
         } catch (NoSuchElementException e) {
             return ResponseEntity.badRequest().body(Map.of("message", "Post does not exists"));
+        }
+    }
+
+    @PutMapping("{postId}")
+    public ResponseEntity<?> indexComments(
+            @Valid @RequestBody EditPostRequestDTO request,
+            @PathVariable Long postId,
+            OAuth2AuthenticationToken authentication
+    ) {
+        try {
+            UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+            if (!this.postService.exists(postId, userPrincipal.getId())) {
+                return ResponseEntity.notFound().build();
+            }
+            Post post = new Post();
+            post.setId(postId);
+            post.setTitle(request.getTitle());
+            post.setDescription(request.getDescription());
+
+            this.postService.update(post);
+
+            return ResponseEntity.ok().build();
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
         }
     }
 }

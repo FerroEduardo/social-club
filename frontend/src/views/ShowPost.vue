@@ -6,6 +6,7 @@
       :enable-open-post-details="false"
       show-comments
       show-management-buttons
+      @update-post="fetchPost"
     />
   </div>
 </template>

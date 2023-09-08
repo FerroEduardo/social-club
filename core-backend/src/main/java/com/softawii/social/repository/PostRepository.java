@@ -49,6 +49,22 @@ public class PostRepository {
         return post;
     }
 
+    @Transactional
+    public void update(Post post) {
+        String sql = """
+                UPDATE social.post
+                SET modified_at = CURRENT_TIMESTAMP, title = :title, description = :description
+                WHERE id = :id
+                """;
+
+        jdbcClient
+                .sql(sql)
+                .param("id", post.getId(), Types.BIGINT)
+                .param("title", post.getTitle(), Types.VARCHAR)
+                .param("description", post.getDescription(), Types.VARCHAR)
+                .update();
+    }
+
     public boolean existsActive(Long postId, Long userId) {
         String sql = """
                 SELECT 1

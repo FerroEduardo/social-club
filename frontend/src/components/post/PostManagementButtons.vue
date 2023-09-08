@@ -16,18 +16,7 @@
     />
   </n-popover>
   <n-modal v-model:show="showEditModal">
-    <n-card
-      style="width: 600px"
-      title="Modal"
-      :bordered="false"
-      size="huge"
-      role="dialog"
-      aria-modal="true"
-    >
-      <template #header-extra> Oops! </template>
-      Content
-      <template #footer> Footer </template>
-    </n-card>
+    <PostEditCard :post-id="postId" @update-post="onPostUpdated" />
   </n-modal>
 </template>
 <script lang="ts">
@@ -39,12 +28,13 @@ import {
   NPopover,
   NMenu,
   useDialog,
-  NModal,
-  NCard
+  NModal
 } from 'naive-ui';
 import { Trash, Pencil, Cog } from '@vicons/ionicons5';
 import { type PropType, ref, h, type Component } from 'vue';
+import axios from 'axios';
 import { useUserStore } from '@/stores/userStore';
+import PostEditCard from './PostEditCard.vue';
 
 function renderIcon(icon: Component) {
   return () => h(NIcon, null, { default: () => h(icon) });
@@ -57,13 +47,16 @@ export default {
     NMenu,
     Cog,
     NModal,
-    NCard
+    PostEditCard
   },
   props: {
     postId: {
       type: Number as PropType<number>,
       required: true
     }
+  },
+  emits: {
+    'update-post': () => true
   },
   setup(props) {
     const userStore = useUserStore();
@@ -92,7 +85,15 @@ export default {
   },
   methods: {
     deletePost() {
-      window.alert('delete');
+      axios
+        .delete(`/post/${this.postId}`)
+        .then((response) => {
+          this.message.success('Postagem apagada com sucesso');
+          this.$router.push('/timeline');
+        })
+        .catch((error) => {
+          this.message.error('Ocorreu um erro ao tentar apagar a postagem');
+        });
     },
     onValueUpdated(key: string) {
       if (key === 'delete') {
@@ -108,12 +109,13 @@ export default {
         positiveText: 'Sim',
         negativeText: 'Não tenho certeza',
         onPositiveClick: () => {
-          this.message.success('Sim');
-        },
-        onNegativeClick: () => {
-          this.message.error('Não tenho certeza');
+          this.deletePost();
         }
       });
+    },
+    onPostUpdated() {
+      this.showEditModal = false;
+      this.$emit('update-post');
     }
   }
 };
