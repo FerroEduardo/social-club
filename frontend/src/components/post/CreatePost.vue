@@ -1,75 +1,73 @@
 <template>
-  <div style="display: flex; align-items: center; justify-content: center">
-    <n-card style="max-width: 800px; margin-top: 20px">
-      <n-form ref="formRef" label-placement="top" :rules="rules" :model="model">
-        <n-grid :x-gap="24" :cols="1">
-          <n-form-item-gi label="Título" path="title" required>
-            <n-input v-model:value="model.title" placeholder="Título" :maxlength="100" />
-          </n-form-item-gi>
-          <n-form-item-gi label="Descrição" path="description" required>
-            <n-input
-              v-model:value="model.description"
-              placeholder="Descrição"
-              type="textarea"
-              :autosize="{
-                minRows: 1,
-                maxRows: 5
-              }"
-              :maxlength="200"
-            />
-          </n-form-item-gi>
-          <n-form-item-gi label="Imagem" path="image" required>
-            <n-upload
-              directory-dnd
-              :default-upload="false"
-              @change="handleChange"
-              :multiple="false"
-              :max="1"
-              :file-list="fileList"
-              accept=".png,.jpg,.jpeg,.webp"
+  <n-card>
+    <n-form ref="formRef" label-placement="top" :rules="rules" :model="model">
+      <n-grid :x-gap="24" :cols="1">
+        <n-form-item-gi label="Título" path="title">
+          <n-input v-model:value="model.title" placeholder="Título" :maxlength="100" />
+        </n-form-item-gi>
+        <n-form-item-gi label="Descrição" path="description">
+          <n-input
+            v-model:value="model.description"
+            placeholder="Descrição"
+            type="textarea"
+            :autosize="{
+              minRows: 1,
+              maxRows: 5
+            }"
+            :maxlength="200"
+          />
+        </n-form-item-gi>
+        <n-form-item-gi label="Imagem" path="image" required>
+          <n-upload
+            directory-dnd
+            :default-upload="false"
+            @change="handleChange"
+            :multiple="false"
+            :max="1"
+            :file-list="fileList"
+            accept=".png,.jpg,.jpeg,.webp"
+          >
+            <n-upload-dragger>
+              <n-text style="font-size: 16px">
+                Clique ou arraste nessa área para fazer o upload
+              </n-text>
+              <n-p depth="3" style="margin: 8px 0 0 0">
+                Formatos aceitos: PNG, JPEG, JPG e WEBP
+              </n-p>
+            </n-upload-dragger>
+          </n-upload>
+        </n-form-item-gi>
+        <n-form-item-gi v-if="model.image" label="Preview">
+          <img :src="imageFileUrl" style="max-width: 100%; max-height: 400px; margin: auto" />
+        </n-form-item-gi>
+        <n-form-item-gi label="Jogo" path="game" required>
+          <n-auto-complete
+            v-model:value="model.game"
+            :input-props="{
+              autocomplete: 'disabled'
+            }"
+            :options="gameOptions"
+            placeholder="Counter Strike: 2"
+            @update-value="handleGameInput"
+            @select="handleGameSelect"
+          />
+        </n-form-item-gi>
+        <n-grid-item :span="24">
+          <div style="display: flex; justify-content: flex-end">
+            <n-button
+              round
+              type="primary"
+              @click.prevent="submit"
+              :disabled="isRequestRunning"
+              :loading="isRequestRunning"
             >
-              <n-upload-dragger>
-                <n-text style="font-size: 16px">
-                  Clique ou arraste nessa área para fazer o upload
-                </n-text>
-                <n-p depth="3" style="margin: 8px 0 0 0">
-                  Formatos aceitos: PNG, JPEG, JPG e WEBP
-                </n-p>
-              </n-upload-dragger>
-            </n-upload>
-          </n-form-item-gi>
-          <n-form-item-gi v-if="model.image" label="Preview">
-            <img :src="imageFileUrl" style="max-width: 100%; max-height: 400px; margin: auto" />
-          </n-form-item-gi>
-          <n-form-item-gi label="Jogo" path="game" required>
-            <n-auto-complete
-              v-model:value="model.game"
-              :input-props="{
-                autocomplete: 'disabled'
-              }"
-              :options="gameOptions"
-              placeholder="Counter Strike: 2"
-              @update-value="handleGameInput"
-              @select="handleGameSelect"
-            />
-          </n-form-item-gi>
-          <n-grid-item :span="24">
-            <div style="display: flex; justify-content: flex-end">
-              <n-button
-                round
-                type="primary"
-                @click.prevent="submit"
-                :disabled="isRequestRunning"
-                :loading="isRequestRunning"
-              >
-                Enviar
-              </n-button>
-            </div>
-          </n-grid-item>
-        </n-grid>
-      </n-form>
-    </n-card>
-  </div>
+              Enviar
+            </n-button>
+          </div>
+        </n-grid-item>
+      </n-grid>
+    </n-form>
+  </n-card>
 </template>
 <script lang="ts">
 import {

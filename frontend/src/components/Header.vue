@@ -30,7 +30,7 @@
   </header>
 </template>
 <script lang="ts">
-import { NButton, NA, NPopover } from 'naive-ui';
+import { NButton, NA } from 'naive-ui';
 
 import { useUserStore } from '@/stores/userStore';
 import HeaderProfilePopover from '@/components/header/HeaderProfilePopover.vue';
@@ -52,10 +52,6 @@ export default {
         {
           label: 'Timeline',
           to: '/timeline'
-        },
-        {
-          label: 'Postar',
-          to: '/post'
         },
         {
           label: 'Jogos',

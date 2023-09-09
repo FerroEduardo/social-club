@@ -2,6 +2,7 @@
   <n-config-provider :theme="theme">
     <n-dialog-provider>
       <n-message-provider>
+        <n-back-top />
         <n-layout>
           <n-layout-header bordered>
             <Header />
@@ -23,7 +24,8 @@ import {
   NLayoutHeader,
   NLayoutContent,
   NMessageProvider,
-  NDialogProvider
+  NDialogProvider,
+  NBackTop
 } from 'naive-ui';
 import axios from 'axios';
 
@@ -38,7 +40,8 @@ export default {
     NLayoutHeader,
     NLayoutContent,
     NMessageProvider,
-    NDialogProvider
+    NDialogProvider,
+    NBackTop
   },
   setup() {
     const theme = darkTheme;

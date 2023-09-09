@@ -3,6 +3,15 @@
     <n-card v-if="isGameTimeline && game" style="margin-bottom: 10px">
       <GameCard :game="game" />
     </n-card>
+    <n-collapse>
+      <n-collapse-item
+        title="Criar postagem"
+        name="create-post"
+        :disabled="!userStore.isAuthenticated"
+      >
+        <CreatePost />
+      </n-collapse-item>
+    </n-collapse>
     <n-list>
       <n-list-item v-for="post in posts" :key="post.id">
         <PostContainer :post="post" />
@@ -22,7 +31,16 @@
 </template>
 
 <script lang="ts">
-import { NList, NListItem, NCard, useMessage, NEmpty, NButton } from 'naive-ui';
+import {
+  NList,
+  NListItem,
+  NCard,
+  useMessage,
+  NEmpty,
+  NButton,
+  NCollapse,
+  NCollapseItem
+} from 'naive-ui';
 import { ref, type Ref, type PropType, defineAsyncComponent } from 'vue';
 import axios from 'axios';
 
@@ -30,8 +48,10 @@ import type Post from '@/interface/post';
 import type IndexPostRequest from '@/interface/response/indexPostRequest';
 import PostContainer from '@/components/post/PostContainer.vue';
 import type Game from '@/interface/game';
+import { useUserStore } from '@/stores/userStore';
 
 const GameCard = defineAsyncComponent(() => import('@/components/game/GameCard.vue'));
+const CreatePost = defineAsyncComponent(() => import('@/components/post/CreatePost.vue'));
 
 export default {
   components: {
@@ -41,7 +61,10 @@ export default {
     PostContainer,
     NEmpty,
     NButton,
-    GameCard
+    GameCard,
+    CreatePost,
+    NCollapse,
+    NCollapseItem
   },
   props: {
     gameId: {
@@ -53,7 +76,8 @@ export default {
     return {
       message: useMessage(),
       isGameTimeline: props.gameId !== undefined,
-      game: ref() as Ref<Game>
+      game: ref() as Ref<Game>,
+      userStore: useUserStore()
     };
   },
   data() {
