@@ -48,6 +48,9 @@ public class PostController {
 
     @GetMapping
     public Iterable<?> index(@Valid IndexPostRequestDTO dto, OAuth2AuthenticationToken authentication) {
+        if (authentication == null) {
+            return this.postService.findAll(null, dto.getPage().intValue(), dto.getSize().intValue());
+        }
         UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
 
         return this.postService.findAll(principal.getId(), dto.getPage().intValue(), dto.getSize().intValue());
@@ -55,8 +58,13 @@ public class PostController {
 
     @GetMapping("{postId}")
     public ResponseEntity<?> show(@PathVariable Long postId, OAuth2AuthenticationToken authentication) {
-        UserPrincipal     principal    = (UserPrincipal) authentication.getPrincipal();
-        Optional<PostDTO> postOptional = this.postService.findById(postId, principal.getId());
+        Optional<PostDTO> postOptional;
+        if (authentication == null) {
+            postOptional = this.postService.findById(postId, null);
+        } else {
+            UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
+            postOptional = this.postService.findById(postId, principal.getId());
+        }
 
         if (postOptional.isEmpty()) {
             return ResponseEntity.notFound().build();

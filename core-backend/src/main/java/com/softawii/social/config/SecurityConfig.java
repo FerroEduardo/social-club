@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
@@ -44,6 +45,7 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/", "/favicon.ico", "/logout/success", "/login/failed").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/post", "/post/{postId}", "/post/{postId}/comment", "/image/{id}", "/game").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(login -> login
