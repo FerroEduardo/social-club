@@ -41,7 +41,7 @@ import {
   NCollapse,
   NCollapseItem
 } from 'naive-ui';
-import { ref, type Ref, type PropType, defineAsyncComponent } from 'vue';
+import { ref, type Ref, defineAsyncComponent } from 'vue';
 import axios from 'axios';
 
 import type Post from '@/interface/post';
@@ -66,19 +66,25 @@ export default {
     NCollapse,
     NCollapseItem
   },
-  props: {
-    gameId: {
-      type: String as PropType<string>,
-      required: false
-    }
-  },
-  setup(props) {
+  setup() {
     return {
       message: useMessage(),
-      isGameTimeline: props.gameId !== undefined,
       game: ref() as Ref<Game>,
       userStore: useUserStore()
     };
+  },
+  computed: {
+    isGameTimeline() {
+      return this.$route.query?.game !== undefined;
+    },
+    gameId() {
+      return this.$route.query?.game;
+    }
+  },
+  watch: {
+    '$route.query.game'() {
+      this.setupPage();
+    }
   },
   data() {
     return {
@@ -165,13 +171,23 @@ export default {
           console.error({ error });
           this.message.error('Ocorreu um erro na busca do jogo');
         });
+    },
+    resetPageParams() {
+      this.posts = [];
+      this.page = 0;
+      this.isLast = false;
+    },
+    setupPage() {
+      this.posts = [];
+      if (this.gameId) {
+        this.fetchGame();
+      }
+      this.resetPageParams();
+      this.getPostPage();
     }
   },
   mounted() {
-    if (this.isGameTimeline) {
-      this.fetchGame();
-    }
-    this.getPostPage();
+    this.setupPage();
     this.setupInfiniteScroll();
   }
 };

@@ -136,7 +136,12 @@ export default {
     },
     goToGame(gameId: number) {
       if (this.$route.name !== 'post') {
-        this.$router.push(`/game/${gameId}`);
+        this.$router.push({
+          name: 'timeline',
+          query: {
+            game: gameId
+          }
+        });
       }
     },
     updateReputation(newValue: number) {

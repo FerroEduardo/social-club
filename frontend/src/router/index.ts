@@ -17,35 +17,25 @@ const router = createRouter({
     {
       path: '/timeline',
       name: 'timeline',
-      component: () => import('../views/Timeline.vue')
-      // meta: { requiresAuth: true }
+      component: () => import('../views/Timeline.vue'),
+      props: true
     },
     {
       path: '/post/:postId',
       name: 'show-post',
       component: () => import('../views/ShowPost.vue'),
-      // meta: { requiresAuth: true },
       props: true
     },
     {
       path: '/profile',
       name: 'profile',
       component: () => import('../views/ShowProfile.vue'),
-      // meta: { requiresAuth: true },
       props: true
     },
     {
       path: '/game',
       name: 'game',
       component: () => import('../views/GameList.vue'),
-      // meta: { requiresAuth: true },
-      props: true
-    },
-    {
-      path: '/game/:gameId',
-      name: 'game-posts',
-      component: () => import('../views/Timeline.vue'),
-      // meta: { requiresAuth: true },
       props: true
     }
   ]
