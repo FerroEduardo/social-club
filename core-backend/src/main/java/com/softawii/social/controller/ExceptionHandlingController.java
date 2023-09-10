@@ -52,6 +52,7 @@ public class ExceptionHandlingController extends ResponseEntityExceptionHandler 
     @ExceptionHandler(Throwable.class)
     public ModelAndView majorHandler(HttpServletRequest req, Throwable e) {
         ModelAndView mav = new ModelAndView();
+        mav.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
         if (appConfig.isProduction()) {
             mav.setViewName("error.html");
             return mav;

@@ -44,7 +44,7 @@ public class PostService {
         post.setGameId(gameId);
         post.setTitle(title);
         post.setDescription(description);
-        post.setId(imageId);
+        post.setImageId(imageId);
 
         return postRepository.save(post);
     }

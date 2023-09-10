@@ -49,9 +49,9 @@ import type IndexPostRequest from '@/interface/response/indexPostRequest';
 import PostContainer from '@/components/post/PostContainer.vue';
 import type Game from '@/interface/game';
 import { useUserStore } from '@/stores/userStore';
+import CreatePost from '@/components/post/CreatePost.vue'
 
 const GameCard = defineAsyncComponent(() => import('@/components/game/GameCard.vue'));
-const CreatePost = defineAsyncComponent(() => import('@/components/post/CreatePost.vue'));
 
 export default {
   components: {
