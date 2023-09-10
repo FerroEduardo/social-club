@@ -21,8 +21,8 @@
       />
     </n-divider>
     <n-list>
-      <n-list-item v-for="post in posts" :key="post.id">
-        <PostContainer :post="post" />
+      <n-list-item v-for="(post, index) in posts" :key="post.id">
+        <PostContainer :post="post" :high-loading-priority="index < 3" />
       </n-list-item>
       <div v-if="posts.length === 0">
         <n-empty description="Nenhum post encontrado">

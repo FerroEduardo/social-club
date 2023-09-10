@@ -7,6 +7,7 @@
       show-comments
       show-management-buttons
       @update-post="fetchPost"
+      high-loading-priority
     />
   </div>
 </template>

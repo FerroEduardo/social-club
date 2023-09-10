@@ -26,9 +26,10 @@
     </template>
     <div>
       <img
-        loading="lazy"
+        :loading="highLoadingPriority ? 'eager' : 'lazy'"
         :src="post.imageUrl"
         class="post-image"
+        width="100%"
         @click="openPostDetails"
         :style="{ cursor: enableOpenPostDetails ? 'pointer' : 'default' }"
       />
@@ -95,6 +96,11 @@ export default {
       default: false
     },
     showManagementButtons: {
+      type: Boolean,
+      required: false,
+      default: false
+    },
+    highLoadingPriority: {
       type: Boolean,
       required: false,
       default: false

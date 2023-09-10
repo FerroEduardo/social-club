@@ -1,7 +1,7 @@
 <template>
   <header id="header-container">
     <div id="header-left">
-      <img src="https://avatars.githubusercontent.com/u/92893192" style="max-height: 30px" />
+      <img src="https://avatars.githubusercontent.com/u/92893192" width="30px" />
     </div>
     <nav id="nav-container">
       <router-link
