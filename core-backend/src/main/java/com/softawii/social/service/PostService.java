@@ -26,16 +26,16 @@ public class PostService {
         return postRepository.findByPostId(id, userId);
     }
 
-    public Page<PostDTO> findAll(Long userId, int page, int size) {
-        return postRepository.findAllActive(page, size, userId);
+    public Page<PostDTO> findAll(Long userId, int page, int size, PostRepository.PostFilter filter) {
+        return postRepository.findAllActive(page, size, userId, filter);
     }
 
     public Page<PostDTO> findUserPosts(Long userId, int page, int size) {
         return postRepository.findAllActiveByUser(page, size, userId);
     }
 
-    public Page<PostDTO> findAll(int page, int size) {
-        return this.findAll(null, page, size);
+    public Page<PostDTO> findAllByGameId(int page, int size, Long authenticatedUserId, Long gameId, PostRepository.PostFilter postFilter) {
+        return postRepository.findAllActiveByGame(page, size, authenticatedUserId, gameId, postFilter);
     }
 
     public Post create(Long userId, Long gameId, Long imageId, String title, String description) {

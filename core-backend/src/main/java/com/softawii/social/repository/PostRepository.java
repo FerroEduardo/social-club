@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Types;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -116,13 +117,23 @@ public class PostRepository {
     }
 
     public Page<PostDTO> findAllActive(int page, int size, Long authenticatedUserId) {
+        return findAllActive(page, size, authenticatedUserId, null);
+    }
+
+    public Page<PostDTO> findAllActive(int page, int size, Long authenticatedUserId, PostFilter filter) {
         StringBuilder query = baseDtoQuery();
+        String        orderBy;
+        if (filter == null) {
+            orderBy = PostFilter.DEFAULT.getOrder();
+        } else {
+            orderBy = filter.getOrder();
+        }
         query.append("""
                              WHERE
                                  p.deleted_at IS NULL
-                             ORDER BY p.created_at DESC
+                             ORDER BY %s
                              LIMIT :size
-                             OFFSET :offset""");
+                             OFFSET :offset""".formatted(orderBy));
 
         List<PostDTO> content = jdbcClient
                 .sql(query.toString())
@@ -185,19 +196,25 @@ public class PostRepository {
         });
     }
 
-    public Page<PostDTO> findAllActiveByGame(int page, int size, Long userId, Long gameId) {
+    public Page<PostDTO> findAllActiveByGame(int page, int size, Long authenticatedUserId, Long gameId, PostFilter filter) {
         StringBuilder query = baseDtoQuery();
+        String        orderBy;
+        if (filter == null) {
+            orderBy = PostFilter.DEFAULT.getOrder();
+        } else {
+            orderBy = filter.getOrder();
+        }
         query.append("""
                              WHERE
                                  :game_id = p.game_id AND
                                  p.deleted_at IS NULL
-                             ORDER BY p.created_at DESC
+                             ORDER BY %s
                              LIMIT :size
-                             OFFSET :offset""");
+                             OFFSET :offset""".formatted(orderBy));
 
         List<PostDTO> content = jdbcClient
                 .sql(query.toString())
-                .param("authenticated_user_id", userId, Types.BIGINT)
+                .param("authenticated_user_id", authenticatedUserId, Types.BIGINT)
                 .param("game_id", gameId, Types.BIGINT)
                 .param("size", size, Types.INTEGER)
                 .param("offset", page * size, Types.INTEGER)
@@ -219,10 +236,6 @@ public class PostRepository {
                     .query()
                     .singleValue();
         });
-    }
-
-    public Page<PostDTO> findAllSafe(int page, int size) {
-        return this.findAllActive(page, size, null);
     }
 
     @Transactional
@@ -266,4 +279,33 @@ public class PostRepository {
         return stringBuilder;
     }
 
+    public enum PostFilter {
+        HIGHEST_REPUTATION("highest-reputation", "reputation DESC"),
+        LOWEST_REPUTATION("lowest-reputation", "reputation ASC"),
+        MOST_RECENT("most-recent", "p.created_at DESC"),
+        LEAST_RECENT("least-recent", "p.created_at ASC"),
+        DEFAULT(null, "p.created_at DESC");
+
+        private final String name;
+        private final String order;
+
+        PostFilter(String name, String order) {
+            this.name = name;
+            this.order = order;
+        }
+
+        public String getOrder() {
+            return order;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public static Optional<PostFilter> fromName(String name) {
+            return Arrays.stream(PostFilter.values())
+                    .filter(filter -> name.equals(filter.getName()))
+                    .findFirst();
+        }
+    }
 }

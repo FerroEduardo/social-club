@@ -1,7 +1,6 @@
 package com.softawii.social.service;
 
 import com.softawii.social.model.Game;
-import com.softawii.social.model.dto.PostDTO;
 import com.softawii.social.repository.GameRepository;
 import com.softawii.social.repository.PostRepository;
 import com.softawii.social.util.Unpaged;
@@ -34,11 +33,6 @@ public class GameService {
     public Page<Game> findAll(int page, int size, String name) {
         return gameRepository.findAll(name, PageRequest.of(page, size));
     }
-
-    public Page<PostDTO> findPostsByGameId(int page, int size, Long userId, Long gameId) {
-        return postRepository.findAllActiveByGame(page, size, userId, gameId);
-    }
-
     public Game save(String name, String studio, String imageUrl) {
         return gameRepository.create(new Game(name, studio, imageUrl));
     }

@@ -12,6 +12,14 @@
         <CreatePost />
       </n-collapse-item>
     </n-collapse>
+    <n-divider title-placement="right">
+      <n-select
+        v-model:value="currentFilter"
+        :options="filterOptions"
+        style="width: 100%"
+        @update:value="handleUpdateFilter"
+      />
+    </n-divider>
     <n-list>
       <n-list-item v-for="post in posts" :key="post.id">
         <PostContainer :post="post" />
@@ -39,7 +47,10 @@ import {
   NEmpty,
   NButton,
   NCollapse,
-  NCollapseItem
+  NCollapseItem,
+  NSelect,
+  NDivider,
+  type SelectOption
 } from 'naive-ui';
 import { ref, type Ref, defineAsyncComponent } from 'vue';
 import axios from 'axios';
@@ -47,9 +58,9 @@ import axios from 'axios';
 import type Post from '@/interface/post';
 import type IndexPostRequest from '@/interface/response/indexPostRequest';
 import PostContainer from '@/components/post/PostContainer.vue';
+import CreatePost from '@/components/post/CreatePost.vue';
 import type Game from '@/interface/game';
 import { useUserStore } from '@/stores/userStore';
-import CreatePost from '@/components/post/CreatePost.vue'
 
 const GameCard = defineAsyncComponent(() => import('@/components/game/GameCard.vue'));
 
@@ -64,13 +75,34 @@ export default {
     GameCard,
     CreatePost,
     NCollapse,
-    NCollapseItem
+    NCollapseItem,
+    NSelect,
+    NDivider
   },
   setup() {
     return {
       message: useMessage(),
       game: ref() as Ref<Game>,
-      userStore: useUserStore()
+      userStore: useUserStore(),
+      currentFilter: ref('most-recent') as Ref<string>,
+      filterOptions: [
+        {
+          label: 'Maior reputação',
+          value: 'highest-reputation'
+        },
+        {
+          label: 'Menor reputação',
+          value: 'lowest-reputation'
+        },
+        {
+          label: 'Mais recente',
+          value: 'most-recent'
+        },
+        {
+          label: 'Menos recente',
+          value: 'least-recent'
+        }
+      ] as SelectOption[]
     };
   },
   computed: {
@@ -100,11 +132,12 @@ export default {
       if (this.isLoadingData || this.isLast) return;
       const page = this.page++;
       const size = this.pageSize;
+      const filter = this.currentFilter;
       this.isLoadingData = true;
 
       const url = this.isGameTimeline
-        ? `/game/${this.gameId}/post?page=${page}&size=${size}`
-        : `/post?page=${page}&size=${size}`;
+        ? `/game/${this.gameId}/post?page=${page}&size=${size}&filter=${filter}`
+        : `/post?page=${page}&size=${size}&filter=${filter}`;
 
       axios
         .get<IndexPostRequest>(url)
@@ -178,12 +211,14 @@ export default {
       this.isLast = false;
     },
     setupPage() {
-      this.posts = [];
+      this.resetPageParams();
       if (this.gameId) {
         this.fetchGame();
       }
-      this.resetPageParams();
       this.getPostPage();
+    },
+    handleUpdateFilter() {
+      this.setupPage();
     }
   },
   mounted() {

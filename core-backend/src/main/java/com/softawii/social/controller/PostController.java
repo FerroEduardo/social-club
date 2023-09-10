@@ -5,7 +5,6 @@ import com.softawii.social.model.Game;
 import com.softawii.social.model.Post;
 import com.softawii.social.model.User;
 import com.softawii.social.model.dto.PostDTO;
-import com.softawii.social.repository.PostRepository;
 import com.softawii.social.request.comment.CreatePostCommentRequest;
 import com.softawii.social.request.post.CreatePostRequest;
 import com.softawii.social.request.post.EditPostRequest;
@@ -37,26 +36,31 @@ public class PostController {
     private final ImageService    imageService;
     private final PostVoteService postVoteService;
     private final CommentService  commentService;
-    private final PostRepository  test;
 
-    public PostController(UserService userService, GameService gameService, PostService postService, ImageService imageService, PostVoteService postVoteService, CommentService commentService, PostRepository test) {
+    public PostController(
+            UserService userService,
+            GameService gameService,
+            PostService postService,
+            ImageService imageService,
+            PostVoteService postVoteService,
+            CommentService commentService
+    ) {
         this.userService = userService;
         this.gameService = gameService;
         this.postService = postService;
         this.imageService = imageService;
         this.postVoteService = postVoteService;
         this.commentService = commentService;
-        this.test = test;
     }
 
     @GetMapping
     public Iterable<?> index(@Valid IndexPostRequest request, OAuth2AuthenticationToken authentication) {
         if (authentication == null) {
-            return this.postService.findAll(null, request.getPage().intValue(), request.getSize().intValue());
+            return this.postService.findAll(null, request.getPage(), request.getSize(), request.getPostFilter());
         }
         UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
 
-        return this.postService.findAll(principal.getId(), request.getPage().intValue(), request.getSize().intValue());
+        return this.postService.findAll(principal.getId(), request.getPage(), request.getSize(), request.getPostFilter());
     }
 
     @GetMapping("{postId}")
@@ -105,7 +109,11 @@ public class PostController {
     }
 
     @PostMapping("{postId}/comment")
-    public ResponseEntity<?> indexComments(@PathVariable Long postId, @Valid @RequestBody CreatePostCommentRequest request, OAuth2AuthenticationToken authentication) {
+    public ResponseEntity<?> indexComments(
+            @PathVariable Long postId,
+            @Valid @RequestBody CreatePostCommentRequest request,
+            OAuth2AuthenticationToken authentication
+    ) {
         try {
             UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
             if (!this.postService.exists(postId)) {
