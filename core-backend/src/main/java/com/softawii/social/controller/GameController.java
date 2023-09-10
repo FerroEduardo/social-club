@@ -52,6 +52,10 @@ public class GameController {
             @Valid IndexGamePostsRequest request,
             OAuth2AuthenticationToken authentication
     ) {
+        if (authentication == null) {
+            return ResponseEntity.ok(this.service.findPostsByGameId(request.getPage(), request.getSize(), null, gameId));
+        }
+
         UserPrincipal user = (UserPrincipal) authentication.getPrincipal();
         return ResponseEntity.ok(this.service.findPostsByGameId(request.getPage(), request.getSize(), user.getId(), gameId));
     }

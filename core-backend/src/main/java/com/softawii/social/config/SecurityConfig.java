@@ -45,7 +45,9 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/", "/favicon.ico", "/logout/success", "/login/failed").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/post", "/post/{postId}", "/post/{postId}/comment", "/image/{id}", "/game").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/post", "/post/{postId}", "/post/{postId}/comment").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/image/{id}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/game", "/game/{gameId}", "/game/{gameId}/post").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(login -> login
