@@ -1,10 +1,10 @@
-package com.softawii.social.model.dto.request.post;
+package com.softawii.social.request.post;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 
-public class IndexPostRequestDTO {
+public class IndexPostRequest {
 
     @PositiveOrZero(message = "\"page\" must be at least 0")
     @NotNull(message = "\"page\" is required")
@@ -14,7 +14,7 @@ public class IndexPostRequestDTO {
     @NotNull(message = "\"size\" is required")
     private Long size;
 
-    public IndexPostRequestDTO() {
+    public IndexPostRequest() {
     }
 
     public Long getPage() {

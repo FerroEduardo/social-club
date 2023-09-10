@@ -1,7 +1,7 @@
 package com.softawii.social.service;
 
 import com.softawii.social.model.Game;
-import com.softawii.social.model.dto.request.post.PostDTO;
+import com.softawii.social.model.dto.PostDTO;
 import com.softawii.social.repository.GameRepository;
 import com.softawii.social.repository.PostRepository;
 import com.softawii.social.util.Unpaged;

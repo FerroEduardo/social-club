@@ -1,21 +1,9 @@
 package com.softawii.social.model;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-
-@Entity
-@Table(name = "user")
 public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String name;
-
-    @Email
     private String email;
-
-    @Column(name = "image_id")
     private Long imageId;
 
     public Long getId() {

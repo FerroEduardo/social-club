@@ -1,7 +1,7 @@
 package com.softawii.social.service;
 
 import com.softawii.social.model.User;
-import com.softawii.social.model.dto.request.user.UserDTO;
+import com.softawii.social.model.dto.UserDTO;
 import com.softawii.social.repository.UserRepository;
 import org.springframework.stereotype.Component;
 

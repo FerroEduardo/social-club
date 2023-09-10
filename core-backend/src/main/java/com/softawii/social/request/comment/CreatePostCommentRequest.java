@@ -1,12 +1,12 @@
-package com.softawii.social.model.dto.request.comment;
+package com.softawii.social.request.comment;
 
 import jakarta.validation.constraints.Size;
 
-public class CreatePostCommentRequestDTO {
+public class CreatePostCommentRequest {
     @Size(min = 1, max = 200, message = "The length of \"value\" must be between 1 and 200")
     private String value;
 
-    public CreatePostCommentRequestDTO() {
+    public CreatePostCommentRequest() {
     }
 
     public String getValue() {

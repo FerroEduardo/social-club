@@ -1,7 +1,7 @@
 package com.softawii.social.repository;
 
 import com.softawii.social.model.Post;
-import com.softawii.social.model.dto.request.post.PostDTO;
+import com.softawii.social.model.dto.PostDTO;
 import com.softawii.social.repository.mapper.PostDtoRowMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -38,11 +38,11 @@ public class PostRepository {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcClient
                 .sql(sql)
-                .param("author_id", post.getUser().getId(), Types.BIGINT)
-                .param("game_id", post.getGame().getId(), Types.BIGINT)
+                .param("author_id", post.getUserId(), Types.BIGINT)
+                .param("game_id", post.getGameId(), Types.BIGINT)
                 .param("title", post.getTitle(), Types.VARCHAR)
                 .param("description", post.getDescription(), Types.VARCHAR)
-                .param("image_id", post.getImage().getId(), Types.BIGINT)
+                .param("image_id", post.getImageId(), Types.BIGINT)
                 .update(keyHolder);
         post.setId(keyHolder.getKey().longValue());
 

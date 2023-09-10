@@ -1,6 +1,6 @@
 package com.softawii.social.repository.mapper;
 
-import com.softawii.social.model.dto.request.user.UserDTO;
+import com.softawii.social.model.dto.UserDTO;
 import com.softawii.social.service.ImageService;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;

@@ -1,7 +1,7 @@
 package com.softawii.social.repository;
 
 import com.softawii.social.model.User;
-import com.softawii.social.model.dto.request.user.UserDTO;
+import com.softawii.social.model.dto.UserDTO;
 import com.softawii.social.repository.mapper.UserDtoRowMapper;
 import com.softawii.social.repository.mapper.UserRowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;

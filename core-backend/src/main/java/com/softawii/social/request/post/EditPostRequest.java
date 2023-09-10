@@ -1,15 +1,15 @@
-package com.softawii.social.model.dto.request.post;
+package com.softawii.social.request.post;
 
 import org.hibernate.validator.constraints.Length;
 
-public class EditPostRequestDTO {
+public class EditPostRequest {
     @Length(min = 1, max = 100, message = "The length of \"title\" must be between 1 and 200")
     private String title;
 
     @Length(min = 1, max = 200, message = "The length of \"description\" must be between 1 and 200")
     private String description;
 
-    public EditPostRequestDTO() {
+    public EditPostRequest() {
     }
 
     public String getTitle() {

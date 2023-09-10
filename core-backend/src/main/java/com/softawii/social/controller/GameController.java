@@ -1,11 +1,11 @@
 package com.softawii.social.controller;
 
 import com.softawii.social.model.Game;
-import com.softawii.social.model.dto.request.game.IndexGamePostsRequestDTO;
-import com.softawii.social.model.dto.request.game.IndexGameRequestDTO;
-import com.softawii.social.model.dto.request.game.SaveGameRequestDTO;
-import com.softawii.social.model.dto.request.game.UpdateGameRequestDTO;
-import com.softawii.social.model.dto.request.post.PostDTO;
+import com.softawii.social.model.dto.PostDTO;
+import com.softawii.social.request.game.IndexGamePostsRequest;
+import com.softawii.social.request.game.IndexGameRequest;
+import com.softawii.social.request.game.SaveGameRequest;
+import com.softawii.social.request.game.UpdateGameRequest;
 import com.softawii.social.security.UserPrincipal;
 import com.softawii.social.service.GameService;
 import jakarta.validation.Valid;
@@ -32,8 +32,8 @@ public class GameController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<?>> index(@Valid IndexGameRequestDTO dto) {
-        return ResponseEntity.ok(this.service.findAll(dto.getPage().intValue(), dto.getSize().intValue(), dto.getName()));
+    public ResponseEntity<Page<?>> index(@Valid IndexGameRequest request) {
+        return ResponseEntity.ok(this.service.findAll(request.getPage().intValue(), request.getSize().intValue(), request.getName()));
     }
 
     @GetMapping("{gameId}")
@@ -49,25 +49,25 @@ public class GameController {
     @GetMapping("{gameId}/post")
     public ResponseEntity<Page<PostDTO>> indexPosts(
             @Valid @PathVariable @NotNull @PositiveOrZero Long gameId,
-            @Valid IndexGamePostsRequestDTO dto,
+            @Valid IndexGamePostsRequest request,
             OAuth2AuthenticationToken authentication
     ) {
         UserPrincipal user = (UserPrincipal) authentication.getPrincipal();
-        return ResponseEntity.ok(this.service.findPostsByGameId(dto.getPage(), dto.getSize(), user.getId(), gameId));
+        return ResponseEntity.ok(this.service.findPostsByGameId(request.getPage(), request.getSize(), user.getId(), gameId));
     }
 
     @PostMapping
-    public Game store(@Valid @RequestBody SaveGameRequestDTO game) {
-        return this.service.save(game.getName(), game.getStudio(), game.getImageUrl());
+    public Game store(@Valid @RequestBody SaveGameRequest gameRequest) {
+        return this.service.save(gameRequest.getName(), gameRequest.getStudio(), gameRequest.getImageUrl());
     }
 
     @PutMapping("{id}")
     public ResponseEntity<Game> update(
             @Valid @PathVariable @NotNull @PositiveOrZero Long id,
-            @Valid @RequestBody UpdateGameRequestDTO dto
+            @Valid @RequestBody UpdateGameRequest gameRequest
     ) {
         try {
-            Game updatedGame = this.service.update(id, dto.getName(), dto.getStudio());
+            Game updatedGame = this.service.update(id, gameRequest.getName(), gameRequest.getStudio());
             return ResponseEntity.ok(updatedGame);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();

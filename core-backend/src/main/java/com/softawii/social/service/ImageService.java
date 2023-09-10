@@ -3,7 +3,7 @@ package com.softawii.social.service;
 import com.softawii.social.config.AppConfig;
 import com.softawii.social.exception.FailedToCreateImageException;
 import com.softawii.social.model.Image;
-import com.softawii.social.model.dto.request.image.ImageDto;
+import com.softawii.social.model.dto.ImageDto;
 import com.softawii.social.repository.ImageRepository;
 import com.softawii.social.util.FileUploadUtil;
 import org.springframework.core.io.ByteArrayResource;
@@ -56,7 +56,7 @@ public class ImageService {
         return new ImageDto(inputStream, image.getExtension());
     }
 
-    public Image create(byte[] blob) throws FailedToCreateImageException {
+    public Long create(byte[] blob) throws FailedToCreateImageException {
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
@@ -81,9 +81,7 @@ public class ImageService {
                 throw new FailedToCreateImageException("Response does not have he image id");
             }
 
-            Image image = new Image();
-            image.setId(Long.parseLong(body.get("id").toString()));
-            return image;
+            return Long.parseLong(body.get("id").toString());
         } catch (ResourceAccessException e) {
             // critical/fatal
             throw new FailedToCreateImageException(e);

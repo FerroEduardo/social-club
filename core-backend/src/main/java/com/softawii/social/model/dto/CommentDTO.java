@@ -1,4 +1,4 @@
-package com.softawii.social.model.dto.request.comment;
+package com.softawii.social.model.dto;
 
 import java.time.ZonedDateTime;
 

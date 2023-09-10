@@ -1,7 +1,7 @@
 package com.softawii.social.service;
 
 import com.softawii.social.model.Comment;
-import com.softawii.social.model.dto.request.comment.CommentDTO;
+import com.softawii.social.model.dto.CommentDTO;
 import com.softawii.social.repository.CommentRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

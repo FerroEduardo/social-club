@@ -1,4 +1,4 @@
-package com.softawii.social.model.dto.request.user;
+package com.softawii.social.model.dto;
 
 public class UserDTO {
     private Long   id;

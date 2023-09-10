@@ -1,10 +1,7 @@
 package com.softawii.social.service;
 
-import com.softawii.social.model.Game;
-import com.softawii.social.model.Image;
 import com.softawii.social.model.Post;
-import com.softawii.social.model.User;
-import com.softawii.social.model.dto.request.post.PostDTO;
+import com.softawii.social.model.dto.PostDTO;
 import com.softawii.social.repository.CommentRepository;
 import com.softawii.social.repository.ImageRepository;
 import com.softawii.social.repository.PostRepository;
@@ -41,13 +38,13 @@ public class PostService {
         return this.findAll(null, page, size);
     }
 
-    public Post create(User user, Game game, Image image, String title, String description) {
+    public Post create(Long userId, Long gameId, Long imageId, String title, String description) {
         Post post = new Post();
-        post.setUser(user);
-        post.setGame(game);
+        post.setUserId(userId);
+        post.setGameId(gameId);
         post.setTitle(title);
         post.setDescription(description);
-        post.setImage(image);
+        post.setId(imageId);
 
         return postRepository.save(post);
     }

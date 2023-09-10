@@ -1,17 +1,18 @@
-package com.softawii.social.model.dto.request.post;
+package com.softawii.social.request.image;
 
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 
-public class IndexPostCommentsRequestDTO {
+public class IndexImageRequest {
+
     @PositiveOrZero(message = "\"page\" must be at least 0")
-    private Integer page;
+    private Long page;
 
     @Positive(message = "\"size\" must be at least 1")
-    private Integer size;
+    private Long size;
 
-    public IndexPostCommentsRequestDTO() {
+    public IndexImageRequest() {
     }
 
     @AssertTrue(message = "Fields must be null or totally filled")
@@ -19,19 +20,19 @@ public class IndexPostCommentsRequestDTO {
         return !(page != null ^ size != null);
     }
 
-    public @PositiveOrZero(message = "\"page\" must be at least 0") Integer getPage() {
+    public Long getPage() {
         return page;
     }
 
-    public void setPage(@PositiveOrZero(message = "\"page\" must be at least 0") Integer page) {
+    public void setPage(Long page) {
         this.page = page;
     }
 
-    public @Positive(message = "\"size\" must be at least 1") Integer getSize() {
+    public Long getSize() {
         return size;
     }
 
-    public void setSize(@Positive(message = "\"size\" must be at least 1") Integer size) {
+    public void setSize(Long size) {
         this.size = size;
     }
 

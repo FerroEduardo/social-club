@@ -1,6 +1,6 @@
 package com.softawii.social.controller;
 
-import com.softawii.social.model.dto.request.image.ImageDto;
+import com.softawii.social.model.dto.ImageDto;
 import com.softawii.social.service.ImageService;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.*;

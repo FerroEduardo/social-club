@@ -1,30 +1,12 @@
 package com.softawii.social.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import org.hibernate.annotations.DynamicInsert;
-
 import java.time.ZonedDateTime;
 
-@Entity
-@Table(name = "post_vote")
-@DynamicInsert
 public class PostVote {
-    @Id
     private Long postId;
-
-    @Id
     private Long userId;
-
-    @Column(name = "value")
     private Long value;
-
-    @Column(name = "created_at")
     private ZonedDateTime createdAt;
-
-    @Column(name = "modified_at")
     private ZonedDateTime modifiedAt;
 
     public PostVote() {

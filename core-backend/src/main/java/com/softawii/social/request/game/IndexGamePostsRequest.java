@@ -1,9 +1,9 @@
-package com.softawii.social.model.dto.request.game;
+package com.softawii.social.request.game;
 
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 
-public class IndexGamePostsRequestDTO {
+public class IndexGamePostsRequest {
 
     @PositiveOrZero(message = "\"page\" must be at least 0")
     private Integer page;
@@ -11,7 +11,7 @@ public class IndexGamePostsRequestDTO {
     @Positive(message = "\"size\" must be at least 1")
     private Integer size;
 
-    public IndexGamePostsRequestDTO() {
+    public IndexGamePostsRequest() {
     }
 
     public Integer getPage() {

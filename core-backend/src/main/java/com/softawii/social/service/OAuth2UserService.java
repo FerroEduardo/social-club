@@ -3,7 +3,6 @@ package com.softawii.social.service;
 import com.softawii.social.exception.FailedToCreateImageException;
 import com.softawii.social.exception.GithubOAuth2MissingEmailException;
 import com.softawii.social.exception.OAuth2AuthenticationProcessingException;
-import com.softawii.social.model.Image;
 import com.softawii.social.model.User;
 import com.softawii.social.repository.UserRepository;
 import com.softawii.social.security.UserPrincipal;
@@ -62,8 +61,8 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         Optional<User> userOptional = userRepository.findByEmail(oAuth2UserInfo.getEmail());
         User           user;
         if (userOptional.isEmpty()) {
-            Image image = uploadUserImage(oAuth2UserInfo);
-            user = registerNewUser(oAuth2UserInfo, image);
+            Long imageId = uploadUserImage(oAuth2UserInfo);
+            user = registerNewUser(oAuth2UserInfo, imageId);
         } else {
             user = userOptional.get();
         }
@@ -71,18 +70,16 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         return UserPrincipal.create(user, oAuth2User.getAttributes());
     }
 
-    private User registerNewUser(OAuth2UserInfo oAuth2UserInfo, Image image) {
+    private User registerNewUser(OAuth2UserInfo oAuth2UserInfo, Long imageId) {
         User user = new User();
         user.setName(oAuth2UserInfo.getName());
         user.setEmail(oAuth2UserInfo.getEmail());
-        if (image != null) {
-            user.setImageId(image.getId());
-        }
+        user.setImageId(imageId);
 
         return userRepository.create(user);
     }
 
-    private Image uploadUserImage(OAuth2UserInfo oAuth2UserInfo) throws FailedToCreateImageException, IOException {
+    private Long uploadUserImage(OAuth2UserInfo oAuth2UserInfo) throws FailedToCreateImageException, IOException {
         try (BufferedInputStream in = new BufferedInputStream(new URL(oAuth2UserInfo.getImageUrl()).openStream());
              ByteArrayOutputStream fileOutputStream = new ByteArrayOutputStream()) {
             byte[] dataBuffer = new byte[1024];

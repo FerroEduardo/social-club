@@ -3,12 +3,12 @@ package com.softawii.social.model;
 import java.time.ZonedDateTime;
 
 public class Post {
-    private Long id;
-    private User user;
-    private Game game;
-    private Image image;
-    private String description;
-    private String title;
+    private Long          id;
+    private Long          userId;
+    private Long          gameId;
+    private Long          imageId;
+    private String        description;
+    private String        title;
     private ZonedDateTime createdAt;
     private ZonedDateTime modifiedAt;
 
@@ -23,28 +23,28 @@ public class Post {
         this.id = id;
     }
 
-    public User getUser() {
-        return user;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
-    public Game getGame() {
-        return game;
+    public Long getGameId() {
+        return gameId;
     }
 
-    public void setGame(Game game) {
-        this.game = game;
+    public void setGameId(Long gameId) {
+        this.gameId = gameId;
     }
 
-    public String getTitle() {
-        return title;
+    public Long getImageId() {
+        return imageId;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setImageId(Long imageId) {
+        this.imageId = imageId;
     }
 
     public String getDescription() {
@@ -55,12 +55,12 @@ public class Post {
         this.description = description;
     }
 
-    public Image getImage() {
-        return image;
+    public String getTitle() {
+        return title;
     }
 
-    public void setImage(Image image) {
-        this.image = image;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public ZonedDateTime getCreatedAt() {

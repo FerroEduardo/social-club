@@ -1,4 +1,4 @@
-package com.softawii.social.model.dto.request.image;
+package com.softawii.social.model.dto;
 
 import java.io.InputStream;
 

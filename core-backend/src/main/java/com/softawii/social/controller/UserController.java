@@ -1,7 +1,7 @@
 package com.softawii.social.controller;
 
-import com.softawii.social.model.dto.request.post.IndexPostRequestDTO;
-import com.softawii.social.model.dto.request.post.PostDTO;
+import com.softawii.social.model.dto.PostDTO;
+import com.softawii.social.request.post.IndexPostRequest;
 import com.softawii.social.security.UserPrincipal;
 import com.softawii.social.service.PostService;
 import com.softawii.social.service.UserService;
@@ -33,7 +33,7 @@ public class UserController {
     }
 
     @GetMapping("post")
-    public ResponseEntity<?> userPosts(@Valid IndexPostRequestDTO dto, OAuth2AuthenticationToken authentication) {
+    public ResponseEntity<?> userPosts(@Valid IndexPostRequest dto, OAuth2AuthenticationToken authentication) {
         UserPrincipal user = (UserPrincipal) authentication.getPrincipal();
         Page<PostDTO> post = this.postService.findUserPosts(user.getId(), dto.getPage().intValue(), dto.getSize().intValue());
 

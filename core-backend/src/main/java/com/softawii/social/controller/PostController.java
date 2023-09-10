@@ -2,12 +2,15 @@ package com.softawii.social.controller;
 
 import com.softawii.social.exception.FailedToCreateImageException;
 import com.softawii.social.model.Game;
-import com.softawii.social.model.Image;
 import com.softawii.social.model.Post;
 import com.softawii.social.model.User;
-import com.softawii.social.model.dto.request.comment.CreatePostCommentRequestDTO;
-import com.softawii.social.model.dto.request.post.*;
+import com.softawii.social.model.dto.PostDTO;
 import com.softawii.social.repository.PostRepository;
+import com.softawii.social.request.comment.CreatePostCommentRequest;
+import com.softawii.social.request.post.CreatePostRequest;
+import com.softawii.social.request.post.EditPostRequest;
+import com.softawii.social.request.post.IndexPostCommentsRequest;
+import com.softawii.social.request.post.IndexPostRequest;
 import com.softawii.social.security.UserPrincipal;
 import com.softawii.social.service.*;
 import jakarta.validation.Valid;
@@ -47,13 +50,13 @@ public class PostController {
     }
 
     @GetMapping
-    public Iterable<?> index(@Valid IndexPostRequestDTO dto, OAuth2AuthenticationToken authentication) {
+    public Iterable<?> index(@Valid IndexPostRequest request, OAuth2AuthenticationToken authentication) {
         if (authentication == null) {
-            return this.postService.findAll(null, dto.getPage().intValue(), dto.getSize().intValue());
+            return this.postService.findAll(null, request.getPage().intValue(), request.getSize().intValue());
         }
         UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
 
-        return this.postService.findAll(principal.getId(), dto.getPage().intValue(), dto.getSize().intValue());
+        return this.postService.findAll(principal.getId(), request.getPage().intValue(), request.getSize().intValue());
     }
 
     @GetMapping("{postId}")
@@ -89,7 +92,7 @@ public class PostController {
     }
 
     @GetMapping("{postId}/comment")
-    public ResponseEntity<?> indexComments(@Valid IndexPostCommentsRequestDTO request, @PathVariable Long postId) {
+    public ResponseEntity<?> indexComments(@Valid IndexPostCommentsRequest request, @PathVariable Long postId) {
         try {
             if (!this.postService.exists(postId)) {
                 return ResponseEntity.badRequest().build();
@@ -102,7 +105,7 @@ public class PostController {
     }
 
     @PostMapping("{postId}/comment")
-    public ResponseEntity<?> indexComments(@PathVariable Long postId, @Valid @RequestBody CreatePostCommentRequestDTO request, OAuth2AuthenticationToken authentication) {
+    public ResponseEntity<?> indexComments(@PathVariable Long postId, @Valid @RequestBody CreatePostCommentRequest request, OAuth2AuthenticationToken authentication) {
         try {
             UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
             if (!this.postService.exists(postId)) {
@@ -118,25 +121,25 @@ public class PostController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> create(
             OAuth2AuthenticationToken authentication,
-            @Valid @ModelAttribute CreatePostRequestDTO dto
+            @Valid @ModelAttribute CreatePostRequest request
     ) {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         User          user          = userService.findByEmail(userPrincipal.getEmail()).get();
 
-        Optional<Game> gameOptional = gameService.findById(dto.getGameId());
+        Optional<Game> gameOptional = gameService.findById(request.getGameId());
         if (gameOptional.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", "Game not found"));
         }
-        Game  game = gameOptional.get();
-        Image image;
+        Game game = gameOptional.get();
+        Long imageId;
         try {
-            byte[] imageBytes = dto.getImage().getBytes();
-            image = imageService.create(imageBytes);
+            byte[] imageBytes = request.getImage().getBytes();
+            imageId = imageService.create(imageBytes);
         } catch (IOException | FailedToCreateImageException e) {
             e.printStackTrace();
             return ResponseEntity.internalServerError().body(Map.of("message", "Unable to save image"));
         }
-        Post post = postService.create(user, game, image, dto.getTitle(), dto.getDescription());
+        Post post = postService.create(user.getId(), game.getId(), imageId, request.getTitle(), request.getDescription());
 
         return ResponseEntity.ok(Map.of("id", post.getId()));
     }
@@ -170,7 +173,7 @@ public class PostController {
 
     @PutMapping("{postId}")
     public ResponseEntity<?> indexComments(
-            @Valid @RequestBody EditPostRequestDTO request,
+            @Valid @RequestBody EditPostRequest request,
             @PathVariable Long postId,
             OAuth2AuthenticationToken authentication
     ) {

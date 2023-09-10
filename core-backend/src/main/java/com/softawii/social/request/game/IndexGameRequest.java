@@ -1,10 +1,9 @@
-package com.softawii.social.model.dto.request.image;
+package com.softawii.social.request.game;
 
-import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 
-public class IndexImageRequestDTO {
+public class IndexGameRequest {
 
     @PositiveOrZero(message = "\"page\" must be at least 0")
     private Long page;
@@ -12,12 +11,9 @@ public class IndexImageRequestDTO {
     @Positive(message = "\"size\" must be at least 1")
     private Long size;
 
-    public IndexImageRequestDTO() {
-    }
+    private String name;
 
-    @AssertTrue(message = "Fields must be null or totally filled")
-    private boolean isValid() {
-        return !(page != null ^ size != null);
+    public IndexGameRequest() {
     }
 
     public Long getPage() {
@@ -36,7 +32,11 @@ public class IndexImageRequestDTO {
         this.size = size;
     }
 
-    public boolean isPaginated() {
-        return page != null && size != null;
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

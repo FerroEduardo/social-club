@@ -1,34 +1,14 @@
 package com.softawii.social.model;
 
-import jakarta.persistence.*;
-import org.hibernate.annotations.DynamicInsert;
-
 import java.time.ZonedDateTime;
 
-@Entity
-@Table(name = "post_comment")
-@DynamicInsert
 public class Comment {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(name = "author_id")
     private Long authorId;
-
-    @Column(name = "post_id")
     private Long postId;
-
-    @Column(name = "value")
     private String value;
-
-    @Column(name = "created_at")
     private ZonedDateTime createdAt;
-
-    @Column(name = "modified_at")
     private ZonedDateTime modifiedAt;
-
-    @Column(name = "deleted_at")
     private ZonedDateTime deletedAt;
 
     public Comment() {

@@ -1,4 +1,4 @@
-package com.softawii.social.model.dto.request.post;
+package com.softawii.social.request.post;
 
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotNull;
@@ -8,7 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.stream.Stream;
 
-public class CreatePostRequestDTO {
+public class CreatePostRequest {
     @Size(min = 1, max = 100, message = "The length of \"title\" must be between 1 and 100")
     private String title;
 
@@ -22,7 +22,7 @@ public class CreatePostRequestDTO {
     @NotNull(message = "\"image\" is required")
     private MultipartFile image;
 
-    public CreatePostRequestDTO() {
+    public CreatePostRequest() {
     }
 
     @AssertTrue(message = "Invalid image content type")
