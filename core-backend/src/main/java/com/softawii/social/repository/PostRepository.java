@@ -32,8 +32,7 @@ public class PostRepository {
         String sql = """
                 INSERT INTO social.post (author_id, game_id, title, description, image_id)
                 VALUES (:author_id, :game_id, :title, :description, :image_id)
-                RETURNING id
-                """;
+                RETURNING id""";
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcClient
@@ -54,8 +53,7 @@ public class PostRepository {
         String sql = """
                 UPDATE social.post
                 SET modified_at = CURRENT_TIMESTAMP, title = :title, description = :description
-                WHERE id = :id
-                """;
+                WHERE id = :id""";
 
         jdbcClient
                 .sql(sql)
@@ -69,9 +67,11 @@ public class PostRepository {
         String sql = """
                 SELECT 1
                 FROM social.post p
-                WHERE p.id = :post_id AND p.author_id = :author_id AND p.deleted_at IS NULL
-                LIMIT 1
-                """;
+                WHERE
+                    p.id = :post_id AND
+                    p.author_id = :author_id AND
+                    p.deleted_at IS NULL
+                LIMIT 1""";
 
         return !jdbcClient
                 .sql(sql)
@@ -86,9 +86,10 @@ public class PostRepository {
         String sql = """
                 SELECT 1
                 FROM social.post p
-                WHERE p.id = :post_id AND p.deleted_at IS NULL
-                LIMIT 1
-                """;
+                WHERE
+                    p.id = :post_id AND
+                    p.deleted_at IS NULL
+                LIMIT 1""";
 
         return !jdbcClient
                 .sql(sql)
@@ -98,81 +99,83 @@ public class PostRepository {
                 .isEmpty();
     }
 
-    public Optional<PostDTO> findByIdSafe(Long postId, Long userId) {
-        String sql = """
-                SELECT
-                    p.id,
-                    p.title,
-                    p.description,
-                    COALESCE((SELECT pr.reputation FROM social.post_reputation pr WHERE pr.post_id = p.id), 0) AS reputation,
-                    p.created_at AS "createdAt",
-                    p.modified_at AS "modifiedAt",
-                    u.id AS "authorId",
-                    u.name AS "authorName",
-                    u.image_id AS "authorImageId",
-                    p.game_id AS "gameId",
-                    g.name AS "gameName",
-                    g.studio AS "gameStudio",
-                    g.image_url AS "gameImageUrl",
-                    p.image_id as "imageId",
-                    pv.value AS "userVote"
-                FROM social.post p
-                         INNER JOIN social.user u ON u.id = p.author_id
-                         INNER JOIN social.game g ON g.id = p.game_id
-                         LEFT JOIN social.post_vote pv ON pv.post_id = p.id AND pv.user_id = :user_id
-                WHERE :post_id = p.id AND p.deleted_at IS NULL
-                LIMIT 1
-                """;
+    public Optional<PostDTO> findByPostId(Long postId, Long authenticatedUserId) {
+        StringBuilder query = baseDtoQuery();
+        query.append("""
+                             WHERE
+                                 :post_id = p.id AND
+                                 p.deleted_at IS NULL
+                             LIMIT 1""");
 
         return jdbcClient
-                .sql(sql)
+                .sql(query.toString())
                 .param("post_id", postId, Types.BIGINT)
-                .param("user_id", userId, Types.BIGINT)
+                .param("authenticated_user_id", authenticatedUserId, Types.BIGINT)
                 .query(postDtoRowMapper)
                 .optional();
     }
 
-    public Page<PostDTO> findAllDTOActive(int page, int size, Long userId) {
-        String sql = """
-                SELECT
-                    p.id,
-                    p.title,
-                    p.description,
-                    COALESCE((SELECT pr.reputation FROM social.post_reputation pr WHERE pr.post_id = p.id), 0) AS reputation,
-                    p.created_at AS "createdAt",
-                    p.modified_at AS "modifiedAt",
-                    u.id AS "authorId",
-                    u.name AS "authorName",
-                    u.image_id AS "authorImageId",
-                    p.game_id AS "gameId",
-                    g.name AS "gameName",
-                    g.studio AS "gameStudio",
-                    g.image_url AS "gameImageUrl",
-                    p.image_id as "imageId",
-                    pv.value AS "userVote"
-                FROM social.post p
-                         INNER JOIN social.user u ON u.id = p.author_id
-                         INNER JOIN social.game g ON g.id = p.game_id
-                         LEFT JOIN social.post_vote pv ON pv.post_id = p.id AND pv.user_id = :user_id
-                WHERE p.deleted_at IS NULL
-                ORDER BY p.created_at DESC
-                LIMIT :size
-                OFFSET :offset
-                """;
+    public Page<PostDTO> findAllActive(int page, int size, Long authenticatedUserId) {
+        StringBuilder query = baseDtoQuery();
+        query.append("""
+                             WHERE
+                                 p.deleted_at IS NULL
+                             ORDER BY p.created_at DESC
+                             LIMIT :size
+                             OFFSET :offset""");
 
         List<PostDTO> content = jdbcClient
-                .sql(sql)
+                .sql(query.toString())
+                .param("authenticated_user_id", authenticatedUserId, Types.BIGINT)
+                .param("size", size, Types.INTEGER)
+                .param("offset", page * size, Types.INTEGER)
+                .query(postDtoRowMapper)
+                .list();
+
+        return PageableExecutionUtils.getPage(content, PageRequest.of(page, size), () -> {
+            String countQuery = """
+                    SELECT
+                        COUNT(*)
+                    FROM social.post p
+                    INNER JOIN social.user u ON u.id = p.author_id
+                    WHERE
+                        p.deleted_at IS NULL""";
+
+            return jdbcClient
+                    .sql(countQuery)
+                    .query()
+                    .singleValue();
+        });
+    }
+
+    public Page<PostDTO> findAllActiveByUser(int page, int size, Long userId) {
+        StringBuilder query = baseDtoQuery();
+        query.append("""
+                             WHERE
+                                 :user_id = u.id AND
+                                 p.deleted_at IS NULL
+                             ORDER BY p.created_at DESC
+                             LIMIT :size
+                             OFFSET :offset""");
+
+        List<PostDTO> content = jdbcClient
+                .sql(query.toString())
+                .param("authenticated_user_id", userId, Types.BIGINT)
                 .param("user_id", userId, Types.BIGINT)
                 .param("size", size, Types.INTEGER)
                 .param("offset", page * size, Types.INTEGER)
                 .query(postDtoRowMapper)
                 .list();
 
-
         return PageableExecutionUtils.getPage(content, PageRequest.of(page, size), () -> {
             String countQuery = """
-                    SELECT COUNT(p) FROM social.post p INNER JOIN social.user u ON u.id = p.author_id WHERE (:user_id IS NULL OR :user_id = u.id) AND p.deleted_at IS NULL
-                    """;
+                    SELECT
+                        COUNT(*)
+                    FROM social.post p
+                    INNER JOIN social.user u ON u.id = p.author_id
+                    WHERE
+                        :user_id = u.id AND
+                        p.deleted_at IS NULL""";
 
             return jdbcClient
                     .sql(countQuery)
@@ -182,106 +185,44 @@ public class PostRepository {
         });
     }
 
-    public Page<PostDTO> findAllActiveByUser(int page, int size, Long user_id) {
-        String sql = """
-                SELECT
-                    p.id,
-                    p.title,
-                    p.description,
-                    COALESCE((SELECT pr.reputation FROM social.post_reputation pr WHERE pr.post_id = p.id), 0) AS reputation,
-                    p.created_at AS "createdAt",
-                    p.modified_at AS "modifiedAt",
-                    u.id AS "authorId",
-                    u.name AS "authorName",
-                    u.image_id AS "authorImageId",
-                    p.game_id AS "gameId",
-                    g.name AS "gameName",
-                    g.studio AS "gameStudio",
-                    g.image_url AS "gameImageUrl",
-                    p.image_id as "imageId",
-                    pv.value AS "userVote"
-                FROM social.post p
-                         INNER JOIN social.user u ON u.id = p.author_id
-                         INNER JOIN social.game g ON g.id = p.game_id
-                         LEFT JOIN social.post_vote pv ON pv.post_id = p.id AND pv.user_id = :user_id
-                WHERE (:user_id IS NULL OR :user_id = u.id) AND p.deleted_at IS NULL
-                ORDER BY p.created_at DESC
-                LIMIT :size
-                OFFSET :offset
-                """;
+    public Page<PostDTO> findAllActiveByGame(int page, int size, Long userId, Long gameId) {
+        StringBuilder query = baseDtoQuery();
+        query.append("""
+                             WHERE
+                                 :game_id = p.game_id AND
+                                 p.deleted_at IS NULL
+                             ORDER BY p.created_at DESC
+                             LIMIT :size
+                             OFFSET :offset""");
 
         List<PostDTO> content = jdbcClient
-                .sql(sql)
-                .param("user_id", user_id, Types.BIGINT)
+                .sql(query.toString())
+                .param("authenticated_user_id", userId, Types.BIGINT)
+                .param("game_id", gameId, Types.BIGINT)
                 .param("size", size, Types.INTEGER)
                 .param("offset", page * size, Types.INTEGER)
                 .query(postDtoRowMapper)
                 .list();
-
 
         return PageableExecutionUtils.getPage(content, PageRequest.of(page, size), () -> {
             String countQuery = """
-                    SELECT COUNT(p) FROM social.post p INNER JOIN social.user u ON u.id = p.author_id WHERE (:user_id IS NULL OR :user_id = u.id) AND p.deleted_at IS NULL
-                    """;
+                    SELECT
+                        COUNT(*)
+                    FROM social.post p
+                    WHERE
+                        :game_id = p.game_id AND
+                        p.deleted_at IS NULL""";
 
             return jdbcClient
                     .sql(countQuery)
-                    .param("user_id", user_id, Types.BIGINT)
-                    .query()
-                    .singleValue();
-        });
-    }
-
-    public Page<PostDTO> findAllActiveByGame(int page, int size, Long userId, Long gameId) {
-        String sql = """
-                SELECT
-                    p.id,
-                    p.title,
-                    p.description,
-                    COALESCE((SELECT pr.reputation FROM social.post_reputation pr WHERE pr.post_id = p.id), 0) AS reputation,
-                    p.created_at AS "createdAt",
-                    p.modified_at AS "modifiedAt",
-                    u.id AS "authorId",
-                    u.name AS "authorName",
-                    u.image_id AS "authorImageId",
-                    p.game_id AS "gameId",
-                    g.name AS "gameName",
-                    g.studio AS "gameStudio",
-                    g.image_url AS "gameImageUrl",
-                    p.image_id as "imageId",
-                    pv.value AS "userVote"
-                FROM social.post p
-                         INNER JOIN social.user u ON u.id = p.author_id
-                         INNER JOIN social.game g ON g.id = p.game_id
-                         LEFT JOIN social.post_vote pv ON pv.post_id = p.id AND pv.user_id = :user_id
-                WHERE :gameId = p.game_id AND p.deleted_at IS NULL
-                ORDER BY p.created_at DESC
-                LIMIT :size
-                OFFSET :offset
-                """;
-
-        List<PostDTO> content = jdbcClient
-                .sql(sql)
-                .param("user_id", userId, Types.BIGINT)
-                .param("gameId", gameId, Types.BIGINT)
-                .param("size", size, Types.INTEGER)
-                .param("offset", page * size, Types.INTEGER)
-                .query(postDtoRowMapper)
-                .list();
-
-        return PageableExecutionUtils.getPage(content, PageRequest.of(page, size), () -> {
-            String countQuery = "SELECT COUNT(*) FROM social.post p WHERE :gameId = p.game_id AND p.deleted_at IS NULL";
-
-            return jdbcClient
-                    .sql(countQuery)
-                    .param("gameId", gameId, Types.BIGINT)
+                    .param("game_id", gameId, Types.BIGINT)
                     .query()
                     .singleValue();
         });
     }
 
     public Page<PostDTO> findAllSafe(int page, int size) {
-        return this.findAllDTOActive(page, size, null);
+        return this.findAllActive(page, size, null);
     }
 
     @Transactional
@@ -289,13 +230,40 @@ public class PostRepository {
         String sql = """
                 UPDATE social.post
                 SET deleted_at = CURRENT_TIMESTAMP, modified_at = CURRENT_TIMESTAMP
-                WHERE id = :id
-                """;
+                WHERE id = :id""";
 
         jdbcClient
                 .sql(sql)
                 .param("id", id, Types.BIGINT)
                 .update();
+    }
+
+    private StringBuilder baseDtoQuery() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("""
+                                     SELECT
+                                         p.id,
+                                         p.title,
+                                         p.description,
+                                         COALESCE((SELECT pr.reputation FROM social.post_reputation pr WHERE pr.post_id = p.id), 0) AS reputation,
+                                         p.created_at AS "createdAt",
+                                         p.modified_at AS "modifiedAt",
+                                         u.id AS "authorId",
+                                         u.name AS "authorName",
+                                         u.image_id AS "authorImageId",
+                                         p.game_id AS "gameId",
+                                         g.name AS "gameName",
+                                         g.studio AS "gameStudio",
+                                         g.image_url AS "gameImageUrl",
+                                         p.image_id as "imageId",
+                                         pv.value AS "userVote"
+                                     FROM social.post p
+                                          INNER JOIN social.user u ON u.id = p.author_id
+                                          INNER JOIN social.game g ON g.id = p.game_id
+                                          LEFT JOIN social.post_vote pv ON pv.post_id = p.id AND pv.user_id = :authenticated_user_id
+                                     """);
+
+        return stringBuilder;
     }
 
 }

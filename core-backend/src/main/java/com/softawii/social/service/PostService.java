@@ -23,11 +23,11 @@ public class PostService {
     }
 
     public Optional<PostDTO> findById(Long id, Long userId) {
-        return postRepository.findByIdSafe(id, userId);
+        return postRepository.findByPostId(id, userId);
     }
 
     public Page<PostDTO> findAll(Long userId, int page, int size) {
-        return postRepository.findAllDTOActive(page, size, userId);
+        return postRepository.findAllActive(page, size, userId);
     }
 
     public Page<PostDTO> findUserPosts(Long userId, int page, int size) {
