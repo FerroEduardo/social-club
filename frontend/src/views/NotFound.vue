@@ -3,7 +3,7 @@
     <n-result status="404" title="404 Not Found" description="Essa página não existe" />
   </n-card>
 </template>
-<script>
+<script lang="ts">
 import { NResult, NCard } from 'naive-ui';
 
 export default {
