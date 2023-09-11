@@ -29,7 +29,6 @@
         :loading="highLoadingPriority ? 'eager' : 'lazy'"
         :src="post.imageUrl"
         class="post-image"
-        width="100%"
         @click="openPostDetails"
         :style="{ cursor: enableOpenPostDetails ? 'pointer' : 'default' }"
       />
