@@ -75,4 +75,17 @@ public class Comment {
     public void setDeletedAt(ZonedDateTime deletedAt) {
         this.deletedAt = deletedAt;
     }
+
+    @Override
+    public String toString() {
+        return "Comment{" +
+                "id=" + id +
+                ", authorId=" + authorId +
+                ", postId=" + postId +
+                ", value='" + value + '\'' +
+                ", createdAt=" + createdAt +
+                ", modifiedAt=" + modifiedAt +
+                ", deletedAt=" + deletedAt +
+                '}';
+    }
 }

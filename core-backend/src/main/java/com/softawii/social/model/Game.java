@@ -46,4 +46,14 @@ public class Game {
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
+
+    @Override
+    public String toString() {
+        return "Game{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", studio='" + studio + '\'' +
+                ", imageUrl='" + imageUrl + '\'' +
+                '}';
+    }
 }

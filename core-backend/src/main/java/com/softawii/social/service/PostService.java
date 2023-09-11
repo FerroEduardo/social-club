@@ -5,6 +5,8 @@ import com.softawii.social.model.dto.PostDTO;
 import com.softawii.social.repository.CommentRepository;
 import com.softawii.social.repository.ImageRepository;
 import com.softawii.social.repository.PostRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
@@ -12,6 +14,7 @@ import java.util.Optional;
 
 @Component
 public class PostService {
+    private final Logger            logger = LoggerFactory.getLogger(PostService.class);
     private final PostRepository    postRepository;
     private final CommentRepository commentRepository;
     private final ImageRepository   imageRepository;
@@ -46,6 +49,7 @@ public class PostService {
         post.setDescription(description);
         post.setImageId(imageId);
 
+        logger.info("Creating post: {}", post);
         return postRepository.save(post);
     }
 
@@ -58,12 +62,14 @@ public class PostService {
     }
 
     public void delete(Long postId) {
+        logger.info("Deleting post {} and related content", postId);
         postRepository.softDelete(postId);
         imageRepository.softDeleteByPostId(postId);
         commentRepository.softDeleteByPostId(postId);
     }
 
     public void update(Post post) {
+        logger.info("Updating post {}: {}", post.getId(), post);
         postRepository.update(post);
     }
 }

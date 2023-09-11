@@ -6,6 +6,8 @@ import com.softawii.social.model.Image;
 import com.softawii.social.model.dto.ImageDto;
 import com.softawii.social.repository.ImageRepository;
 import com.softawii.social.util.FileUploadUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -27,6 +29,7 @@ import java.util.Optional;
 @Component
 public class ImageService {
 
+    private final Logger          logger = LoggerFactory.getLogger(ImageService.class);
     private final AppConfig       appConfig;
     private final ImageRepository repository;
     private final FileUploadUtil  fileUploadUtil;
@@ -42,14 +45,14 @@ public class ImageService {
     }
 
     public ImageDto getImageInputStreamById(Long id) throws IOException {
-        Image       image = repository.findByIdActive(id).orElseThrow();
+        Image       image = findById(id).orElseThrow();
         InputStream inputStream;
         if (image.getBlob() != null) {
             inputStream = new ByteArrayInputStream(image.getBlob());
         } else if (image.getLocal() != null) {
             inputStream = readImageFile(image);
         } else {
-            // TODO: FIND BETTER EXCEPTION
+            logger.error("Invalid image type: {}", image);
             throw new RuntimeException();
         }
 
@@ -64,13 +67,8 @@ public class ImageService {
 
         MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
 
-        HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(map, headers);
-        ByteArrayResource contentsAsResource = new ByteArrayResource(blob) {
-            @Override
-            public String getFilename() {
-                return "image";
-            }
-        };
+        HttpEntity<MultiValueMap<String, Object>> request            = new HttpEntity<>(map, headers);
+        ByteArrayResource                         contentsAsResource = new ImageResource(blob);
         map.add("image", contentsAsResource);
 
         try {
@@ -96,5 +94,16 @@ public class ImageService {
 
     public String getImageUrlFromImageId(Long imageId) {
         return this.appConfig.getImageUrlPrefix() + imageId.toString();
+    }
+
+    class ImageResource extends ByteArrayResource {
+        public ImageResource(byte[] byteArray) {
+            super(byteArray);
+        }
+
+        @Override
+        public String getFilename() {
+            return "image";
+        }
     }
 }

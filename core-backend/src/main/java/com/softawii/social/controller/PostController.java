@@ -13,6 +13,8 @@ import com.softawii.social.request.post.IndexPostRequest;
 import com.softawii.social.security.UserPrincipal;
 import com.softawii.social.service.*;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +32,7 @@ import java.util.Optional;
 @Validated
 public class PostController {
 
+    private final Logger          logger = LoggerFactory.getLogger(PostController.class);
     private final UserService     userService;
     private final GameService     gameService;
     private final PostService     postService;
@@ -109,7 +112,7 @@ public class PostController {
     }
 
     @PostMapping("{postId}/comment")
-    public ResponseEntity<?> indexComments(
+    public ResponseEntity<?> saveComment(
             @PathVariable Long postId,
             @Valid @RequestBody CreatePostCommentRequest request,
             OAuth2AuthenticationToken authentication
@@ -142,9 +145,10 @@ public class PostController {
         Long imageId;
         try {
             byte[] imageBytes = request.getImage().getBytes();
+            logger.info("Uploading post image for user {}", user.getId());
             imageId = imageService.create(imageBytes);
         } catch (IOException | FailedToCreateImageException e) {
-            e.printStackTrace();
+            logger.error("Unable to save post image.", e);
             return ResponseEntity.internalServerError().body(Map.of("message", "Unable to save image"));
         }
         Post post = postService.create(user.getId(), game.getId(), imageId, request.getTitle(), request.getDescription());
@@ -180,7 +184,7 @@ public class PostController {
     }
 
     @PutMapping("{postId}")
-    public ResponseEntity<?> indexComments(
+    public ResponseEntity<?> updatePost(
             @Valid @RequestBody EditPostRequest request,
             @PathVariable Long postId,
             OAuth2AuthenticationToken authentication

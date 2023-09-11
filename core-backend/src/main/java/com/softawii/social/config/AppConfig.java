@@ -1,5 +1,7 @@
 package com.softawii.social.config;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -14,15 +16,20 @@ import java.security.InvalidParameterException;
 
 @Component
 public class AppConfig {
-    @Value("${softawii.production}")
-    private boolean isProduction;
 
-    private Path uploadFolder;
+    private final Logger logger = LoggerFactory.getLogger(AppConfig.class);
 
+    private boolean           isProduction;
+    private Path              uploadFolder;
     private UploadStorageType uploadStorageType;
+    private URI               uploadServiceUrl;
+    private String            imageUrlPrefix;
 
-    private URI    uploadServiceUrl;
-    private String imageUrlPrefix;
+    @Autowired
+    public void setProduction(@Value("${softawii.production}") boolean production) {
+        isProduction = production;
+        logger.info("Is production? {}", production);
+    }
 
     public boolean isProduction() {
         return isProduction;
@@ -41,8 +48,12 @@ public class AppConfig {
             path = Path.of(uploadFolder);
         }
         if (!Files.exists(path) || !Files.isDirectory(path) || !Files.isWritable(path)) {
-            throw new InvalidParameterException(String.format("Upload folder \"%s\" does not exists, is not a directory or is not writable", uploadFolder));
+            InvalidParameterException exception = new InvalidParameterException(String.format("Upload folder \"%s\" does not exists, is not a directory or is not writable", uploadFolder));
+            logger.error("Failed to set upload folder: {}", uploadFolder, exception);
+            throw exception;
         }
+
+        logger.info("Upload folder: {}", path);
         this.uploadFolder = path;
     }
 
@@ -53,6 +64,7 @@ public class AppConfig {
     @Autowired
     public void setUploadStorageType(@Value("${softawii.upload.storage}") String uploadStorageType) {
         this.uploadStorageType = UploadStorageType.valueOf(uploadStorageType);
+        logger.info("Upload storage type: {}", this.uploadStorageType.getName());
     }
 
     public URI getUploadServiceUrl() {
@@ -63,14 +75,19 @@ public class AppConfig {
     public void setUploadServiceUrl(@Value("${softawii.upload-service.url}") String uploadServiceUrl) {
         try {
             this.uploadServiceUrl = new URL(uploadServiceUrl).toURI();
+            logger.info("Upload service URL: {}", this.uploadServiceUrl);
         } catch (IllegalArgumentException | MalformedURLException | URISyntaxException e) {
-            throw new IllegalStateException("Invalid upload service url: '%s'".formatted(uploadServiceUrl), e);
+            IllegalStateException exception = new IllegalStateException("Invalid upload service url: '%s'".formatted(uploadServiceUrl), e);
+
+            logger.error("Failed to set upload service URL: {}", this.uploadServiceUrl, exception);
+            throw exception;
         }
     }
 
     @Autowired
     public void setImageUrlPrefix(@Value("${softawii.image-url-prefix}") String imageUrlPrefix) {
         this.imageUrlPrefix = imageUrlPrefix;
+        logger.info("Image URL prefix: {}", imageUrlPrefix);
     }
 
     public String getImageUrlPrefix() {

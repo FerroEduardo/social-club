@@ -49,4 +49,15 @@ public class Image {
     public void setExtension(String extension) {
         this.extension = extension;
     }
+
+    @Override
+    public String toString() {
+        return "Image{" +
+                "id=" + id +
+                ", s3='" + s3 + '\'' +
+                ", local='" + local + '\'' +
+                ", blob(length)=" + (blob == null ? null : blob.length) +
+                ", extension='" + extension + '\'' +
+                '}';
+    }
 }

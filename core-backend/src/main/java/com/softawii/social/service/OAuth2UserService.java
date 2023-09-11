@@ -8,6 +8,8 @@ import com.softawii.social.repository.UserRepository;
 import com.softawii.social.security.UserPrincipal;
 import com.softawii.social.security.oauth.user.OAuth2UserInfo;
 import com.softawii.social.security.oauth.user.OAuth2UserInfoFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -26,6 +28,7 @@ import java.util.Optional;
 @Service
 public class OAuth2UserService extends DefaultOAuth2UserService {
 
+    private final Logger         logger = LoggerFactory.getLogger(OAuth2UserService.class);
     private final UserRepository userRepository;
     private final ImageService   imageService;
 
@@ -40,11 +43,16 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
 
         try {
             return processOAuth2User(oAuth2UserRequest, oAuth2User);
+        } catch (GithubOAuth2MissingEmailException ex) {
+            logger.info("Github user '{}' does not have a public email", ex.getName());
+            throw ex;
         } catch (AuthenticationException ex) {
+            logger.error(ex.getMessage(), ex);
             throw ex;
         } catch (Exception ex) {
-            // Throwing an instance of AuthenticationException will trigger the OAuth2AuthenticationFailureHandler
-            throw new InternalAuthenticationServiceException(ex.getMessage(), ex.getCause());
+            InternalAuthenticationServiceException exception = new InternalAuthenticationServiceException(ex.getMessage(), ex.getCause());
+            logger.error(exception.getMessage(), exception);
+            throw exception;
         }
     }
 
@@ -53,7 +61,7 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         OAuth2UserInfo oAuth2UserInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(platform, oAuth2User.getAttributes());
         if (!StringUtils.hasLength(oAuth2UserInfo.getEmail())) {
             if (platform.equals("github")) {
-                throw new GithubOAuth2MissingEmailException("Public email is not enabled");
+                throw new GithubOAuth2MissingEmailException("Public email is not enabled", oAuth2UserInfo.getName());
             }
             throw new OAuth2AuthenticationProcessingException("Email not found from OAuth2 provider");
         }
@@ -76,12 +84,14 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         user.setEmail(oAuth2UserInfo.getEmail());
         user.setImageId(imageId);
 
+        logger.info("Creating user: {}", user);
         return userRepository.create(user);
     }
 
     private Long uploadUserImage(OAuth2UserInfo oAuth2UserInfo) throws FailedToCreateImageException, IOException {
         try (BufferedInputStream in = new BufferedInputStream(new URL(oAuth2UserInfo.getImageUrl()).openStream());
              ByteArrayOutputStream fileOutputStream = new ByteArrayOutputStream()) {
+            logger.info("Saving user ({}) profile image: {}", oAuth2UserInfo.getEmail(), oAuth2UserInfo.getImageUrl());
             byte[] dataBuffer = new byte[1024];
             int    bytesRead;
             while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
@@ -90,7 +100,7 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
             byte[] image = fileOutputStream.toByteArray();
             return imageService.create(image);
         } catch (IOException | FailedToCreateImageException e) {
-            e.printStackTrace();
+            logger.error("Failed to save user profile image: {}. Image URL: {}", e.getMessage(), oAuth2UserInfo.getImageUrl(), e);
             throw e;
         }
     }

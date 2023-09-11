@@ -78,4 +78,18 @@ public class Post {
     public void setModifiedAt(ZonedDateTime modifiedAt) {
         this.modifiedAt = modifiedAt;
     }
+
+    @Override
+    public String toString() {
+        return "Post{" +
+                "id=" + id +
+                ", userId=" + userId +
+                ", gameId=" + gameId +
+                ", imageId=" + imageId +
+                ", description='" + description + '\'' +
+                ", title='" + title + '\'' +
+                ", createdAt=" + createdAt +
+                ", modifiedAt=" + modifiedAt +
+                '}';
+    }
 }

@@ -2,6 +2,8 @@ package com.softawii.social.controller;
 
 import com.softawii.social.model.dto.ImageDto;
 import com.softawii.social.service.ImageService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +21,7 @@ import java.util.NoSuchElementException;
 @RequestMapping("/image")
 public class ImageController {
 
+    private final Logger       logger = LoggerFactory.getLogger(ImageController.class);
     private final ImageService service;
 
     public ImageController(ImageService service) {
@@ -40,6 +43,7 @@ public class ImageController {
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
         } catch (IOException e) {
+            logger.error("Unexpected error when showing image: {}", e.getMessage(), e);
             return ResponseEntity.internalServerError().build();
         }
     }

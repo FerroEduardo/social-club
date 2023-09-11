@@ -3,6 +3,8 @@ package com.softawii.social.service;
 import com.softawii.social.model.Comment;
 import com.softawii.social.model.dto.CommentDTO;
 import com.softawii.social.repository.CommentRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -13,8 +15,10 @@ import java.util.regex.Pattern;
 
 @Component
 public class CommentService {
-    public static final Pattern COMMENT_VALUE_PATTERN = Pattern.compile("(\n{2,2})(\n*)", Pattern.CASE_INSENSITIVE);
-    private final CommentRepository repository;
+
+    private final       Logger            logger                = LoggerFactory.getLogger(CommentService.class);
+    public static final Pattern           COMMENT_VALUE_PATTERN = Pattern.compile("(\n{2,2})(\n*)", Pattern.CASE_INSENSITIVE);
+    private final       CommentRepository repository;
 
     public CommentService(CommentRepository repository) {
         this.repository = repository;
@@ -23,6 +27,7 @@ public class CommentService {
     public CommentDTO create(Long postId, Long authorId, String value) {
         Comment comment = repository.create(new Comment(authorId, postId, parseCommentValue(value)));
 
+        logger.info("Creating comment {}", comment);
         return repository.findById(comment.getId()).get();
     }
 
@@ -32,6 +37,7 @@ public class CommentService {
 
     public void delete(Long commentId, Long authorId) {
         CommentDTO comment = repository.findByIdAndUserId(commentId, authorId).orElseThrow();
+        logger.info("Deleting comment {}", comment);
         repository.softDelete(commentId);
     }
 

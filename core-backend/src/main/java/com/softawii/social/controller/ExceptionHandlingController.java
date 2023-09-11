@@ -2,6 +2,8 @@ package com.softawii.social.controller;
 
 import com.softawii.social.config.AppConfig;
 import jakarta.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -22,6 +24,7 @@ import java.util.Map;
 @RestControllerAdvice
 public class ExceptionHandlingController extends ResponseEntityExceptionHandler {
 
+    private final Logger    logger = LoggerFactory.getLogger(ExceptionHandlingController.class);
     private final AppConfig appConfig;
 
     public ExceptionHandlingController(AppConfig appConfig) {
@@ -30,8 +33,9 @@ public class ExceptionHandlingController extends ResponseEntityExceptionHandler 
 
     @ExceptionHandler(NumberFormatException.class)
     public ResponseEntity<Object> handleNumberFormatException(NumberFormatException ex) {
-        // Criar uma resposta de erro personalizada
         String mensagemErro = "Formato de número inválido. Certifique-se de fornecer um valor numérico válido.";
+
+        logger.info("Invalid number format.", ex);
         return new ResponseEntity<>(mensagemErro, HttpStatus.BAD_REQUEST);
     }
 
@@ -45,6 +49,7 @@ public class ExceptionHandlingController extends ResponseEntityExceptionHandler 
             errors.put(fieldName, errorMessage);
         });
 
+        logger.info("Invalid method argument: {}", errors, ex);
         return ResponseEntity.badRequest().body(errors);
     }
 
@@ -68,6 +73,7 @@ public class ExceptionHandlingController extends ResponseEntityExceptionHandler 
         mav.addObject("trace", sw.toString());
         mav.setViewName("dev-error.html");
 
+        logger.error("Unhandled exception: {}", e.getMessage(), e);
         return mav;
     }
 }

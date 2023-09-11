@@ -69,4 +69,16 @@ public class CommentDTO {
     public void setAuthorImageUrl(String authorImageUrl) {
         this.authorImageUrl = authorImageUrl;
     }
+
+    @Override
+    public String toString() {
+        return "CommentDTO{" +
+                "id=" + id +
+                ", authorId=" + authorId +
+                ", authorName='" + authorName + '\'' +
+                ", value='" + value + '\'' +
+                ", createdAt=" + createdAt +
+                ", authorImageUrl='" + authorImageUrl + '\'' +
+                '}';
+    }
 }

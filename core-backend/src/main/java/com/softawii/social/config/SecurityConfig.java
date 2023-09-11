@@ -1,14 +1,18 @@
 package com.softawii.social.config;
 
 import com.softawii.social.exception.GithubOAuth2MissingEmailException;
+import com.softawii.social.security.UserPrincipal;
 import com.softawii.social.service.OAuth2UserService;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -20,10 +24,10 @@ import java.util.List;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    private final Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
+
     @Value("${softawii.front.url}")
-    private String frontUrl;
-
-
+    private String            frontUrl;
     private OAuth2UserService oAuth2UserService;
 
     public SecurityConfig(OAuth2UserService oAuth2UserService) {
@@ -60,7 +64,13 @@ public class SecurityConfig {
                         .userInfoEndpoint(endpoint -> endpoint
                                 .userService(oAuth2UserService)
                         )
-                        .defaultSuccessUrl("/login/success", true)
+                        .successHandler((request, response, authentication) -> {
+                            if (authentication instanceof OAuth2AuthenticationToken auth2AuthenticationToken && authentication.getPrincipal() instanceof UserPrincipal principal) {
+                                logger.info("User {} ({}) logged in", principal.getId(), auth2AuthenticationToken.getAuthorizedClientRegistrationId());
+                            }
+
+                            response.sendRedirect("/login/success");
+                        })
                         .failureHandler((request, response, exception) -> {
                             if (exception instanceof GithubOAuth2MissingEmailException) {
                                 response.sendRedirect("/login/failed?reason=github-public-email-disabled");
@@ -71,30 +81,32 @@ public class SecurityConfig {
                 )
                 .logout(configurer -> configurer
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("/logout/success")
+                        .logoutSuccessHandler((request, response, authentication) -> {
+                            if (authentication instanceof OAuth2AuthenticationToken auth2AuthenticationToken && authentication.getPrincipal() instanceof UserPrincipal principal) {
+                                logger.info("User {} ({}) logged out", principal.getId(), auth2AuthenticationToken.getAuthorizedClientRegistrationId());
+                            }
+
+                            response.sendRedirect("/logout/success");
+                        })
                 )
                 .exceptionHandling(configurer -> configurer
                         .authenticationEntryPoint((request, response, authException) -> {
-                            System.out.println(authException.getMessage());
+                            if (!request.getRequestURI().equals("/ping")) {
+                                logger.warn("{} - {}", request.getRequestURI(), authException.getMessage());
+                            }
+
                             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, authException.getMessage());
                         })
-                )
-                .headers(configurer -> configurer
-                        .frameOptions(frameOptionsConfig -> frameOptionsConfig
-                                .sameOrigin()
-                        )
-                )
-        ;
-
-//        DefaultLoginPageConfigurer defaultLoginPageConfigurer = http.removeConfigurer(DefaultLoginPageConfigurer.class);
+                );
 
         return http.build();
     }
 
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of(frontUrl));
+        CorsConfiguration configuration  = new CorsConfiguration();
+        List<String>      allowedOrigins = List.of(frontUrl);
+        configuration.setAllowedOrigins(allowedOrigins);
         configuration.setAllowCredentials(true);
         configuration.addAllowedMethod("*");
         configuration.addExposedHeader("*");
@@ -103,6 +115,12 @@ public class SecurityConfig {
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
+
+        logger.info("CORS - allowed origins: {}", allowedOrigins);
+        logger.info("CORS - allow credentials: {}", configuration.getAllowCredentials());
+        logger.info("CORS - allowed method: {}", configuration.getAllowedMethods());
+        logger.info("CORS - exposed header: {}", configuration.getExposedHeaders());
+        logger.info("CORS - allowed header: {}", configuration.getAllowedHeaders());
 
         return source;
     }
