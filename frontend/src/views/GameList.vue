@@ -75,7 +75,12 @@ export default {
         });
     },
     handleGameSelect(game: Game) {
-      this.$router.push(`/game/${game.id}`);
+      this.$router.push({
+        name: 'timeline',
+        query: {
+          game: game.id
+        }
+      });
     },
     setupInfiniteScroll() {
       const observer = new IntersectionObserver(
