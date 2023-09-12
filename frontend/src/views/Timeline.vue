@@ -25,13 +25,7 @@
         <PostContainer :post="post" :high-loading-priority="index < 3" />
       </n-list-item>
       <div v-if="posts.length === 0">
-        <n-empty description="Nenhum post encontrado">
-          <template #extra>
-            <n-button size="small" @click="$router.push('/post')">
-              Seja o primeiro a fazer uma postagem
-            </n-button>
-          </template>
-        </n-empty>
+        <n-empty description="Nenhum post encontrado" />
       </div>
       <div ref="postContainer"></div>
     </n-list>
@@ -45,7 +39,6 @@ import {
   NCard,
   useMessage,
   NEmpty,
-  NButton,
   NCollapse,
   NCollapseItem,
   NSelect,
@@ -71,7 +64,6 @@ export default {
     NCard,
     PostContainer,
     NEmpty,
-    NButton,
     GameCard,
     CreatePost,
     NCollapse,
