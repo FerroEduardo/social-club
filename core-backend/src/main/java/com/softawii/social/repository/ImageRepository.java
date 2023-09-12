@@ -50,9 +50,9 @@ public class ImageRepository {
     @Transactional
     public void softDeleteByPostId(Long postId) {
         String sql = """
-                UPDATE social.image
+                UPDATE social.image i
                 SET deleted_at = CURRENT_TIMESTAMP
-                WHERE id = (SELECT id FROM social.post WHERE id = :postId LIMIT 1)
+                WHERE i.id = (SELECT p.image_id FROM social.post p WHERE p.id = :postId LIMIT 1)
                 """;
 
         jdbcClient
