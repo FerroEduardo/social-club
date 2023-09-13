@@ -24,6 +24,7 @@ public class AppConfig {
     private UploadStorageType uploadStorageType;
     private URI               uploadServiceUrl;
     private String            imageUrlPrefix;
+    private Path              logFolder;
 
     @Autowired
     public void setProduction(@Value("${softawii.production}") boolean production) {
@@ -92,5 +93,29 @@ public class AppConfig {
 
     public String getImageUrlPrefix() {
         return this.imageUrlPrefix;
+    }
+
+    public Path getLogFolder() {
+        return logFolder;
+    }
+
+    @Autowired
+    public void setLogFolder(@Value("${softawii.log.folder}") String logFolder) {
+        if (logFolder == null) {
+            IllegalStateException exception = new IllegalStateException("Log folder is null");
+            logger.error("Log folder is null", exception);
+
+            throw exception;
+        }
+        Path path = Path.of(logFolder);
+        if (!Files.exists(path) || !Files.isDirectory(path) || !Files.isWritable(path)) {
+            InvalidParameterException exception = new InvalidParameterException(String.format("Log folder \"%s\" does not exists, is not a directory or is not writable", uploadFolder));
+            logger.error("Failed to set log folder: {}", uploadFolder, exception);
+
+            throw exception;
+        }
+
+        logger.info("Log folder: {}", logFolder);
+        this.logFolder = path;
     }
 }

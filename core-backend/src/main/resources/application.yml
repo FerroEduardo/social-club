@@ -8,6 +8,8 @@ softawii:
   upload-service:
     url: ${SOFTAWII_UPLOAD_SERVICE_URL:http://localhost:8031}
   image-url-prefix: ${SOFTAWII_IMAGE_URL_PREFIX:http://localhost:8099/image/}
+  log:
+    folder: ${SOFTAWII_LOG_FOLDER}
 
 logging:
   level:

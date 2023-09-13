@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
-    <property name="LOG_FOLDER" value="${SOFTAWII_LOG_FOLDER}"/>
+    <springProperty name="LOG_FOLDER" source="softawii.log.folder"/>
 
     <appender name="Console"
               class="ch.qos.logback.core.ConsoleAppender">
