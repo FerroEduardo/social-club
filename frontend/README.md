@@ -1,45 +1,44 @@
-# frontend-refactor
+# Frontend
 
-This template should help get you started developing with Vue 3 in Vite.
+Responsible for showing images, posts, comments and interact with the core API
 
-## Recommended IDE Setup
+## Main technologies
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+- [Vue 3 + Vite](https://vuejs.org/): Framework for building user interfaces
+- [Pinia](https://pinia.vuejs.org/): State management library
+- [TypeScript](https://www.typescriptlang.org/): A statically-typed superset of JavaScript
 
-## Type Support for `.vue` Imports in TS
+## Requirements
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin) to make the TypeScript language service aware of `.vue` types.
+- Node v18
 
-If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
+## Project setup
 
-1. Disable the built-in TypeScript Extension
-    1) Run `Extensions: Show Built-in Extensions` from VSCode's command palette
-    2) Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
-2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
-
-## Project Setup
-
+1. Install project packages
 ```sh
-npm install
+npm ci
 ```
+2. Copy `.env.example` to `.env` and fill the variables
 
-### Compile and Hot-Reload for Development
+### Compile and hot-reload for development
 
 ```sh
 npm run dev
 ```
 
-### Type-Check, Compile and Minify for Production
+### Type-check, compile and minify for production
 
 ```sh
 npm run build
 ```
 
-### Lint with [ESLint](https://eslint.org/)
+### Format code with prettier
+
+```sh
+npm run format
+```
+
+### Lint code with Eslint
 
 ```sh
 npm run lint
