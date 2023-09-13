@@ -16,7 +16,7 @@
 </div>
 
 <div align="justify">
-Social Club is a social networking platform centered around gaming enthusiasts, providing a photo-sharing experience akin to Instagram. It empowers users to share their gaming adventures through images while fostering connections with fellow gaming enthusiasts.
+Social Club is a social media platform centered around gaming enthusiasts, providing a photo-sharing experience akin to Instagram and Reddit. It empowers users to share their gaming adventures through images while fostering connections with fellow gaming enthusiasts.
 </div>
 
 ## Features

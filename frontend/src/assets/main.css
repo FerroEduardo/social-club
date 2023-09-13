@@ -1,3 +1,7 @@
 .no-decoration {
   text-decoration: none;
 }
+
+:root {
+  --header-height: 60px;
+}

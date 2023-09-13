@@ -1,7 +1,7 @@
 <template>
   <header id="header-container">
     <div id="header-left">
-      <img src="https://avatars.githubusercontent.com/u/92893192" width="30" />
+      <img src="/logo.png" width="30" />
     </div>
     <nav id="nav-container">
       <router-link
@@ -24,7 +24,7 @@
     <div id="header-right">
       <HeaderProfilePopover v-if="userStore.isAuthenticated" />
       <router-link v-else to="/login">
-        <n-button type="primary"> Fazer login </n-button>
+        <n-button type="info"> Fazer login </n-button>
       </router-link>
     </div>
   </header>
@@ -69,6 +69,8 @@ export default {
   flex-direction: row;
   align-items: center;
   justify-content: center;
+  max-height: --header-height;
+  height: 100%;
 }
 
 #nav-container {
