@@ -10,6 +10,9 @@
           <n-layout-content bordered>
             <router-view :key="$route.path" />
           </n-layout-content>
+          <n-layout-footer bordered inverted>
+            <Footer />
+          </n-layout-footer>
         </n-layout>
       </n-message-provider>
     </n-dialog-provider>
@@ -22,6 +25,7 @@ import {
   NConfigProvider,
   NLayout,
   NLayoutHeader,
+  NLayoutFooter,
   NLayoutContent,
   NMessageProvider,
   NDialogProvider,
@@ -30,6 +34,7 @@ import {
 import axios from 'axios';
 
 import Header from '@/components/Header.vue';
+import Footer from '@/components/Footer.vue';
 import { useUserStore } from '@/stores/userStore';
 
 export default {
@@ -41,7 +46,9 @@ export default {
     NLayoutContent,
     NMessageProvider,
     NDialogProvider,
-    NBackTop
+    NBackTop,
+    NLayoutFooter,
+    Footer
   },
   setup() {
     const theme = darkTheme;
