@@ -21,6 +21,10 @@ Social Club is a social media platform centered around gaming enthusiasts, provi
 
 ## Features
 
+### Architecture
+
+![architecture](/docs/architecture.png)
+
 ### Authentication via OAuth 2
 - Social Club offers secure and convenient login options through OAuth 2 with support for Google and GitHub providers.
 
@@ -42,7 +46,7 @@ Social Club is a social media platform centered around gaming enthusiasts, provi
   - Database storage
   - ~~AWS S3~~
 
-## Technologies Used
+## Main Technologies
 
 - **Spring Boot (3.2.0-M2)**: Spring Boot powers the core backend API.
 - **Vue 3 + Vite**: Framework for building user interfaces.
