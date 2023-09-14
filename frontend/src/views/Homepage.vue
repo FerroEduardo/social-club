@@ -34,11 +34,24 @@ export default {
       interval: undefined as number | undefined
     };
   },
+  methods: {
+    setupImages() {
+      for (let i = 1; i <= this.imageCount; i++) {
+        const link = document.createElement('img');
+        link.src = `/landing/screenshot_${i}.webp`;
+        if (i == 1) {
+          link.loading = 'eager';
+        }
+      }
+
+      this.interval = setInterval(() => {
+        this.imageIndex = (this.imageIndex % this.imageCount) + 1;
+        this.backgroundImage = `url(/landing/screenshot_${this.imageIndex}.webp)`;
+      }, 5000);
+    }
+  },
   mounted() {
-    this.interval = setInterval(() => {
-      this.imageIndex = (this.imageIndex % this.imageCount) + 1;
-      this.backgroundImage = `url(/landing/screenshot_${this.imageIndex}.webp)`;
-    }, 5000);
+    this.setupImages();
   },
   unmounted() {
     if (this.interval) {
@@ -53,15 +66,20 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
 }
-#background {
-  position: absolute;
+#container::before {
+  content: '';
   background-image: v-bind(backgroundImage);
-  object-fit: contain;
-  filter: blur(4px);
+  background-size: cover;
+  background-position: center center;
+  background-attachment: fixed;
+  filter: blur(10px);
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
-  z-index: 0;
 }
 #content {
   padding: 10px;
