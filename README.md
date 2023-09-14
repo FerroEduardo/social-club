@@ -21,6 +21,11 @@ Social Club is a social media platform centered around gaming enthusiasts, provi
 
 ## Features
 
+Modules:
+- [Frontend](/frontend)
+- [Core](/core-backend)
+- [Upload Service](/upload-service)
+
 ### Architecture
 
 ![architecture](/docs/architecture.png)
@@ -53,3 +58,20 @@ Social Club is a social media platform centered around gaming enthusiasts, provi
 - **TypeScript**: A statically-typed superset of JavaScript.
 - **Express**: Web framework for building web applications and APIs.
 - **Sharp**: A library for image compression and conversion.
+
+## Screenshots
+
+### Homepage
+![homepage](/docs/homepage.png)
+
+### Timeline
+![timeline](/docs/timeline.png)
+
+### Create post
+![post-create](/docs/post-create.png)
+
+### Post Details
+![post](/docs/post.png)
+
+### Game List
+![game-list](/docs/game-list.png)

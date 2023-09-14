@@ -7,6 +7,7 @@ Responsible for showing images, posts, comments and interact with the core API
 - [Vue 3 + Vite](https://vuejs.org/): Framework for building user interfaces
 - [Pinia](https://pinia.vuejs.org/): State management library
 - [TypeScript](https://www.typescriptlang.org/): A statically-typed superset of JavaScript
+- [Naive UI](https://www.naiveui.com): Vue component library
 
 ## Requirements
 
