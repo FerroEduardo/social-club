@@ -51,14 +51,14 @@ spring:
           google:
             client-id: ${SOFTAWII_OAUTH_GOOGLE_CLIENT_ID}
             client-secret: ${SOFTAWII_OAUTH_GOOGLE_CLIENT_SECRET}
-            redirect-uri: "{baseUrl}/login/oauth2/{registrationId}"
+            redirect-uri: "${SOFTAWII_GATEWAY_URL:http://localhost:8099}/login/oauth2/{registrationId}"
             scope:
               - email
               - profile
           github:
             client-id: ${SOFTAWII_OAUTH_GITHUB_CLIENT_ID}
             client-secret: ${SOFTAWII_OAUTH_GITHUB_CLIENT_SECRET}
-            redirect-uri: "{baseUrl}/login/oauth2/{registrationId}"
+            redirect-uri: "${SOFTAWII_GATEWAY_URL:http://localhost:8099}/login/oauth2/{registrationId}"
             scope:
               - user:email
               - read:user
