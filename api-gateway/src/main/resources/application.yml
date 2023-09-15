@@ -1,0 +1,34 @@
+softawii:
+  production: ${SOFTAWII_PRODUCTION:false}
+  front:
+    url: ${SOFTAWII_FRONT_URL:http://localhost:5173}
+  core-api:
+    url: ${SOFTAWII_CORE_API_URL:http://localhost:8022}
+  log:
+    folder: ${SOFTAWII_LOG_FOLDER}
+
+server:
+  port: ${SOFTAWII_GATEWAY_PORT:8099}
+
+logging:
+  level:
+    root: info
+
+spring:
+  data:
+    redis:
+      host: ${SOFTAWII_REDIS_HOST:localhost}
+      port: ${SOFTAWII_REDIS_PORT:6379}
+      database: ${SOFTAWII_REDIS_DATABASE:0}
+      password: ${SOFTAWII_REDIS_PASSWORD:}
+
+  cloud:
+    gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: ${softawii.front.url}
+            allow-credentials: true
+            allowed-methods: "*"
+            exposed-headers: "*"
+            allowed-headers: "*"
