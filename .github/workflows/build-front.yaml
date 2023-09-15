@@ -5,6 +5,7 @@ on:
       - main
     paths:
       - frontend/**
+  pull_request:
   workflow_dispatch:
 
 jobs:
