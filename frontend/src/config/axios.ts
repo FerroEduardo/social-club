@@ -11,9 +11,9 @@ axios.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response) {
-      console.error(error.response.data);
-      console.error(error.response.status);
-      console.error(error.response.headers);
+      if (error.response.status === 429) {
+        window.alert('Você está indo rápido de mais');
+      }
       if (
         !ignoreRoute(error.response.request.responseURL as string) &&
         error.response.status === 401

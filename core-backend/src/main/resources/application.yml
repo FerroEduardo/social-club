@@ -16,7 +16,7 @@ logging:
     root: info
 
 server:
-  port: ${SERVER_PORT:8099}
+  port: ${SERVER_PORT:8022}
   servlet:
     session:
       timeout: ${SESSION_TIMEOUT:1h}

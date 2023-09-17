@@ -168,6 +168,7 @@ export default {
           }
         }
       },
+      searchGameIntervalValue: ref() as Ref<number | undefined>,
       isRequestRunning: ref(false),
       message: useMessage()
     };
@@ -196,14 +197,21 @@ export default {
       if (text.trim().length !== 0) {
         this.gameListRef = [];
 
-        const games = await this.fetchGames(text.trim());
+        if (this.searchGameIntervalValue) {
+          clearTimeout(this.searchGameIntervalValue);
+          this.searchGameIntervalValue = undefined;
+        }
 
-        this.gameListRef = games.map((game) => {
-          return {
-            label: `${game.name}`,
-            value: game.id.toString()
-          } as AutoCompleteOption;
-        });
+        this.searchGameIntervalValue = setTimeout(async () => {
+          const games = await this.fetchGames(text.trim());
+
+          this.gameListRef = games.map((game) => {
+            return {
+              label: `${game.name}`,
+              value: game.id.toString()
+            } as AutoCompleteOption;
+          });
+        }, 400);
       }
     },
     handleGameSelect(id: any) {

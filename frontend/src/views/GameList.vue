@@ -36,7 +36,8 @@ export default {
       gameList: ref([]) as Ref<Game[]>,
       gameInput: ref('') as Ref<string>,
       isLoading: ref(false) as Ref<boolean>,
-      page: ref(0) as Ref<number>
+      page: ref(0) as Ref<number>,
+      searchGameIntervalValue: ref() as Ref<number | undefined>
     };
   },
   computed: {
@@ -46,9 +47,17 @@ export default {
   },
   methods: {
     onInput() {
-      this.gameList = [];
-      this.page = 0;
-      this.fetchGames();
+      if (this.searchGameIntervalValue) {
+        clearTimeout(this.searchGameIntervalValue);
+        this.searchGameIntervalValue = undefined;
+      }
+
+      this.searchGameIntervalValue = setTimeout(() => {
+        this.gameList = [];
+        this.page = 0;
+        this.fetchGames();
+        this.searchGameIntervalValue = undefined;
+      }, 200);
     },
     fetchGames() {
       const page = this.page++;
