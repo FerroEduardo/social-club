@@ -25,7 +25,7 @@ public class ProxiedClientAddressResolver implements KeyResolver {
         XForwardedRemoteAddressResolver resolver          = XForwardedRemoteAddressResolver.maxTrustedIndex(MAX_TRUSTED_INDEX);
         InetSocketAddress               inetSocketAddress = resolver.resolve(exchange);
         String                          hostAddress       = inetSocketAddress.getAddress().getHostAddress();
-        logger.info("Host address: {} - MAX_TRUSTED_INDEX {} - ID: {}", hostAddress, MAX_TRUSTED_INDEX, id);
+
         return Mono.just(String.format("%s-%s", hostAddress, id));
     }
 }
