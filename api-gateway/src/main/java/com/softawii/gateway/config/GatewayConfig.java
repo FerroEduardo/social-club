@@ -65,6 +65,7 @@ public class GatewayConfig {
                                         .setDenyEmptyKey(true)
                                         .setKeyResolver(new ProxiedClientAddressResolver(routeTypeName))
                                 )
+                                .preserveHostHeader()
                         )
                         .uri(coreApiUrl)
                 );
@@ -102,6 +103,7 @@ public class GatewayConfig {
                                         .setDenyEmptyKey(true)
                                         .setKeyResolver(new ProxiedClientAddressResolver(routeType.name()))
                                 )
+                                .preserveHostHeader()
                         )
                         .uri(coreApiUrl)
                 );
