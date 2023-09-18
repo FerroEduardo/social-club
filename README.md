@@ -21,10 +21,20 @@
 Social Club is a social media platform centered around gaming enthusiasts, providing a photo-sharing experience akin to Instagram and Reddit. It empowers users to share their gaming adventures through images while fostering connections with fellow gaming enthusiasts.
 </div>
 
+## Main Technologies
+
+- [**Spring Boot (3.2.0-M2)**](https://spring.io/projects/spring-boot): Spring Boot powers the core backend API.
+- [**Spring Cloud Gateway**](https://spring.io/projects/spring-cloud-gateway): API gateway for routing and filtering requests, rate limiting and [reCAPTCHA](https://www.google.com/recaptcha/about/) validation.
+- [**Vue 3 + Vite**](https://vuejs.org/): Framework for building user interfaces.
+- [**TypeScript**](https://www.typescriptlang.org/): A statically-typed superset of JavaScript.
+- [**Express**](https://expressjs.com/): Web framework for building web applications and APIs.
+- [**Sharp**](https://sharp.pixelplumbing.com/): A library for image compression and conversion.
+
 ## Features
 
 Modules:
 - [Frontend](/frontend)
+- [Gateway](/api-gateway)
 - [Core](/core-backend)
 - [Upload Service](/upload-service)
 
@@ -52,14 +62,6 @@ Modules:
   - Local storage
   - Database storage
   - ~~AWS S3~~
-
-## Main Technologies
-
-- **Spring Boot (3.2.0-M2)**: Spring Boot powers the core backend API.
-- **Vue 3 + Vite**: Framework for building user interfaces.
-- **TypeScript**: A statically-typed superset of JavaScript.
-- **Express**: Web framework for building web applications and APIs.
-- **Sharp**: A library for image compression and conversion.
 
 ## Screenshots
 
