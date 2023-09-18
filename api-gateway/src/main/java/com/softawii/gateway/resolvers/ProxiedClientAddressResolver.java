@@ -1,7 +1,5 @@
 package com.softawii.gateway.resolvers;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.cloud.gateway.filter.ratelimit.KeyResolver;
 import org.springframework.cloud.gateway.support.ipresolver.XForwardedRemoteAddressResolver;
 import org.springframework.web.server.ServerWebExchange;
@@ -11,8 +9,6 @@ import java.net.InetSocketAddress;
 
 public class ProxiedClientAddressResolver implements KeyResolver {
 
-    private final Logger logger = LoggerFactory.getLogger(ProxiedClientAddressResolver.class);
-
     private static final int    MAX_TRUSTED_INDEX = 1;
     private final        String id;
 
@@ -20,11 +16,15 @@ public class ProxiedClientAddressResolver implements KeyResolver {
         this.id = id;
     }
 
-    @Override
-    public Mono<String> resolve(ServerWebExchange exchange) {
+    public static String getUserIpAddress(ServerWebExchange exchange) {
         XForwardedRemoteAddressResolver resolver          = XForwardedRemoteAddressResolver.maxTrustedIndex(MAX_TRUSTED_INDEX);
         InetSocketAddress               inetSocketAddress = resolver.resolve(exchange);
-        String                          hostAddress       = inetSocketAddress.getAddress().getHostAddress();
+        return inetSocketAddress.getAddress().getHostAddress();
+    }
+
+    @Override
+    public Mono<String> resolve(ServerWebExchange exchange) {
+        String hostAddress = getUserIpAddress(exchange);
 
         return Mono.just(String.format("%s-%s", hostAddress, id));
     }

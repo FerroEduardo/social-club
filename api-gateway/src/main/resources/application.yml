@@ -6,6 +6,8 @@ softawii:
     url: ${SOFTAWII_CORE_API_URL:http://localhost:8022}
   log:
     folder: ${SOFTAWII_LOG_FOLDER}
+  recaptcha:
+    secret: ${SOFTAWII_RECAPTCHA_SECRET}
 
 server:
   port: ${SOFTAWII_GATEWAY_PORT:8099}

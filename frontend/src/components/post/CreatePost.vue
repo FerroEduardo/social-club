@@ -95,6 +95,7 @@ import axios from 'axios';
 import type IndexGameResponse from '@/interface/response/indexGameResponse';
 import type CreatePostResponse from '@/interface/response/createPostResponse';
 import type Game from '@/interface/game';
+import RecaptchaUtil from '@/util/RecaptchaUtil';
 
 export default {
   components: {
@@ -237,8 +238,12 @@ export default {
 
       const form = this.getFormData();
 
+      const recaptchaResponse = 'await RecaptchaUtil.execute()';
+
       axios
-        .post<CreatePostResponse>('/post', form)
+        .post<CreatePostResponse>('/post', form, {
+          headers: { 'g-recaptcha-response': recaptchaResponse }
+        })
         .then((response) => {
           if (response.status !== 200) {
             this.message.error('Ocorreu um erro inesperado na criação da postagem');
@@ -247,8 +252,16 @@ export default {
           this.$router.push(`/post/${response.data.id}`);
         })
         .catch((reason) => {
+          if (
+            reason.response &&
+            reason.response.status === 422 &&
+            reason.response.data?.code === 'recaptcha-failed'
+          ) {
+            this.message.error('Ocorreu um erro na validação do reCAPTCHA', { duration: 10000 });
+            return;
+          }
+          console.error({ reason });
           this.message.error('Ocorreu um erro na criação da postagem');
-          console.log({ reason });
         })
         .finally(() => {
           this.isRequestRunning = false;
@@ -269,6 +282,9 @@ export default {
 
       return form;
     }
+  },
+  mounted() {
+    RecaptchaUtil.load();
   }
 };
 </script>
