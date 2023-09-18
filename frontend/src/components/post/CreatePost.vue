@@ -238,7 +238,7 @@ export default {
 
       const form = this.getFormData();
 
-      const recaptchaResponse = 'await RecaptchaUtil.execute()';
+      const recaptchaResponse = await RecaptchaUtil.execute();
 
       axios
         .post<CreatePostResponse>('/post', form, {
