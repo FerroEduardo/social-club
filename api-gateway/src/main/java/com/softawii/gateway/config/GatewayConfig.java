@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.ratelimit.RedisRateLimiter;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
@@ -15,6 +16,7 @@ import org.springframework.core.Ordered;
 import org.springframework.http.HttpMethod;
 
 import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 public class GatewayConfig {
@@ -94,13 +96,14 @@ public class GatewayConfig {
     ) {
         String routeId = String.format("%s-%s", routeType.name(), id);
         logger.info("Route ID {} - Order {} - Type {} - Method {} - Routes {}", routeId, order, routeType.name(), method.name(), Arrays.toString(routes));
+        List<GatewayFilter> filters = recaptcha ? List.of(recaptchaFilter) : List.of();
 
         builder
                 .route(routeId, route -> route
                         .order(order)
                         .method(method).and().path(routes)
                         .filters(filter -> filter
-                                .filter(recaptcha ? recaptchaFilter : null)
+                                .filters(filters)
                                 .requestRateLimiter(rate -> rate
                                         .setRateLimiter(redisRateLimiter)
                                         .setDenyEmptyKey(true)
