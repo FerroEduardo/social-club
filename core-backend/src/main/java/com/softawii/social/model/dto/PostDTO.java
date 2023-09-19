@@ -11,7 +11,8 @@ public class PostDTO {
     private ZonedDateTime modifiedAt;
     private Long          authorId;
     private String        authorName;
-    private String        authorImageUrl;
+    private String        authorAvatarUrl;
+    private String        authorMiniAvatarUrl;
     private Long          gameId;
     private String        gameName;
     private String        gameStudio;
@@ -86,12 +87,12 @@ public class PostDTO {
         this.authorName = authorName;
     }
 
-    public String getAuthorImageUrl() {
-        return authorImageUrl;
+    public String getAuthorAvatarUrl() {
+        return authorAvatarUrl;
     }
 
-    public void setAuthorImageUrl(String authorImageUrl) {
-        this.authorImageUrl = authorImageUrl;
+    public void setAuthorAvatarUrl(String authorAvatarUrl) {
+        this.authorAvatarUrl = authorAvatarUrl;
     }
 
     public Long getGameId() {
@@ -140,5 +141,13 @@ public class PostDTO {
 
     public void setGameImageUrl(String gameImageUrl) {
         this.gameImageUrl = gameImageUrl;
+    }
+
+    public String getAuthorMiniAvatarUrl() {
+        return authorMiniAvatarUrl;
+    }
+
+    public void setAuthorMiniAvatarUrl(String authorMiniAvatarUrl) {
+        this.authorMiniAvatarUrl = authorMiniAvatarUrl;
     }
 }

@@ -28,7 +28,8 @@ public class PostDtoRowMapper implements RowMapper<PostDTO> {
         post.setModifiedAt(rs.getObject("modifiedAt", OffsetDateTime.class).toZonedDateTime());
         post.setAuthorId(rs.getLong("authorId"));
         post.setAuthorName(rs.getString("authorName"));
-        post.setAuthorImageUrl(imageService.getImageUrlFromImageId(rs.getLong("authorImageId")));
+        post.setAuthorAvatarUrl(imageService.getImageUrlFromImageId(rs.getLong("authorAvatarId")));
+        post.setAuthorMiniAvatarUrl(imageService.getImageUrlFromImageId(rs.getLong("miniAuthorAvatarId")));
         post.setGameId(rs.getLong("gameId"));
         post.setGameName(rs.getString("gameName"));
         post.setGameStudio(rs.getString("gameStudio"));

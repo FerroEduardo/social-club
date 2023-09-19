@@ -3,6 +3,7 @@ package com.softawii.social.service;
 import com.softawii.social.exception.FailedToCreateImageException;
 import com.softawii.social.exception.GithubOAuth2MissingEmailException;
 import com.softawii.social.exception.OAuth2AuthenticationProcessingException;
+import com.softawii.social.model.AvatarImage;
 import com.softawii.social.model.User;
 import com.softawii.social.repository.UserRepository;
 import com.softawii.social.security.UserPrincipal;
@@ -69,8 +70,8 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         Optional<User> userOptional = userRepository.findByEmail(oAuth2UserInfo.getEmail());
         User           user;
         if (userOptional.isEmpty()) {
-            Long imageId = uploadUserImage(oAuth2UserInfo);
-            user = registerNewUser(oAuth2UserInfo, imageId);
+            AvatarImage avatarImage = uploadUserImage(oAuth2UserInfo);
+            user = registerNewUser(oAuth2UserInfo, avatarImage);
         } else {
             user = userOptional.get();
         }
@@ -78,17 +79,18 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         return UserPrincipal.create(user, oAuth2User.getAttributes());
     }
 
-    private User registerNewUser(OAuth2UserInfo oAuth2UserInfo, Long imageId) {
+    private User registerNewUser(OAuth2UserInfo oAuth2UserInfo, AvatarImage avatarImage) {
         User user = new User();
         user.setName(oAuth2UserInfo.getName());
         user.setEmail(oAuth2UserInfo.getEmail());
-        user.setImageId(imageId);
+        user.setAvatarImageId(avatarImage.avatar());
+        user.setSmallAvatarImageId(avatarImage.small());
 
         logger.info("Creating user: {}", user);
         return userRepository.create(user);
     }
 
-    private Long uploadUserImage(OAuth2UserInfo oAuth2UserInfo) throws FailedToCreateImageException, IOException {
+    private AvatarImage uploadUserImage(OAuth2UserInfo oAuth2UserInfo) throws FailedToCreateImageException, IOException {
         try (BufferedInputStream in = new BufferedInputStream(new URL(oAuth2UserInfo.getImageUrl()).openStream());
              ByteArrayOutputStream fileOutputStream = new ByteArrayOutputStream()) {
             logger.info("Saving user ({}) profile image: {}", oAuth2UserInfo.getEmail(), oAuth2UserInfo.getImageUrl());
@@ -98,7 +100,7 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
                 fileOutputStream.write(dataBuffer, 0, bytesRead);
             }
             byte[] image = fileOutputStream.toByteArray();
-            return imageService.create(image);
+            return imageService.createAvatar(image);
         } catch (IOException | FailedToCreateImageException e) {
             logger.error("Failed to save user profile image: {}. Image URL: {}", e.getMessage(), oAuth2UserInfo.getImageUrl(), e);
             throw e;

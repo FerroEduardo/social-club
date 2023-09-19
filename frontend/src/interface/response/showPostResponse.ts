@@ -7,7 +7,8 @@ export default interface Post {
   modifiedAt: string;
   authorId: number;
   authorName: string;
-  authorImageUrl: string;
+  authorAvatarUrl: string;
+  authorMiniAvatarUrl: string;
   gameId: number;
   gameName: string;
   gameStudio: string;

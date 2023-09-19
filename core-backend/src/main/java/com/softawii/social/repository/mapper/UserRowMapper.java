@@ -15,7 +15,8 @@ public class UserRowMapper implements RowMapper<User> {
         user.setId(rs.getLong("id"));
         user.setName(rs.getString("name"));
         user.setEmail(rs.getString("email"));
-        user.setImageId(rs.getLong("image_id"));
+        user.setAvatarImageId(rs.getLong("avatar_id"));
+        user.setSmallAvatarImageId(rs.getLong("mini_avatar_id"));
 
         return user;
     }

@@ -29,8 +29,8 @@ public class UserRepository {
     @Transactional
     public User create(User user) {
         String sql = """
-                INSERT INTO social.user (name, email, image_id)
-                VALUES (:name, :email, :image_id)
+                INSERT INTO social.user (name, email, avatar_id, mini_avatar_id)
+                VALUES (:name, :email, :avatar_id, :mini_avatar_id)
                 RETURNING id
                 """;
 
@@ -39,7 +39,8 @@ public class UserRepository {
                 .sql(sql)
                 .param("name", user.getName(), Types.VARCHAR)
                 .param("email", user.getEmail(), Types.VARCHAR)
-                .param("image_id", user.getImageId(), Types.BIGINT)
+                .param("avatar_id", user.getAvatarImageId(), Types.BIGINT)
+                .param("mini_avatar_id", user.getSmallAvatarImageId(), Types.BIGINT)
                 .update(keyHolder);
 
         user.setId(keyHolder.getKey().longValue());
@@ -49,7 +50,7 @@ public class UserRepository {
 
     public Optional<User> findByEmail(String email) {
         String sql = """
-                SELECT id, name, email, image_id from social.user
+                SELECT id, name, email, avatar_id, mini_avatar_id from social.user
                 WHERE email = :email
                 LIMIT 1
                 """;
@@ -63,7 +64,7 @@ public class UserRepository {
 
     public Optional<UserDTO> findByEmailSafe(String email) {
         String sql = """
-                SELECT id, name, email, image_id from social.user
+                SELECT id, name, email, avatar_id, mini_avatar_id from social.user
                 WHERE email = :email
                 LIMIT 1
                 """;
