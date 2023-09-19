@@ -51,13 +51,32 @@ app.post('/', upload.single('image'), (async (req: Request, res: Response) => {
     } else {
       rawImageBuffer = fs.readFileSync(file.path);
     }
-    const imageId = await ImageService.save(rawImageBuffer);
 
-    res
-      .status(201)
-      .send({
-        id: imageId,
+    let response;
+    if ('avatar' in req.body) {
+      const size = 64;
+      const avatarId = await ImageService.save(rawImageBuffer);
+      const miniAvatarId = await ImageService.save(rawImageBuffer, {
+        resizeOptions: {
+          fit: 'cover',
+          height: size,
+          width: size,
+        },
       });
+
+      response = {
+        avatar: avatarId,
+        mini: miniAvatarId,
+      };
+    } else {
+      const imageId = await ImageService.save(rawImageBuffer);
+
+      response = {
+        id: imageId,
+      };
+    }
+
+    res.status(201).send(response);
   } catch (error) {
     if (error instanceof Error) {
       const msg = String(error);

@@ -9,12 +9,12 @@ const availableFormats = (process.env.SHARP_ALLOWED_EXTENSIONS ?? '').split(',')
 
 const storage = StorageFactory.create();
 
-export async function processImage(rawImage: Buffer): Promise<ImageData> {
+export async function processImage(rawImage: Buffer, options?: ImageOptions): Promise<ImageData> {
   const imageSharp = sharp(rawImage);
   const metadata = await imageSharp.metadata();
 
   if (availableFormats.includes(metadata.format?.toUpperCase() ?? '')) {
-    const newImageSharp = imageSharp
+    let newImageSharp = imageSharp
       .webp({
         lossless: false,
         quality: 100,
@@ -22,6 +22,10 @@ export async function processImage(rawImage: Buffer): Promise<ImageData> {
         preset: 'default',
         force: true,
       });
+
+    if (options?.resizeOptions) {
+      newImageSharp = newImageSharp.resize(options.resizeOptions);
+    }
 
     return {
       format: sharp.format.webp,
@@ -31,9 +35,13 @@ export async function processImage(rawImage: Buffer): Promise<ImageData> {
   throw new Error(`Incompatible image format, send any of these: ${availableFormats.toString()}`);
 }
 
-export async function save(rawImage: Buffer): Promise<number> {
+interface ImageOptions {
+  resizeOptions?: sharp.ResizeOptions;
+}
+
+export async function save(rawImage: Buffer, options?: ImageOptions): Promise<number> {
   try {
-    const imageId = await storage.save(await processImage(rawImage));
+    const imageId = await storage.save(await processImage(rawImage, options));
 
     return imageId;
   } catch (error) {

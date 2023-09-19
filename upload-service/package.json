@@ -6,7 +6,8 @@
     "build": "npx tsc",
     "start": "npm run build && node ./dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prisma:generate": "npx prisma generate --schema=./prisma/schema.prisma"
+    "prisma:generate": "npx prisma generate --schema=./prisma/schema.prisma",
+    "format:fix": "npx eslint ./src --fix"
   },
   "keywords": [],
   "author": "",
