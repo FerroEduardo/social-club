@@ -60,7 +60,7 @@
       </div>
     </div>
     <template v-if="showComments" #footer>
-      <PostCommentSection :post-id="post.id" />
+      <PostCommentSection :post-id="post.id" :post-author-id="post.author.id" />
     </template>
   </n-thing>
 </template>
