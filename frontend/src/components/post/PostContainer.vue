@@ -172,10 +172,6 @@ export default {
 </style>
 
 <style scoped>
-/* #post {
-  max-width: 800px;
-  width: 100%;
-} */
 .post-image {
   width: 100%;
 }

@@ -1,5 +1,6 @@
 <template>
   <div id="container">
+    <PostSkeleton id="post" v-if="isLoadingData" />
     <PostContainer
       id="post"
       v-if="post"
@@ -16,13 +17,16 @@
 import { useMessage } from 'naive-ui';
 import axios from 'axios';
 import { defineComponent, type PropType, type Ref, ref } from 'vue';
+
 import PostContainer from '@/components/post/PostContainer.vue';
 import type Post from '@/interface/post';
 import type ShowPostRequest from '@/interface/response/showPostResponse';
+import PostSkeleton from '@/components/post/PostSkeleton.vue';
 
 export default defineComponent({
   components: {
-    PostContainer
+    PostContainer,
+    PostSkeleton
   },
   props: {
     postId: {
@@ -33,7 +37,8 @@ export default defineComponent({
   setup() {
     return {
       post: ref(null) as Ref<Post | null>,
-      message: useMessage()
+      message: useMessage(),
+      isLoadingData: ref(true) as Ref<boolean>
     };
   },
   methods: {
@@ -72,6 +77,9 @@ export default defineComponent({
         .catch((reason) => {
           // failed to fetch post
           this.message.error('Ocorreu um erro na busca por postagens do usuário');
+        })
+        .finally(() => {
+          this.isLoadingData = false;
         });
     }
   },

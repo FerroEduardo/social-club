@@ -21,6 +21,11 @@
       />
     </n-divider>
     <div>
+      <template v-if="isLoadingData && posts.length == 0">
+        <PostSkeleton />
+        <n-divider />
+        <PostSkeleton />
+      </template>
       <div v-for="(post, index) in posts" :key="post.id">
         <PostContainer :post="post" :high-loading-priority="index < 3" style="max-width: inherit" />
         <n-divider v-if="index != posts.length - 1" />
@@ -50,6 +55,7 @@ import type IndexPostRequest from '@/interface/response/indexPostRequest';
 import PostContainer from '@/components/post/PostContainer.vue';
 import CreatePost from '@/components/post/CreatePost.vue';
 import type Game from '@/interface/game';
+import PostSkeleton from '@/components/post/PostSkeleton.vue';
 import { useUserStore } from '@/stores/userStore';
 
 const GameCard = defineAsyncComponent(() => import('@/components/game/GameCard.vue'));
@@ -64,7 +70,8 @@ export default {
     NCollapse,
     NCollapseItem,
     NSelect,
-    NDivider
+    NDivider,
+    PostSkeleton
   },
   setup() {
     return {
