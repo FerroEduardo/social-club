@@ -85,7 +85,8 @@ export default {
               response.data.id,
               response.data.name,
               response.data.username,
-              response.data.imageUrl
+              response.data.avatarUrl,
+              response.data.miniAvatarUrl
             );
           } else {
             console.error('failed to check if user is authenticated', { response });

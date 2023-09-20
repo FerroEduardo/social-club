@@ -3,11 +3,15 @@
     <template #trigger>
       <n-button strong secondary circle>
         <template #icon>
-          <PersonIcon />
+          <img
+            :src="userStore.profile?.miniAvatarUrl"
+            width="32"
+            height="32"
+            style="border-radius: 50%"
+          />
         </template>
       </n-button>
     </template>
-    <!-- <n-button type="default" @click="logout"> Log out </n-button> -->
     <n-menu
       id="menu"
       v-model:value="activeKey"
@@ -21,6 +25,8 @@
 import { PersonOutline as PersonIcon, LogOutOutline as LogOutOutIcon } from '@vicons/ionicons5';
 import { NButton, NPopover, NMenu, NIcon, type MenuOption } from 'naive-ui';
 import { ref, h, type Component } from 'vue';
+import { useUserStore } from '@/stores/userStore';
+
 const API_URL = import.meta.env.VITE_API_URL;
 
 function renderIcon(icon: Component) {
@@ -31,8 +37,7 @@ export default {
   components: {
     NButton,
     NPopover,
-    NMenu,
-    PersonIcon
+    NMenu
   },
   setup() {
     return {
@@ -48,12 +53,12 @@ export default {
           key: 'logout',
           icon: renderIcon(LogOutOutIcon)
         }
-      ] as MenuOption[]
+      ] as MenuOption[],
+      userStore: useUserStore()
     };
   },
   methods: {
     onValueUpdated(key: string) {
-      console.log({ key });
       if (key === 'logout') {
         this.logout();
       } else if (key === 'profile') {
