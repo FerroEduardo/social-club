@@ -74,7 +74,8 @@ export default {
               author: {
                 id: post.authorId,
                 name: post.authorName,
-                imageUrl: post.authorImageUrl
+                avatarUrl: post.authorAvatarUrl,
+                miniAvatarUrl: post.authorMiniAvatarUrl
               },
               userVote: post.userVote,
               createdAt: new Date(post.createdAt),

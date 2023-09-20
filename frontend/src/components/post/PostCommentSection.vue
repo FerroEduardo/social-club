@@ -2,7 +2,11 @@
   <n-card title="Comentários">
     <n-list v-if="comments.length > 0">
       <n-list-item v-for="comment in comments" :key="comment.id">
-        <PostComment :comment="comment" @refreshList="fetchComments" />
+        <PostComment
+          :comment="comment"
+          :post-author-id="postAuthorId"
+          @refreshList="fetchComments"
+        />
       </n-list-item>
     </n-list>
     <n-empty v-else description="Seja o primeiro a comentar" />
@@ -71,6 +75,10 @@ export default {
   },
   props: {
     postId: {
+      type: Number as PropType<Number>,
+      required: true
+    },
+    postAuthorId: {
       type: Number as PropType<Number>,
       required: true
     }

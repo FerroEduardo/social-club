@@ -3,5 +3,6 @@ export default interface UserProfile {
   name: string;
   username?: string;
   email: string;
-  imageUrl: string;
+  avatarUrl: string;
+  miniAvatarUrl: string;
 }

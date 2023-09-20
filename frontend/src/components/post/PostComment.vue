@@ -1,5 +1,20 @@
 <template>
-  <n-thing :title="comment.authorName" content-style="white-space: pre-line">
+  <n-thing content-style="white-space: pre-line">
+    <template #header>
+      <div id="header">
+        <img
+          class="mini-avatar"
+          loading="lazy"
+          :src="comment.authorMiniAvatarUrl"
+          width="20"
+          height="20"
+        />
+        <span class="user-name">
+          {{ comment.authorName }}
+          <span v-if="isAuthor">(autor)</span>
+        </span>
+      </div>
+    </template>
     <template v-if="isUserOwnerOfComment" #header-extra>
       {{ parseTimestamp(comment.createdAt) }}
       <n-popconfirm
@@ -47,13 +62,19 @@ export default {
     comment: {
       type: Object as PropType<Comment>,
       required: true
+    },
+    postAuthorId: {
+      type: Number as PropType<Number>,
+      required: true
     }
   },
   setup(props) {
     const userStore = useUserStore();
     const isUserOwnerOfComment = userStore.profile?.id === props.comment.authorId;
+    const isAuthor = props.postAuthorId === props.comment.authorId;
 
     return {
+      isAuthor,
       isUserOwnerOfComment,
       message: useMessage()
     };
@@ -90,4 +111,17 @@ export default {
 };
 </script>
 
-<style></style>
+<style scoped>
+#header {
+  cursor: default;
+  .mini-avatar {
+    border-radius: 10%;
+    vertical-align: middle;
+    object-fit: cover;
+  }
+  .user-name {
+    vertical-align: middle;
+    margin-left: 4px;
+  }
+}
+</style>

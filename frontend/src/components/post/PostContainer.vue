@@ -1,14 +1,16 @@
 <template>
   <n-thing id="post" :description="post.description" description-style="word-wrap: anywhere">
     <template #header>
-      <n-popover trigger="hover" raw show-arrow placement="bottom" :keep-alive-on-hover="false">
-        <template #trigger>
-          <div style="cursor: default">
-            {{ post.author.name }}
-          </div>
-        </template>
-        <img loading="lazy" :src="post.author.imageUrl" />
-      </n-popover>
+      <div id="header">
+        <img
+          class="mini-avatar"
+          loading="lazy"
+          :src="post.author.miniAvatarUrl"
+          width="32"
+          height="32"
+        />
+        <span class="user-name">{{ post.author.name }}</span>
+      </div>
       <span style="font-weight: bold">{{ post.title }}</span>
     </template>
     <template #header-extra>
@@ -58,7 +60,7 @@
       </div>
     </div>
     <template v-if="showComments" #footer>
-      <PostCommentSection :post-id="post.id" />
+      <PostCommentSection :post-id="post.id" :post-author-id="post.author.id" />
     </template>
   </n-thing>
 </template>
@@ -176,5 +178,17 @@ export default {
 }
 .post-image {
   width: 100%;
+}
+#header {
+  cursor: default;
+  .mini-avatar {
+    border-radius: 10%;
+    vertical-align: middle;
+    object-fit: cover;
+  }
+  .user-name {
+    vertical-align: middle;
+    margin-left: 4px;
+  }
 }
 </style>

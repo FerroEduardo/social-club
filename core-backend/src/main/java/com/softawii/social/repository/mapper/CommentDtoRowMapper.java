@@ -23,7 +23,8 @@ public class CommentDtoRowMapper implements RowMapper<CommentDTO> {
         commentDTO.setId(rs.getLong("id"));
         commentDTO.setAuthorId(rs.getLong("author_id"));
         commentDTO.setAuthorName(rs.getString("author_name"));
-        commentDTO.setAuthorImageUrl(imageService.getImageUrlFromImageId(rs.getLong("author_image_id")));
+        commentDTO.setAuthorAvatarUrl(imageService.getImageUrlFromImageId(rs.getLong("authorAvatarId")));
+        commentDTO.setAuthorMiniAvatarUrl(imageService.getImageUrlFromImageId(rs.getLong("miniAuthorAvatarId")));
         commentDTO.setValue(rs.getString("value"));
         commentDTO.setCreatedAt(rs.getObject("created_at", OffsetDateTime.class).toZonedDateTime());
 

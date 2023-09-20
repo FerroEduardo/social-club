@@ -47,7 +47,7 @@ public class CommentRepository {
 
     public Optional<CommentDTO> findById(Long id) {
         String sql = """
-                SELECT pc.id, pc.author_id, u.name as "author_name", u.image_id as "author_image_id", pc.value, pc.created_at
+                SELECT pc.id, pc.author_id, u.name as "author_name", u.avatar_id AS "authorAvatarId", u.mini_avatar_id AS "miniAuthorAvatarId", pc.value, pc.created_at
                 FROM social.post_comment pc
                 INNER JOIN social.user u on u.id = author_id
                 WHERE pc.id = :id
@@ -63,7 +63,7 @@ public class CommentRepository {
     public Page<CommentDTO> findByPostId(Long postId, Pageable pageable, boolean isActive) {
         MapSqlParameterSource parameterSource = new MapSqlParameterSource();
         String sql = """
-                SELECT pc.id, pc.author_id, u.name AS "author_name", u.image_id AS "author_image_id", pc.value, pc.created_at
+                SELECT pc.id, pc.author_id, u.name AS "author_name", u.avatar_id AS "authorAvatarId", u.mini_avatar_id AS "miniAuthorAvatarId", pc.value, pc.created_at
                 FROM social.post_comment pc
                 INNER JOIN social.user u ON u.id = author_id
                 WHERE pc.post_id = :post_id
@@ -113,7 +113,7 @@ public class CommentRepository {
 
     public Optional<CommentDTO> findByIdAndUserId(Long id, Long userId) {
         String sql = """
-                SELECT pc.id, pc.author_id, u.name as "author_name", u.image_id as "author_image_id", pc.value, pc.created_at
+                SELECT pc.id, pc.author_id, u.name as "author_name", u.avatar_id AS "authorAvatarId", u.mini_avatar_id AS "miniAuthorAvatarId", pc.value, pc.created_at
                 FROM social.post_comment pc
                 INNER JOIN social.user u on u.id = author_id
                 WHERE pc.id = :id AND pc.author_id = :author_id AND pc.deleted_at IS NULL

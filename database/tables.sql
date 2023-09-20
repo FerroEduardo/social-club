@@ -6,18 +6,18 @@ CREATE SCHEMA IF NOT EXISTS social;
 DROP TABLE IF EXISTS social.game CASCADE;
 CREATE TABLE IF NOT EXISTS social.game
 (
-    id     SERIAL PRIMARY KEY,
-    name   VARCHAR(100) NOT NULL,
-    studio VARCHAR(100) NOT NULL,
+    id        SERIAL PRIMARY KEY,
+    name      VARCHAR(100) NOT NULL,
+    studio    VARCHAR(100) NOT NULL,
     image_url VARCHAR(150) NOT NULL
 );
 DROP TABLE IF EXISTS social.image CASCADE;
 CREATE TABLE IF NOT EXISTS social.image
 (
-    id    SERIAL PRIMARY KEY,
-    blob  BYTEA   NULL,
-    s3    VARCHAR NULL,
-    local VARCHAR NULL,
+    id         SERIAL PRIMARY KEY,
+    blob       BYTEA       NULL,
+    s3         VARCHAR     NULL,
+    local      VARCHAR     NULL,
     -- type  INTEGER NOT NULL REFERENCES social.image_type (id) ON DELETE CASCADE,
     CONSTRAINT check_value CHECK (
         (
@@ -26,18 +26,19 @@ CREATE TABLE IF NOT EXISTS social.image
                     ((blob IS NULL) AND (s3 IS NULL) AND (local IS NOT NULL))
             )
         ), -- Insert blob or s3, not both or none
-    extension VARCHAR(50) NOT NULL,
-    created_at  TIMESTAMPTZ  NOT NULL DEFAULT (CURRENT_TIMESTAMP),
-    deleted_at  TIMESTAMPTZ  NULL
+    extension  VARCHAR(50) NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT (CURRENT_TIMESTAMP),
+    deleted_at TIMESTAMPTZ NULL
 );
 
 DROP TABLE IF EXISTS social.user CASCADE;
 CREATE TABLE IF NOT EXISTS social.user
 (
-    id       SERIAL PRIMARY KEY,
-    name     VARCHAR(100)        NOT NULL,
-    email    VARCHAR(300) UNIQUE NOT NULL,
-    image_id INTEGER             NOT NULL REFERENCES social.image (id) ON DELETE CASCADE
+    id             SERIAL PRIMARY KEY,
+    name           VARCHAR(100)        NOT NULL,
+    email          VARCHAR(300) UNIQUE NOT NULL,
+    avatar_id      INTEGER             NOT NULL REFERENCES social.image (id) ON DELETE CASCADE,
+    mini_avatar_id INTEGER             NOT NULL REFERENCES social.image (id) ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS social.post CASCADE;

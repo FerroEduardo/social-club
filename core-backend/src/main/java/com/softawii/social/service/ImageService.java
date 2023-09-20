@@ -2,6 +2,7 @@ package com.softawii.social.service;
 
 import com.softawii.social.config.AppConfig;
 import com.softawii.social.exception.FailedToCreateImageException;
+import com.softawii.social.model.AvatarImage;
 import com.softawii.social.model.Image;
 import com.softawii.social.model.dto.ImageDto;
 import com.softawii.social.repository.ImageRepository;
@@ -79,7 +80,39 @@ public class ImageService {
                 throw new FailedToCreateImageException("Response does not have he image id");
             }
 
-            return Long.parseLong(body.get("id").toString());
+            return Long.valueOf(body.get("id").toString());
+        } catch (ResourceAccessException e) {
+            // critical/fatal
+            throw new FailedToCreateImageException(e);
+        } catch (RestClientException e) {
+            throw new FailedToCreateImageException(e);
+        }
+    }
+
+    public AvatarImage createAvatar(byte[] blob) throws FailedToCreateImageException {
+        RestTemplate restTemplate = new RestTemplate();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+        MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
+
+        HttpEntity<MultiValueMap<String, Object>> request            = new HttpEntity<>(map, headers);
+        ByteArrayResource                         contentsAsResource = new ImageResource(blob);
+        map.add("image", contentsAsResource);
+        map.add("avatar", true);
+
+        try {
+            ResponseEntity<Map> responseEntity = restTemplate.postForEntity(appConfig.getUploadServiceUrl(), request, Map.class);
+            Map<String, Object> body           = responseEntity.getBody();
+
+            if (!body.containsKey("avatar") || !body.containsKey("mini")) {
+                throw new FailedToCreateImageException("Response does not have he image ids");
+            }
+            Long avatar = Long.valueOf(body.get("avatar").toString());
+            Long small  = Long.valueOf(body.get("mini").toString());
+
+            return new AvatarImage(avatar, small);
         } catch (ResourceAccessException e) {
             // critical/fatal
             throw new FailedToCreateImageException(e);

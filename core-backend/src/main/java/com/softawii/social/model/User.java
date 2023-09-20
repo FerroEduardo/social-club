@@ -1,10 +1,11 @@
 package com.softawii.social.model;
 
 public class User {
-    private Long id;
+    private Long   id;
     private String name;
     private String email;
-    private Long imageId;
+    private Long   avatarImageId;
+    private Long   smallAvatarImageId;
 
     public Long getId() {
         return id;
@@ -30,12 +31,20 @@ public class User {
         this.email = email;
     }
 
-    public Long getImageId() {
-        return imageId;
+    public Long getAvatarImageId() {
+        return avatarImageId;
     }
 
-    public void setImageId(Long imageUrl) {
-        this.imageId = imageUrl;
+    public void setAvatarImageId(Long avatarImageId) {
+        this.avatarImageId = avatarImageId;
+    }
+
+    public Long getSmallAvatarImageId() {
+        return smallAvatarImageId;
+    }
+
+    public void setSmallAvatarImageId(Long smallAvatarImageId) {
+        this.smallAvatarImageId = smallAvatarImageId;
     }
 
     @Override
@@ -44,7 +53,8 @@ public class User {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
-                ", imageId=" + imageId +
+                ", avatarImageId=" + avatarImageId +
+                ", smallAvatarImageId=" + smallAvatarImageId +
                 '}';
     }
 }

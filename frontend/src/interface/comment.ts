@@ -4,5 +4,6 @@ export default interface Comment {
   createdAt: string;
   authorId: number;
   authorName: string;
-  authorImageUrl: string;
+  authorAvatarUrl: string;
+  authorMiniAvatarUrl: string;
 }

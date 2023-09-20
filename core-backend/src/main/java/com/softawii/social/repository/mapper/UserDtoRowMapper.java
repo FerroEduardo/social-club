@@ -22,7 +22,8 @@ public class UserDtoRowMapper implements RowMapper<UserDTO> {
         userDTO.setId(rs.getLong("id"));
         userDTO.setName(rs.getString("name"));
         userDTO.setEmail(rs.getString("email"));
-        userDTO.setImageUrl(imageService.getImageUrlFromImageId(rs.getLong("image_id")));
+        userDTO.setAvatarUrl(imageService.getImageUrlFromImageId(rs.getLong("avatar_id")));
+        userDTO.setMiniAvatarUrl(imageService.getImageUrlFromImageId(rs.getLong("mini_avatar_id")));
 
         return userDTO;
     }

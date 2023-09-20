@@ -1,6 +1,6 @@
 <template>
   <div v-if="profile" style="display: flex; flex-direction: row; gap: 10px">
-    <img id="avatar" fetchpriority="high" :src="profile.imageUrl" />
+    <img id="avatar" fetchpriority="high" :src="profile.avatarUrl" />
     <div style="width: 100%; display: flex; flex-direction: column">
       <span style="font-weight: bold">Nome:</span> {{ profile.name }}
       <span style="font-weight: bold">Usuário:</span> {{ profile.username }}
@@ -47,7 +47,8 @@ export default {
             name: response.data.name,
             username: undefined,
             email: response.data.email,
-            imageUrl: response.data.imageUrl
+            avatarUrl: response.data.avatarUrl,
+            miniAvatarUrl: response.data.miniAvatarUrl
           };
         })
         .catch((error) => {

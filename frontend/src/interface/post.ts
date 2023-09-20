@@ -11,7 +11,8 @@ export default interface Post {
   author: {
     id: number;
     name: string;
-    imageUrl: string;
+    avatarUrl: string;
+    miniAvatarUrl: string;
   };
   createdAt: Date;
   modifiedAt: Date;

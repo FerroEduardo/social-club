@@ -8,18 +8,10 @@ public class CommentDTO {
     private String        authorName;
     private String        value;
     private ZonedDateTime createdAt;
-    private String        authorImageUrl;
+    private String        authorAvatarUrl;
+    private String        authorMiniAvatarUrl;
 
     public CommentDTO() {
-    }
-
-    public CommentDTO(Long id, Long authorId, String authorName, String value, ZonedDateTime createdAt, String authorImageUrl) {
-        this.id = id;
-        this.authorId = authorId;
-        this.authorName = authorName;
-        this.value = value;
-        this.createdAt = createdAt;
-        this.authorImageUrl = authorImageUrl;
     }
 
     public Long getId() {
@@ -62,23 +54,19 @@ public class CommentDTO {
         this.createdAt = createdAt;
     }
 
-    public String getAuthorImageUrl() {
-        return authorImageUrl;
+    public String getAuthorAvatarUrl() {
+        return authorAvatarUrl;
     }
 
-    public void setAuthorImageUrl(String authorImageUrl) {
-        this.authorImageUrl = authorImageUrl;
+    public void setAuthorAvatarUrl(String authorAvatarUrl) {
+        this.authorAvatarUrl = authorAvatarUrl;
     }
 
-    @Override
-    public String toString() {
-        return "CommentDTO{" +
-                "id=" + id +
-                ", authorId=" + authorId +
-                ", authorName='" + authorName + '\'' +
-                ", value='" + value + '\'' +
-                ", createdAt=" + createdAt +
-                ", authorImageUrl='" + authorImageUrl + '\'' +
-                '}';
+    public String getAuthorMiniAvatarUrl() {
+        return authorMiniAvatarUrl;
+    }
+
+    public void setAuthorMiniAvatarUrl(String authorMiniAvatarUrl) {
+        this.authorMiniAvatarUrl = authorMiniAvatarUrl;
     }
 }

@@ -4,16 +4,17 @@ public class UserDTO {
     private Long   id;
     private String name;
     private String email;
-    private String imageUrl;
+    private String avatarUrl;
+    private String miniAvatarUrl;
 
     public UserDTO() {
     }
 
-    public UserDTO(Long id, String name, String email, String imageUrl) {
+    public UserDTO(Long id, String name, String email, String avatarUrl) {
         this.id = id;
         this.name = name;
         this.email = email;
-        this.imageUrl = imageUrl;
+        this.avatarUrl = avatarUrl;
     }
 
     public Long getId() {
@@ -40,11 +41,19 @@ public class UserDTO {
         this.email = email;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public String getAvatarUrl() {
+        return avatarUrl;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
+    }
+
+    public String getMiniAvatarUrl() {
+        return miniAvatarUrl;
+    }
+
+    public void setMiniAvatarUrl(String miniAvatarUrl) {
+        this.miniAvatarUrl = miniAvatarUrl;
     }
 }

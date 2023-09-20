@@ -93,6 +93,10 @@ export default {
           description:
             'Para utilizar o login com GitHub, é necessário ter um e-mail público configurado.'
         },
+        'unexpected-error': {
+          title: 'Ocorreu um erro inesperado',
+          description: 'Tente novamente mais tarde.'
+        },
         unauthenticated: {
           title: 'Você não está autenticado',
           description: 'Você precisa fazer login para acessar essa página.'
