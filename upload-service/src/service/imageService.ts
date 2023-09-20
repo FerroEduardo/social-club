@@ -17,7 +17,7 @@ export async function processImage(rawImage: Buffer, options?: ImageOptions): Pr
     let newImageSharp = imageSharp
       .webp({
         lossless: false,
-        quality: 100,
+        quality: 80,
         alphaQuality: 100,
         preset: 'default',
         force: true,
