@@ -1,6 +1,7 @@
 <template>
   <div id="container">
     <PostContainer
+      id="post"
       v-if="post"
       :post="post"
       :enable-open-post-details="false"
@@ -85,5 +86,9 @@ export default defineComponent({
   align-items: center;
   justify-content: center;
   padding: 20px 5px;
+}
+#post {
+  max-width: 800px;
+  width: 100%;
 }
 </style>

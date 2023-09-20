@@ -1,5 +1,5 @@
 <template>
-  <n-card id="container">
+  <div id="container">
     <n-card v-if="isGameTimeline && game" style="margin-bottom: 10px">
       <GameCard :game="game" />
     </n-card>
@@ -20,22 +20,19 @@
         @update:value="handleUpdateFilter"
       />
     </n-divider>
-    <n-list>
-      <n-list-item v-for="(post, index) in posts" :key="post.id">
-        <PostContainer :post="post" :high-loading-priority="index < 3" />
-      </n-list-item>
-      <div v-if="posts.length === 0">
-        <n-empty description="Nenhum post encontrado" />
+    <div>
+      <div v-for="(post, index) in posts" :key="post.id">
+        <PostContainer :post="post" :high-loading-priority="index < 3" style="max-width: inherit" />
+        <n-divider v-if="index != posts.length - 1" />
       </div>
+      <n-empty v-if="posts.length === 0" description="Nenhum post encontrado" />
       <div ref="postContainer"></div>
-    </n-list>
-  </n-card>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
 import {
-  NList,
-  NListItem,
   NCard,
   useMessage,
   NEmpty,
@@ -59,8 +56,6 @@ const GameCard = defineAsyncComponent(() => import('@/components/game/GameCard.v
 
 export default {
   components: {
-    NList,
-    NListItem,
     NCard,
     PostContainer,
     NEmpty,
@@ -223,9 +218,8 @@ export default {
 
 <style scoped>
 #container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding-bottom: 10px;
+  margin: auto;
+  max-width: 800px;
+  padding: 20px 10px;
 }
 </style>
