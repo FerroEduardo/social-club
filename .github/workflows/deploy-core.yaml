@@ -65,8 +65,8 @@ jobs:
           passphrase: ${{ secrets.VM_SSH_PRIVATE_KEY_PASSPHRASE }}
           key: ${{ secrets.VM_SSH_PRIVATE_KEY }}
           script: |
-            kill $(ps aux | grep 'java -jar .*social-club.*\.jar' | awk '{print $2}')
-            rm -rf /var/www/project/core-backend/social-club-0.0.1-SNAPSHOT.jar
+            kill $(ps aux | grep 'java -jar .*core-api.*\.jar' | awk '{print $2}')
+            rm -rf /var/www/project/core-backend/core-api-0.0.1-SNAPSHOT.jar
 
       - name: 'Push Repo'
         uses: appleboy/scp-action@v0.1.4
