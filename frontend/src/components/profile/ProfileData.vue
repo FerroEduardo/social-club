@@ -1,16 +1,16 @@
 <template>
-  <div v-if="profile && reputation" style="display: flex; flex-direction: row; gap: 10px">
-    <img id="avatar" fetchpriority="high" :src="profile.avatarUrl" />
+  <div v-if="isReady" style="display: flex; flex-direction: row; gap: 10px">
+    <img id="avatar" fetchpriority="high" :src="profile!.avatarUrl" />
     <div style="width: 100%; display: flex; flex-direction: column">
       <!-- Name -->
-      <span style="font-weight: bold">Nome:</span> {{ profile.name }}
+      <span style="font-weight: bold">Nome:</span> {{ profile!.name }}
       <!-- Username -->
-      <span style="font-weight: bold">Usuário:</span> {{ profile.username }}
+      <span style="font-weight: bold">Usuário:</span> {{ profile!.username }}
       <!-- Name -->
-      <span style="font-weight: bold">E-mail:</span> {{ profile.email }}
+      <span style="font-weight: bold">E-mail:</span> {{ profile!.email }}
       <!-- Reputation -->
       <span style="font-weight: bold">Reputação:</span>
-      <n-number-animation show-separator :to="reputation" :duration="1000" />
+      <n-number-animation show-separator :to="reputation!" :duration="1000" />
     </div>
   </div>
   <div v-else>
@@ -28,6 +28,7 @@
 <script lang="ts">
 import { useMessage, NSkeleton, NNumberAnimation } from 'naive-ui';
 import axios from 'axios';
+import { ref, type Ref } from 'vue';
 
 import type UserProfile from '@/interface/userProfile';
 import type UserProfileResponse from '@/interface/response/user/userProfileResponse';
@@ -39,14 +40,15 @@ export default {
   },
   setup() {
     return {
-      message: useMessage()
+      message: useMessage(),
+      profile: ref(null) as Ref<UserProfile | null>,
+      reputation: ref(null) as Ref<number | null>
     };
   },
-  data() {
-    return {
-      profile: null as UserProfile | null,
-      reputation: null as number | null
-    };
+  computed: {
+    isReady() {
+      return this.profile != null && this.reputation != null;
+    }
   },
   methods: {
     fetchProfile() {
