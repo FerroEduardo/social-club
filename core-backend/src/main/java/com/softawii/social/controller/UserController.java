@@ -13,15 +13,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("user")
 public class UserController {
 
-    private final UserService service;
+    private final UserService userService;
     private final PostService postService;
 
-    public UserController(UserService service, PostService postService) {
-        this.service = service;
+    public UserController(UserService userService, PostService postService) {
+        this.userService = userService;
         this.postService = postService;
     }
 
@@ -29,7 +31,15 @@ public class UserController {
     public ResponseEntity<?> user(OAuth2AuthenticationToken authentication) throws Exception {
         UserPrincipal user = (UserPrincipal) authentication.getPrincipal();
 
-        return ResponseEntity.ok(service.findByEmailSafe(user.getEmail()).get());
+        return ResponseEntity.ok(userService.findByEmailSafe(user.getEmail()).get());
+    }
+
+    @GetMapping("reputation")
+    public ResponseEntity<?> reputation(OAuth2AuthenticationToken authentication) {
+        UserPrincipal     user = (UserPrincipal) authentication.getPrincipal();
+        Map<String, Long> body = Map.of("reputation", userService.userReputation(user.getId()));
+
+        return ResponseEntity.ok(body);
     }
 
     @GetMapping("post")
