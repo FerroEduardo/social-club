@@ -13,6 +13,8 @@
       <ProfileData />
       <n-divider />
       <UserPosts />
+      <n-divider />
+      <UserVotes />
     </n-card>
   </div>
 </template>
@@ -21,9 +23,16 @@
 import { NCard, NDivider } from 'naive-ui';
 import ProfileData from '@/components/profile/ProfileData.vue';
 import UserPosts from '@/components/profile/UserPosts.vue';
+import UserVotes from '@/components/profile/UserVotes.vue';
 
 export default {
-  components: { NCard, NDivider, ProfileData, UserPosts }
+  components: {
+    NCard,
+    NDivider,
+    ProfileData,
+    UserPosts,
+    UserVotes
+  }
 };
 </script>
 

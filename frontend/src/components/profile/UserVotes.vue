@@ -1,5 +1,5 @@
 <template>
-  <h1>Postagens</h1>
+  <h1>Votos</h1>
   <n-list hoverable clickable bordered>
     <n-list-item v-for="post in posts" :key="post.id" @click="openPost(post.id)">
       <n-thing>
@@ -53,7 +53,7 @@ export default {
       const page = this.page - 1; // component starts with page 1
 
       axios
-        .get<IndexUserPostRequest>(`/user/post?page=${page}&size=5`, {
+        .get<IndexUserPostRequest>(`/user/vote?page=${page}&size=5`, {
           withCredentials: true
         })
         .then((response) => {
