@@ -1,10 +1,16 @@
 <template>
-  <div v-if="profile" style="display: flex; flex-direction: row; gap: 10px">
+  <div v-if="profile && reputation" style="display: flex; flex-direction: row; gap: 10px">
     <img id="avatar" fetchpriority="high" :src="profile.avatarUrl" />
     <div style="width: 100%; display: flex; flex-direction: column">
+      <!-- Name -->
       <span style="font-weight: bold">Nome:</span> {{ profile.name }}
+      <!-- Username -->
       <span style="font-weight: bold">Usuário:</span> {{ profile.username }}
+      <!-- Name -->
       <span style="font-weight: bold">E-mail:</span> {{ profile.email }}
+      <!-- Reputation -->
+      <span style="font-weight: bold">Reputação:</span>
+      <n-number-animation show-separator :to="reputation" :duration="1000" />
     </div>
   </div>
   <div v-else>
@@ -14,19 +20,23 @@
         <span style="font-weight: bold">Nome:</span> <n-skeleton text class="skeleton" />
         <span style="font-weight: bold">Usuário:</span> <n-skeleton text class="skeleton" />
         <span style="font-weight: bold">E-mail:</span> <n-skeleton text class="skeleton" />
+        <span style="font-weight: bold">Reputação:</span> <n-skeleton text class="skeleton" />
       </div>
     </div>
   </div>
 </template>
 <script lang="ts">
-import { useMessage, NSkeleton } from 'naive-ui';
+import { useMessage, NSkeleton, NNumberAnimation } from 'naive-ui';
 import axios from 'axios';
 
 import type UserProfile from '@/interface/userProfile';
 import type UserProfileResponse from '@/interface/response/user/userProfileResponse';
 
 export default {
-  components: { NSkeleton },
+  components: {
+    NSkeleton,
+    NNumberAnimation
+  },
   setup() {
     return {
       message: useMessage()
@@ -34,7 +44,8 @@ export default {
   },
   data() {
     return {
-      profile: null as UserProfile | null
+      profile: null as UserProfile | null,
+      reputation: null as number | null
     };
   },
   methods: {
@@ -55,10 +66,22 @@ export default {
           this.message.error('Erro ao buscar dados do perfil');
           console.error({ error });
         });
+    },
+    fetchReputation() {
+      axios
+        .get('/user/reputation')
+        .then((response) => {
+          this.reputation = response.data.reputation;
+        })
+        .catch((error) => {
+          this.message.error('Erro ao buscar dados do perfil');
+          console.error({ error });
+        });
     }
   },
   mounted() {
     this.fetchProfile();
+    this.fetchReputation();
   }
 };
 </script>

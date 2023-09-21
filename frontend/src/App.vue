@@ -1,5 +1,5 @@
 <template>
-  <n-config-provider :theme="theme">
+  <n-config-provider :theme="theme" :locale="locale">
     <n-dialog-provider>
       <n-message-provider>
         <n-back-top />
@@ -29,7 +29,9 @@ import {
   NLayoutContent,
   NMessageProvider,
   NDialogProvider,
-  NBackTop
+  NBackTop,
+  ptBR,
+  enUS
 } from 'naive-ui';
 import axios from 'axios';
 
@@ -53,8 +55,10 @@ export default {
   setup() {
     const theme = darkTheme;
     document.querySelector('body')!.style.backgroundColor = theme.common.bodyColor;
+    const locale = navigator.language.startsWith('pt') ? ptBR : enUS;
 
     return {
+      locale,
       theme,
       userStore: useUserStore()
     };

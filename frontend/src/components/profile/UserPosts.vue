@@ -1,6 +1,9 @@
 <template>
   <h1>Postagens</h1>
   <n-list hoverable clickable bordered>
+    <n-list-item v-if="posts.length === 0 && !isLoadingData">
+      <n-empty description="Nenhum post encontrado" />
+    </n-list-item>
     <n-list-item v-for="post in posts" :key="post.id" @click="openPost(post.id)">
       <n-thing>
         <template #avatar>
@@ -27,14 +30,21 @@
   />
 </template>
 <script lang="ts">
-import { useMessage, NList, NListItem, NPagination, NTag, NThing } from 'naive-ui';
+import { useMessage, NList, NListItem, NPagination, NTag, NThing, NEmpty } from 'naive-ui';
 import axios from 'axios';
 
 import type Post from '@/interface/post';
 import type IndexUserPostRequest from '@/interface/response/user/indexUserPostResponse';
 
 export default {
-  components: { NList, NListItem, NPagination, NTag, NThing },
+  components: {
+    NList,
+    NListItem,
+    NPagination,
+    NTag,
+    NThing,
+    NEmpty
+  },
   setup() {
     return {
       message: useMessage()
@@ -45,15 +55,17 @@ export default {
       posts: [] as Post[],
       page: 1,
       pageSize: 5,
-      pageCount: 0
+      pageCount: 0,
+      isLoadingData: true
     };
   },
   methods: {
     fetchUserPosts() {
+      this.isLoadingData = true;
       const page = this.page - 1; // component starts with page 1
 
       axios
-        .get<IndexUserPostRequest>(`/user/post?page=${page}&size=5`, {
+        .get<IndexUserPostRequest>(`/user/post?page=${page}&size=${this.pageSize}`, {
           withCredentials: true
         })
         .then((response) => {
@@ -86,6 +98,9 @@ export default {
         .catch((error) => {
           this.message.error('Ocorreu um erro ao buscar as postagens');
           console.error({ error });
+        })
+        .finally(() => {
+          this.isLoadingData = false;
         });
     },
     parseTimestamp(date: Date) {
