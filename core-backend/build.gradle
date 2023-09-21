@@ -1,5 +1,5 @@
 buildscript {
-    ext.SPRING_BOOT_VERSION = '3.2.0-M2'
+    ext.SPRING_BOOT_VERSION = '3.2.0-M3'
 }
 
 plugins {
@@ -35,7 +35,7 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-web:${SPRING_BOOT_VERSION}"
     implementation "org.springframework.boot:spring-boot-starter-data-redis:${SPRING_BOOT_VERSION}"
     implementation "org.springframework.boot:spring-boot-starter-thymeleaf:${SPRING_BOOT_VERSION}"
-    implementation "org.springframework.session:spring-session-data-redis:3.1.1"
+    implementation "org.springframework.session:spring-session-data-redis:3.1.2"
     implementation 'org.postgresql:postgresql:42.6.0'
 
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor:${SPRING_BOOT_VERSION}"
