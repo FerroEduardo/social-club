@@ -27,15 +27,15 @@ jobs:
             sleep $SLEEP
           done; echo "SSH ready!"
 
-      - name: 'Download latest JDK 17'
-        run: wget https://download.oracle.com/java/17/latest/jdk-17_linux-x64_bin.tar.gz
+      - name: 'Download latest JDK 21'
+        run: wget https://download.oracle.com/java/21/latest/jdk-21_linux-x64_bin.tar.gz
 
       - name: 'Set up JDK'
         uses: actions/setup-java@v3
         with:
-          java-version: '17'
+          java-version: '21'
           distribution: 'jdkfile'
-          jdkFile: jdk-17_linux-x64_bin.tar.gz
+          jdkFile: jdk-21_linux-x64_bin.tar.gz
           cache: 'gradle'
 
       - name: 'Grant execute permission for gradlew'
@@ -50,7 +50,7 @@ jobs:
         run: |
           echo -e '#!/bin/bash\n' > start.sh
           echo $ENV_KEYS | tr \; \\n | while read line ; do echo 'export' $line; done >> start.sh
-          echo -e '\n/usr/bin/java -jar core-api-0.0.1-SNAPSHOT.jar' >> start.sh
+          echo -e '\n/home/deploy/.sdkman/candidates/java/current/bin/java -jar core-api-0.0.1-SNAPSHOT.jar' >> start.sh
         shell: bash
         working-directory: core-backend/build/libs
         env:

@@ -24,6 +24,9 @@ server:
     max-swallow-size: 100MB
 
 spring:
+  threads:
+    virtual:
+      enabled: true
   servlet:
     multipart:
       max-file-size: 10MB
