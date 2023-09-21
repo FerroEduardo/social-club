@@ -1,7 +1,7 @@
 package com.softawii.social.controller;
 
 import com.softawii.social.model.dto.PostDTO;
-import com.softawii.social.request.post.IndexPostRequest;
+import com.softawii.social.request.PaginatedRequest;
 import com.softawii.social.security.UserPrincipal;
 import com.softawii.social.service.PostService;
 import com.softawii.social.service.UserService;
@@ -13,15 +13,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("user")
 public class UserController {
 
-    private final UserService service;
+    private final UserService userService;
     private final PostService postService;
 
-    public UserController(UserService service, PostService postService) {
-        this.service = service;
+    public UserController(UserService userService, PostService postService) {
+        this.userService = userService;
         this.postService = postService;
     }
 
@@ -29,13 +31,29 @@ public class UserController {
     public ResponseEntity<?> user(OAuth2AuthenticationToken authentication) throws Exception {
         UserPrincipal user = (UserPrincipal) authentication.getPrincipal();
 
-        return ResponseEntity.ok(service.findByEmailSafe(user.getEmail()).get());
+        return ResponseEntity.ok(userService.findByEmailSafe(user.getEmail()).get());
+    }
+
+    @GetMapping("reputation")
+    public ResponseEntity<?> reputation(OAuth2AuthenticationToken authentication) {
+        UserPrincipal     user = (UserPrincipal) authentication.getPrincipal();
+        Map<String, Long> body = Map.of("reputation", userService.userReputation(user.getId()));
+
+        return ResponseEntity.ok(body);
     }
 
     @GetMapping("post")
-    public ResponseEntity<?> userPosts(@Valid IndexPostRequest dto, OAuth2AuthenticationToken authentication) {
+    public ResponseEntity<?> userPosts(@Valid PaginatedRequest request, OAuth2AuthenticationToken authentication) {
         UserPrincipal user = (UserPrincipal) authentication.getPrincipal();
-        Page<PostDTO> post = this.postService.findUserPosts(user.getId(), dto.getPage().intValue(), dto.getSize().intValue());
+        Page<PostDTO> post = this.postService.findUserPosts(user.getId(), request.getPage(), request.getSize());
+
+        return ResponseEntity.ok(post);
+    }
+
+    @GetMapping("vote")
+    public ResponseEntity<?> userVotes(@Valid PaginatedRequest request, OAuth2AuthenticationToken authentication) {
+        UserPrincipal user = (UserPrincipal) authentication.getPrincipal();
+        Page<PostDTO> post = this.postService.findUserVotedPosts(request.getPage(), request.getSize(), user.getId());
 
         return ResponseEntity.ok(post);
     }

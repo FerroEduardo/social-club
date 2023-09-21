@@ -5,6 +5,7 @@ import com.softawii.social.repository.mapper.PostVoteRowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,6 +36,24 @@ public class PostVoteRepository {
                 .param("post_id", postId, Types.BIGINT)
                 .query(postVoteRowMapper)
                 .optional();
+    }
+
+    public long userReputation(Long userId) {
+        String sql = """
+                SELECT SUM(pv.value) as "reputation" FROM social.post_vote pv
+                WHERE pv.user_id = :userId
+                """;
+
+        SqlRowSet rowSet = jdbcClient
+                .sql(sql)
+                .param("userId", userId, Types.BIGINT)
+                .query()
+                .rowSet();
+
+        rowSet.next();
+
+        return rowSet
+                .getInt("reputation");
     }
 
     @Transactional

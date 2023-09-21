@@ -41,6 +41,10 @@ public class PostService {
         return postRepository.findAllActiveByGame(page, size, authenticatedUserId, gameId, postFilter);
     }
 
+    public Page<PostDTO> findUserVotedPosts(int page, int size, Long authenticatedUserId) {
+        return postRepository.findAllByUserVote(page, size, authenticatedUserId);
+    }
+
     public Post create(Long userId, Long gameId, Long imageId, String title, String description) {
         Post post = new Post();
         post.setUserId(userId);

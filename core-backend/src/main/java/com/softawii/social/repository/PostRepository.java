@@ -251,6 +251,43 @@ public class PostRepository {
                 .update();
     }
 
+    public Page<PostDTO> findAllByUserVote(int page, int size, Long authenticatedUserId) {
+        StringBuilder query = baseDtoQuery();
+        query.append("""
+                             WHERE
+                                 pv IS NOT NULL AND
+                                 p.deleted_at IS NULL
+                             ORDER BY p.created_at DESC
+                             LIMIT :size
+                             OFFSET :offset""");
+
+        List<PostDTO> content = jdbcClient
+                .sql(query.toString())
+                .param("authenticated_user_id", authenticatedUserId, Types.BIGINT)
+                .param("user_id", authenticatedUserId, Types.BIGINT)
+                .param("size", size, Types.INTEGER)
+                .param("offset", page * size, Types.INTEGER)
+                .query(postDtoRowMapper)
+                .list();
+
+        return PageableExecutionUtils.getPage(content, PageRequest.of(page, size), () -> {
+            String countQuery = """
+                    SELECT
+                        COUNT(*)
+                    FROM social.post p
+                    INNER JOIN social.post_vote pv ON pv.post_id = p.id AND pv.user_id = :user_id
+                    WHERE
+                        pv IS NOT NULL AND
+                        p.deleted_at IS NULL""";
+
+            return jdbcClient
+                    .sql(countQuery)
+                    .param("user_id", authenticatedUserId, Types.BIGINT)
+                    .query()
+                    .singleValue();
+        });
+    }
+
     private StringBuilder baseDtoQuery() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("""
