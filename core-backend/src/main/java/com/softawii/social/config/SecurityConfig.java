@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
@@ -68,12 +67,8 @@ public class SecurityConfig {
                                 response.sendRedirect("/login/failed?reason=github-public-email-disabled");
                                 return;
                             }
-                            if (exception instanceof InternalAuthenticationServiceException) {
-                                response.sendRedirect("/login/failed?reason=unexpected-error");
-                                return;
-                            }
 
-                            response.sendError(HttpServletResponse.SC_FORBIDDEN);
+                            response.sendRedirect("/login/failed?reason=unexpected-error");
                         })
                 )
                 .logout(configurer -> configurer
@@ -92,7 +87,7 @@ public class SecurityConfig {
                                 logger.warn("{} - {}", request.getRequestURI(), authException.getMessage());
                             }
 
-                            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, authException.getMessage());
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                         })
                 );
 
