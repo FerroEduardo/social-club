@@ -4,7 +4,7 @@ async function load() {
   if (!document.getElementById('recaptcha-js')) {
     const script = document.createElement('script');
     script.id = 'recaptcha-js';
-    script.src = `https://www.google.com/recaptcha/api.js?render=${siteKey}`;
+    script.src = `https://www.google.com/recaptcha/api.js?render=${siteKey}&badge=bottomleft`;
 
     document.body.append(script);
   }
