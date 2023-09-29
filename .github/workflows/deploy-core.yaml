@@ -79,14 +79,14 @@ jobs:
           target: /var/www/project/core-backend
           strip_components: 3
 
-      - name: 'Run'
-        uses: appleboy/ssh-action@v0.1.4
-        with:
-          host: ${{ secrets.INSTANCE_IP }}
-          username: ${{ secrets.SSH_USERNAME }}
-          passphrase: ${{ secrets.VM_SSH_PRIVATE_KEY_PASSPHRASE }}
-          key: ${{ secrets.VM_SSH_PRIVATE_KEY }}
-          script: |
-            cd /var/www/project/core-backend
-            nohup /bin/bash start.sh > nohup.out 2> nohup.err < /dev/null &
-            echo 'Done'
+#      - name: 'Run'
+#        uses: appleboy/ssh-action@v0.1.4
+#        with:
+#          host: ${{ secrets.INSTANCE_IP }}
+#          username: ${{ secrets.SSH_USERNAME }}
+#          passphrase: ${{ secrets.VM_SSH_PRIVATE_KEY_PASSPHRASE }}
+#          key: ${{ secrets.VM_SSH_PRIVATE_KEY }}
+#          script: |
+#            cd /var/www/project/core-backend
+#            nohup /bin/bash start.sh > nohup.out 2> nohup.err < /dev/null &
+#            echo 'Done'
