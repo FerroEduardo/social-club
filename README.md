@@ -21,6 +21,10 @@
 Social Club is a social media platform centered around gaming enthusiasts, providing a photo-sharing experience akin to Instagram and Reddit. It empowers users to share their gaming adventures through images while fostering connections with fellow gaming enthusiasts.
 </div>
 
+## Preview
+
+https://github.com/FerroEduardo/social-club/assets/47820549/84325295-1572-4dcd-8945-c509d4c11985
+
 ## Main Technologies
 
 - [**Spring Boot (3.2.0-M2)**](https://spring.io/projects/spring-boot): Spring Boot powers the core backend API.
